@@ -35,8 +35,9 @@ class MapLoader:
         )
 
     def loadDrawMap(self,map,name,transparent=False):
-        map = open(f"maps\{map}\{name}.txt").readlines()
-        drawmap = pygame.Surface((int(map[0].split(".")[0]),int(map[0].split(".")[1])))
+        with open(f"maps\{map}\{name}.txt") as file:
+            lines = file.readlines()
+        drawmap = pygame.Surface((int(lines[0].split(".")[0]),int(lines[0].split(".")[1])))
         if transparent:
             drawmap.fill((255,0,255))
             drawmap.set_colorkey((255,0,255))
@@ -44,7 +45,7 @@ class MapLoader:
         else:
             drawmap.fill((255,255,255))
 
-        for y,row in enumerate(map[1:]):
+        for y,row in enumerate(lines[1:]):
             for x,tile in enumerate(row.split(".")):
                 locx = int(tile.split(",")[0])
                 locy = int(tile.split(",")[1])
@@ -55,16 +56,17 @@ class MapLoader:
     def loadBoundsMap(self,map):
         with open(f"maps\{map}\\bounds.txt") as file:
             lines = file.readlines()
-            for sexybabe in lines:
-                sexybabe.strip()
-            return Bounds(lines)
+        for line in lines:
+            line.strip()
+        return Bounds(lines)
 
     def getWarpPoints(self,map):
-        map = open(f"maps\{map}\objects.txt").readlines()
-        sPos = eval(map[0].split(';')[1])
+        with open(f"maps\{map}\objects.txt") as file:
+            lines = file.readlines()
+        sPos = eval(lines[0].split(';')[1])
         warps = [[sPos[0]*16,sPos[1]*-16]]
-        for i in range(1,len(map)):
-            p = map[i].split(';')
+        for i in range(1,len(lines)):
+            p = lines[i].split(';')
             if p[0] == 'objectWarp':
                 warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*-16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*-16]])
         return warps
