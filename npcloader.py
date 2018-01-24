@@ -57,9 +57,8 @@ class NPCLoader:
         self.console = console
 
     def loadNPC(self, file):
-        self.npcfile = open(self.path + file + '.txt')
-        self.npcdata = self.npcfile.readlines()
-        self.npcfile.close()
+        with open(self.path + file + '.txt') as npcfile:
+            self.npcdata = npcfile.readlines()
         self.npcs.append(
             NPC(self.console,
                 self.npcdata[0].split(';')[0],
