@@ -65,8 +65,8 @@ class MapLoader:
             lines = file.readlines()
         sPos = eval(lines[0].split(';')[1])
         warps = [[sPos[0]*16,sPos[1]*-16]]
-        for i in range(1,len(lines)):
-            p = lines[i].split(';')
+        for line in lines[1:]:
+            p = line.split(';')
             if p[0] == 'objectWarp':
                 warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*-16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*-16]])
         return warps

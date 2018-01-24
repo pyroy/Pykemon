@@ -40,7 +40,7 @@ elif a == 'c':
     betamap.write (f'{width}.{height}\n')
 
     for layer, default, separator in [(map, '0,1', '.'), (alphamap, '0,0', '.'), (betamap, '0,0', '.'), (boundmap, '0', '')]:
-        for c in range(int(height/16)):
+        for _ in range(int(height/16)):
             layer.write(separator.join([default] * int(width/16)) + '\n')
 
     objects.write('objectPlayerPos;[0,0];\n'.format(n))
