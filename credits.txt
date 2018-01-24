@@ -1,0 +1,18 @@
+Pyroy proudly presents...
+
+Pykemon!
+
+-----[Credits]-----
+Font: Jackey @ nonty.net/font/
+Trainer Sprites: Kaori @ spriters-resource.net
+Tileset 1: Shinygold @ fanart.pokefans.net/tutorials/mapping/tilesets
+Pokemon Data: stefankendall @ github.com/stefankendall/pokemondatacollector/
+
+-----[Tools used to create this game]-----
+- Python 3.4.0
+- Pygame
+- paint.net
+- Py2exe
+
+
+This screen will disappear in 1 second..

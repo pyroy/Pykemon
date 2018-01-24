@@ -152,32 +152,15 @@ menuframes = 0
 menudisp = 0
 #End Menu vars
 
-creditscreen = ['Pyroy proudly presents...',
-                ' ',
-                'Pykemon!',
-                ' ',
-                '-----[Credits]-----',
-                'Font: Jackey @ nonty.net/font/',
-                'Trainer Sprites: Kaori @ spriters-resource.net',
-                'Tileset 1: Shinygold @ fanart.pokefans.net/tutorials/mapping/tilesets',
-                'Pokemon Data: stefankendall @ github.com/stefankendall/pokemondatacollector/',
-                ' ',
-                '-----[Tools used to create this game]-----',
-                '- Python 3.4.0',
-                '- Pygame',
-                '- paint.net',
-                '- Py2exe',
-                ' ',
-                ' ',
-                'This screen will disappear in 1 second...']
+with open("credits.txt", "r") as file:
+    creditscreen = map(lambda line: line.strip(), file.readlines())
 
 screen.fill((0,0,0))
 counter = 0
 f = pygame.font.SysFont("arial",20)
 h = f.render('test',False,(255,255,255)).get_height()+3
-for line in creditscreen:
-    screen.blit(f.render(line,False,(255,255,255)), (5,h*counter))
-    counter += 1
+for index, line in enumerate(creditscreen):
+    screen.blit(f.render(line,False,(255,255,255)), (5,h*index))
 pygame.display.flip()
 time.sleep(1)
 
@@ -274,7 +257,9 @@ while not done:
         menupos -= menudisp*(10-menuframes)
         menuframes -= 1
 
-    if battle: activeBattle.update(); activeBattle.draw() #scene in battle
+    if battle:
+        activeBattle.update()
+        activeBattle.draw() #scene in battle
 
     player.checkWarps(currentMap.warps)
 
