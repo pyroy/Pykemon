@@ -1,1 +1,0 @@
-objectPlayerPos;[0,0];
