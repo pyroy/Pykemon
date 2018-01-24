@@ -1,0 +1,8 @@
+Bob;0
+[166,166];
+Freq;[0.0,0.0];[1.0,0.0];[2.0,0.0];[3.0,0.0];
+DIALOG
+0:SAY,"I'm Bob!";SAY,"This is the opening line.";SAY,"Have fun playing Pythemon!";GIVEITEM,pokeball,1;STATE,Bob,1;
+1:SAY,"Want more?";GIVEITEM,pokeball,1;STATE,Bob,2;
+2:SAY,"That's enough don't you think?";STATE,Bob,3;
+3:SAY,"I'm Bob!";SAY,"and you need to leave me alone!";

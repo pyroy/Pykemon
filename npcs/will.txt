@@ -1,0 +1,8 @@
+Will;0
+[166,166];
+Freq;[1.0,2.0];[2.0,2.0];[3.0,2.0];[3.0,3.0];[3.0,4.0];
+DIALOG
+0:SAY,"I'm Will!";SAY,"This is the opening line.";SAY,"Have fun playing Pythemon!";GIVEITEM,pokeball,1;STATE,Will,1;
+1:SAY,"Want more?";GIVEITEM,pokeball,1;STATE,Will,2;
+2:SAY,"That's enough don't you think?";STATE,Will,3;
+3:SAY,"I'm Will!";SAY,"and you need to leave me alone!";

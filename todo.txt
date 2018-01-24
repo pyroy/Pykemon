@@ -1,0 +1,23 @@
+------=[PROGRESS]=------
+MAP EDITOR
+  DONE:
+	Object support
+  TODO:
+	Object placement
+	Custom tilesets
+
+MAIN GAME
+  DONE:
+	NPC-Console support
+	NPC loading in maps
+  TODO:
+	Console functionality 50%
+	NPC Sprites
+	Object-Console support
+
+BATTLE
+  DONE:
+	Sprites loading
+  TODO:
+	Player data saving & reading 50%
+	Display pokemon data

@@ -1,0 +1,6 @@
+objectPlayerPos;[10,0];
+objectWarp;[14,15];secondmap;[2,0];
+objectWarp;[16,3];editmap_pokecenter1;[8,0];
+objectNPC;[7*16,-1*16];bob;
+objectNPC;[7*16,-3*16];will;
+objectSign;[0*16,0*16];['HELP IM A SIGN','just kidding im fine','I can also rhyme','how sublime.'];

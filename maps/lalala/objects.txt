@@ -1,0 +1,4 @@
+objectPlayerPos;[10*16,0];
+objectWarp;[14*16,-15*16];secondmap;[2*16,0];
+objectWarp;[16*16,-3*16];editmap_pokecenter1;[8*16,0];
+objectNPC;[7*16,1*16];bob;
