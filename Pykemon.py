@@ -1,5 +1,6 @@
 #standard imports
 import math, time
+from collections import namedtuple
 
 #main imports
 import maploader, npcloader
@@ -100,19 +101,28 @@ class Player:
         pass
 
 #Console
+
+Event = namedtuple("Event", ["event","data"])
+dummyEvent = Event("dialog","Hey, sexy ;)")
+
 class Console:
     def __init__(self):
         self.state = 0
-
-    def command(self,command):
-        subCommands = command.split(';')
-        for action in subCommands:
-            if action.startswith('SAY'):
-                self.dialogBox(action.split(',')[1])
+        self.queue = []
 
     def dialogBox(self, text):
         print(text, 'ID:'+str(self.state))
-        self.state += 1
+
+    def executeNextEvent(self):
+        if self.queue:
+            eventToExecute = self.queue[0]
+            self.queue.remove(eventToExecute)
+            self.state += 1
+            if eventToExecute.event == 'dialog':
+                self.dialogBox(eventToExecute.data)
+
+    def addEvent(self, event):
+        self.queue.append(event)
 
 console = Console()
 
@@ -182,6 +192,7 @@ activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
 
 menuitem = 0
 while not done:
+    console.executeNextEvent()
     zoom += 0
     ttt = pygame.Surface((200/zoom, 200/zoom))
     for event in pygame.event.get():
@@ -209,7 +220,7 @@ while not done:
             elif event.key == pygame.K_DOWN and not battle and menu:
                 menuitem = min(4, menuitem + 1)
             elif event.key == pygame.K_RETURN and not battle and menuitem == 0 and menu:
-                console.dialogBox('saving! please don\'t turn off the console!')
+                console.addEvent( Event('dialog','saving! please don\'t turn off the console!'))
             elif event.key == pygame.K_RETURN and not battle and not menu:
                 #player.activate()
                 pass;
