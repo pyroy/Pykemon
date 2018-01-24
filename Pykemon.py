@@ -92,9 +92,9 @@ class Player:
         self.resetAnimations()
 
     def checkWarps(self,warps):
-        for i in range(1,len(warps)):
-            if player.pos == warps[i][0]:
-                player.warp(warps[i][1],warps[i][2])
+        for warp in warps[1:]:
+            if player.pos == warp[0]:
+                player.warp(warp[1],warp[2])
                 break
 
     def resetAnimations(self):
@@ -176,7 +176,7 @@ activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
 menuitem = 0
 while not done:
     console.executeNextEvent()
-    zoom += 0
+    zoom += 0 # @Terts: WHAT?!?!?! 
     ttt = pygame.Surface((200/zoom, 200/zoom))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
