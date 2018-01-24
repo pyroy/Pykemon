@@ -53,13 +53,13 @@ class MapLoader:
         return drawmap
 
     def loadBoundsMap(self,map):
-        map = open("maps\{}\\bounds.txt".format(map)).readlines()
+        map = open(f"maps\{map}\\bounds.txt".readlines())
         for line in map:
             line.strip()
         return Bounds(map)
 
     def getWarpPoints(self,map):
-        map = open("maps\{}\objects.txt".format(map)).readlines()
+        map = open(f"maps\{map}\objects.txt".readlines())
         sPos = eval(map[0].split(';')[1])
         warps = [[sPos[0]*16,sPos[1]*-16]]
         for i in range(1,len(map)):

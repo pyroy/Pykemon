@@ -1,0 +1,53 @@
+pokemon.py
+v1:
+- Basic pokemon class
+
+v1.1:
+- Added loading base stats from json
+- Now uses a PID class in PIDdata.py
+
+v1.2:
+- Proper variable names
+- Nature base code
+- EVs & IVs
+
+v2:
+- Added max stat and current stat with proper calculations
+
+v2.1:
+- XP system
+- Removed dependency on PIDdata.py
+- Removed dependency on POKEMONDATA.py, now pickled into POKEMONDATA.dat
+
+v2.2:
+- POKEMONMOVES.py contains basic move functionality
+
+v2.3:
+- Proper damage dealing calculations added
+- Type functionality added depending on POKEMONTYPES.dat
+
+v3:
+- Renamed POKEMONMOVES.py to m_db.py
+- Special Moveset class containing pokemon moves stored in m_db.py
+- Custom moves
+
+v3.1:
+- Basic Battle class
+- General cleaning of code
+
+v3.2:
+- Added module_help
+- Fixed a few things
+- added comments and ASCII art :)
+
+v3.3:
+- Fully functioning Battle class + demo battle handler
+
+v3.4
+- Fixed bug trying to import from outside pokepy folder
+- Added basic Trainer class
+
+v4
+- Removed Battle class
+- Added EventQueue for easier integration into custom Battle classes
+- Fixed rounding errors
