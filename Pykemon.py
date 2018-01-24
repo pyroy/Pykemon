@@ -97,9 +97,10 @@ class Player:
                 break
 
     def resetAnimations(self):
-        self.remainingDuration = 0
-        self.animFrame = 0
-        self.animDelay = 0
+        #self.remainingDuration = 0
+        #self.animFrame = 0
+        #self.animDelay = 0
+        pass
 
 #Console
 class Console:
