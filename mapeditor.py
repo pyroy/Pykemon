@@ -15,6 +15,14 @@ def saveAllMaps():
     saveMap(objects,      omapl,  f"maps\\{name}\\objects.txt")
     saveMap(encountermap, emapl,  f"maps\\{name}\\encounters.txt")
 
+def deleteAllMaps():
+    os.remove(f"maps\\{name}\\map.txt")
+    os.remove(f"maps\\{name}\\beta.txt")
+    os.remove(f"maps\\{name}\\alpha.txt")
+    os.remove(f"maps\\{name}\\bounds.txt")
+    os.remove(f"maps\\{name}\\objects.txt")
+    os.remove(f"maps\\{name}\\encounters.txt")
+
 def openAllLayers(name, mode):
     global map, betamap, alphamap, boundmap, objects, encountermap
     map          = open(f"maps\\{name}\\map.txt",     mode)
@@ -35,7 +43,12 @@ def closeAllLayers():
 a = input("load, create or delete? (l/c/d) >")
 if a == 'l':
     name = input("load map: ")
-    openAllLayers(name, "r+")
+    try:
+        openAllLayers(name, "r+")
+    except:
+        print("Make sure the map '{name}' exists and has all the necessary files.")
+        input()
+        quit()
 
 elif a == 'c':
     name = input("name of new map: ")
@@ -61,18 +74,15 @@ elif a == 'd':
     name = input("delete map: ")
     if not name:
         quit()
-    if not name == input("Type the name of the map again to delete:"):
+    if name == input("Type the name of the map again to delete:"):
+        deleteAllMaps()
+        quit()
+    else:
         print("Names did not match: map was not deleted.")
         quit()
-    os.remove(f"maps\\{name}\\map.txt")
-    os.remove(f"maps\\{name}\\beta.txt")
-    os.remove(f"maps\\{name}\\alpha.txt")
-    os.remove(f"maps\\{name}\\bounds.txt")
-    os.remove(f"maps\\{name}\\objects.txt")
-    os.remove(f"maps\\{name}\\encounters.txt")
-    quit()
-
 else:
+    print("Input was not recognized.")
+    input()
     quit()
 
 pygame.init()
