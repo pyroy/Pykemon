@@ -7,6 +7,14 @@ def saveMap(layer, data, path):
     for line in data:
         layer.write(line)
 
+def saveAllMaps():
+    saveMap(map,          mapl,   f"maps\\{name}\\map.txt")
+    saveMap(alphamap,     amapl,  f"maps\\{name}\\alpha.txt")
+    saveMap(betamap,      bemapl, f"maps\\{name}\\beta.txt")
+    saveMap(boundmap,     bmapl,  f"maps\\{name}\\bounds.txt")
+    saveMap(objects,      omapl,  f"maps\\{name}\\objects.txt")
+    saveMap(encountermap, emapl,  f"maps\\{name}\\encounters.txt")
+
 def openAllLayers(name, mode):
     global map, betamap, alphamap, boundmap, objects, encountermap
     map          = open(f"maps\\{name}\\map.txt",     mode)
@@ -168,12 +176,7 @@ while not done:
                 if event.key == pygame.K_RIGHT:
                     campos[0] -= 16 * zoom
                 if event.key == pygame.K_s:
-                    saveMap(map,          mapl,   f"maps\\{name}\\map.txt")
-                    saveMap(alphamap,     amapl,  f"maps\\{name}\\alpha.txt")
-                    saveMap(betamap,      bemapl, f"maps\\{name}\\beta.txt")
-                    saveMap(boundmap,     bmapl,  f"maps\\{name}\\bounds.txt")
-                    saveMap(objects,      omapl,  f"maps\\{name}\\objects.txt")
-                    saveMap(encountermap, emapl,  f"maps\\{name}\\encounters.txt")
+                    saveAllMaps()
                     print("saved!")
 
                 if event.key == pygame.K_g:
