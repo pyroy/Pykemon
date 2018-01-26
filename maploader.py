@@ -13,12 +13,22 @@ class Bounds:
             else:
                 return True
 
+class Encounters:
+    def __init__(self, e):
+        self.encounters = e
+
+    def checkEncounters(self,x,y):
+        y = -y
+        if y in range(len(self.encounters)) and x in range(len(self.encounters[0])):
+            return int(self.encounters[y][x])
+
 Map = namedtuple("Map", [
     "ground",
     "alpha",
     "beta",
     "bounds",
-    "warps"
+    "warps",
+    "encounters"
 ])
 
 class MapLoader:
@@ -31,7 +41,8 @@ class MapLoader:
             self.loadDrawMap(map, "alpha", transparent=True),
             self.loadDrawMap(map, "beta", transparent=True),
             self.loadBoundsMap(map),
-            self.getWarpPoints(map)
+            self.getWarpPoints(map),
+            self.getEncounters(map)
         )
 
     def loadDrawMap(self,map,name,transparent=False):
@@ -70,3 +81,10 @@ class MapLoader:
             if p[0] == 'objectWarp':
                 warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*-16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*-16]])
         return warps
+
+    def getEncounters(self, map):
+        with open(f"maps\{map}\encounters.txt") as file:
+            lines = file.readlines()
+        for line in lines:
+            line.strip()
+        return Encounters(lines)

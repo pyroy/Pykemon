@@ -1,5 +1,5 @@
 #standard imports
-import math, time
+import math, time, random
 from collections import namedtuple
 
 #main imports
@@ -50,8 +50,10 @@ class Player:
         self.bounds = bounds
         self.trainerdata = pkm.Trainer('Player')
         self.trainerdata.party.append(pkm.Pokemon('Starmie'))
+        self.moving = False
 
     def draw(self,pos):
+        global battle
         if len(self.anim) > 1:
             self.framesSinceStartAnim = (self.framesSinceStartAnim + 1) % (len(self.anim) * self.animDelay)
             self.currentStance = self.anim[math.floor(self.framesSinceStartAnim/self.animDelay)]
@@ -64,6 +66,10 @@ class Player:
             self.remainingDuration -= 1
         else:
             self.moving = False
+            if currentMap.encounters.checkEncounters(self.pos[0]//16,self.pos[1]//16) > 0:
+                if random.randint(0, 10) == 0:
+                    # TODO: Start a RANDOMIZED battlescene
+                    battle = True
 
     def updateAnim(self,animName,delay):
         self.animName = animName
@@ -176,7 +182,7 @@ activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
 menuitem = 0
 while not done:
     console.executeNextEvent()
-    zoom += 0 # @Terts: WHAT?!?!?! 
+    zoom += 0 # @Terts: WHAT?!?!?!
     ttt = pygame.Surface((200/zoom, 200/zoom))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

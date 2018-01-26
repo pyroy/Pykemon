@@ -8,12 +8,13 @@ def saveMap(layer, data, path):
         layer.write(line)
 
 def openAllLayers(name, mode):
-    global map, betamap, alphamap, boundmap, objects
-    map      = open(f"maps\\{name}\\map.txt",     mode)
-    betamap  = open(f"maps\\{name}\\beta.txt",    mode)
-    alphamap = open(f"maps\\{name}\\alpha.txt",   mode)
-    boundmap = open(f"maps\\{name}\\bounds.txt",  mode)
-    objects  = open(f"maps\\{name}\\objects.txt", mode)
+    global map, betamap, alphamap, boundmap, objects, encountermap
+    map          = open(f"maps\\{name}\\map.txt",     mode)
+    betamap      = open(f"maps\\{name}\\beta.txt",    mode)
+    alphamap     = open(f"maps\\{name}\\alpha.txt",   mode)
+    boundmap     = open(f"maps\\{name}\\bounds.txt",  mode)
+    objects      = open(f"maps\\{name}\\objects.txt", mode)
+    encountermap = open(f"maps\\{name}\\encounters.txt", mode)
 
 def closeAllLayers():
     map.close()
@@ -21,6 +22,7 @@ def closeAllLayers():
     betamap.close()
     objects.close()
     boundmap.close()
+    encountermap.close()
 
 a = input("load, create or delete? (l/c/d) >")
 if a == 'l':
@@ -39,7 +41,7 @@ elif a == 'c':
     alphamap.write(f'{width}.{height}\n')
     betamap.write (f'{width}.{height}\n')
 
-    for layer, default, separator in [(map, '0,1', '.'), (alphamap, '0,0', '.'), (betamap, '0,0', '.'), (boundmap, '0', '')]:
+    for layer, default, separator in [(map, '0,1', '.'), (alphamap, '0,0', '.'), (betamap, '0,0', '.'), (boundmap, '0', ''), (encountermap, '0', '')]:
         for _ in range(int(height/16)):
             layer.write(separator.join([default] * int(width/16)) + '\n')
 
@@ -59,6 +61,7 @@ elif a == 'd':
     os.remove(f"maps\\{name}\\alpha.txt")
     os.remove(f"maps\\{name}\\bounds.txt")
     os.remove(f"maps\\{name}\\objects.txt")
+    os.remove(f"maps\\{name}\\encounters.txt")
     quit()
 
 else:
@@ -74,17 +77,19 @@ done = False
 campos = [0,0]
 pointerpos = [0,0]
 
-tileset = pygame.image.load("textures/tileset-blackvolution.png").convert_alpha()
-good    = pygame.image.load("textures/good.png").convert_alpha()
-bad     = pygame.image.load("textures/bad.png").convert_alpha()
-warp    = pygame.image.load("textures/warp.png").convert_alpha()
-player  = pygame.image.load("textures/player-kaori.png").convert_alpha()
+tileset   = pygame.image.load("textures/tileset-blackvolution.png").convert_alpha()
+good      = pygame.image.load("textures/good.png").convert_alpha()
+bad       = pygame.image.load("textures/bad.png").convert_alpha()
+encounter = pygame.image.load("textures/encounter.png").convert_alpha()
+warp      = pygame.image.load("textures/warp.png").convert_alpha()
+player    = pygame.image.load("textures/player-kaori.png").convert_alpha()
 
 mapl   = map.readlines()
 bmapl  = boundmap.readlines()
 bemapl = betamap.readlines()
 amapl  = alphamap.readlines()
 omapl  = objects.readlines()
+emapl  = encountermap.readlines()
 
 font  = pygame.font.SysFont("arial",30)
 font2 = pygame.font.SysFont("arial",15)
@@ -163,11 +168,12 @@ while not done:
                 if event.key == pygame.K_RIGHT:
                     campos[0] -= 16 * zoom
                 if event.key == pygame.K_s:
-                    saveMap(map,      mapl,   f"maps\\{name}\\map.txt")
-                    saveMap(alphamap, amapl,  f"maps\\{name}\\alpha.txt")
-                    saveMap(betamap,  bemapl, f"maps\\{name}\\beta.txt")
-                    saveMap(boundmap, bmapl,  f"maps\\{name}\\bounds.txt")
-                    saveMap(objects,  omapl,  f"maps\\{name}\\objects.txt")
+                    saveMap(map,          mapl,   f"maps\\{name}\\map.txt")
+                    saveMap(alphamap,     amapl,  f"maps\\{name}\\alpha.txt")
+                    saveMap(betamap,      bemapl, f"maps\\{name}\\beta.txt")
+                    saveMap(boundmap,     bmapl,  f"maps\\{name}\\bounds.txt")
+                    saveMap(objects,      omapl,  f"maps\\{name}\\objects.txt")
+                    saveMap(encountermap, emapl,  f"maps\\{name}\\encounters.txt")
                     print("saved!")
 
                 if event.key == pygame.K_g:
@@ -185,10 +191,13 @@ while not done:
                 if event.key == pygame.K_o:
                     state = 'objectmap'
                     stateblit = font.render("editing objects", False, (255, 255, 255))
+                if event.key == pygame.K_e:
+                    state = 'encountermap'
+                    stateblit = font.render("editing encounters", False, (255, 255, 255))
         if event.type == pygame.MOUSEBUTTONDOWN:
+            x = int((event.pos[0]-campos[0])/16/zoom)
+            y = int((event.pos[1]-campos[1])/16/zoom)
             if state == 'groundmap':
-                x = int((event.pos[0]-campos[0])/16/zoom)
-                y = int((event.pos[1] - campos[1]) / 16 / zoom)
                 try:
                     f = mapl[y+1].split(".")
                     if x == len(f)-1:
@@ -203,8 +212,6 @@ while not done:
                 except IndexError:
                     pass
             elif state == 'boundmap':
-                x = int((event.pos[0] - campos[0]) /16/zoom)
-                y = int((event.pos[1] - campos[1]) /16/zoom)
                 try:
                     f = list(bmapl[y])
                     if event.button == 1:
@@ -215,8 +222,6 @@ while not done:
                 except IndexError:
                     pass
             elif state == 'betamap':
-                x = int((event.pos[0]-campos[0])/16/zoom)
-                y = int((event.pos[1]-campos[1]) /16/zoom)
                 try:
                     f = bemapl[y+1].split(".")
                     if x == len(f)-1:
@@ -231,8 +236,6 @@ while not done:
                 except IndexError:
                     pass
             elif state == 'alphamap':
-                x = int((event.pos[0]-campos[0])/16/zoom)
-                y = int((event.pos[1]-campos[1]) /16/zoom)
                 try:
                     f = amapl[y+1].split(".")
                     if x == len(f)-1:
@@ -244,6 +247,16 @@ while not done:
                         tF += '.'
                         tF += i
                     amapl[y+1] = tF[1:]
+                except IndexError:
+                    pass
+            elif state == 'encountermap':
+                try:
+                    f = list(emapl[y])
+                    if event.button == 1:
+                        f[x] = str((int(f[x])+1)%2)
+                    elif event.button == 0:
+                        f[x] = str((int(f[x])-1)%2)
+                    emapl[y] = "".join(f)
                 except IndexError:
                     pass
 
@@ -263,6 +276,11 @@ while not done:
                     ttt.blit(good, (x * 16, y * 16))
                 if bmapl[y][x] == '1':
                     ttt.blit(bad, (x * 16, y * 16))
+    elif state == 'encountermap':
+        for y in range(len(emapl)):
+            for x in range(len(emapl[y])):
+                if emapl[y][x] == '1':
+                    ttt.blit(encounter, (x * 16, y * 16))
 
     for i in omapl[1:]:
         if i.split(';')[0] == 'objectWarp':
