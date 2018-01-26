@@ -176,17 +176,14 @@ while not done:
             else:
                 if event.key == pygame.K_z:
                     zoom *= 1.1
-                    # Below is hard math for keeping the camera centered. It works, I think
+                    # Below is hard math for keeping the camera centered. It works, I think...
                     campos = [campos[0]*1.1 + 320*(1-1.1), campos[1]*1.1 + 320*(1-1.1)]
                 if event.key == pygame.K_x:
                     zoom /= 1.1
-                    # Below is hard math for keeping the camera centered. It works, I think
+                    # Below is hard math for keeping the camera centered. It works, I think...
                     campos = [campos[0]/1.1 + 320*(1-1/1.1), campos[1]/1.1 + 320*(1-1/1.1)]
                 if event.key == pygame.K_c:
-<<<<<<< HEAD
-                    
-=======
->>>>>>> 2fed80ddac614bc8c6b00b7f80df17eb4771261c
+                    # Below is hard math for keeping the camera centered. It works, I think...
                     campos = [campos[0]*4/zoom + 320*(1-4/zoom), campos[1]*4/zoom + 320*(1-4/zoom)]
                     zoom = 4
                 if event.key == pygame.K_UP:
