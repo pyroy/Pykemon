@@ -1,5 +1,12 @@
 import pygame,os
 
+def drawmap(map):
+    for y in range(len(map) - 1):
+        for x in range(len(map[y + 1].split("."))):
+            locx = int(map[y + 1].split(".")[x].split(",")[0])
+            locy = int(map[y + 1].split(".")[x].split(",")[1])
+            ttt.blit(tileset, (x * 16, y * 16), (locx * 16, locy * 16, 16, 16))
+
 def saveMap(layer, data, path):
     layer.close()
     layer = open(path, 'w+')
@@ -95,6 +102,7 @@ done = False
 campos = [0,0]
 pointerpos = [0,0]
 
+# texures
 tileset   = pygame.image.load("textures/tileset-blackvolution.png").convert_alpha()
 good      = pygame.image.load("textures/good.png").convert_alpha()
 bad       = pygame.image.load("textures/bad.png").convert_alpha()
@@ -116,13 +124,6 @@ state = 'groundmap'
 
 zoom = 4
 scrollpos = 0
-
-def drawmap(map):
-    for y in range(len(map) - 1):
-        for x in range(len(map[y + 1].split("."))):
-            locx = int(map[y + 1].split(".")[x].split(",")[0])
-            locy = int(map[y + 1].split(".")[x].split(",")[1])
-            ttt.blit(tileset, (x * 16, y * 16), (locx * 16, locy * 16, 16, 16))
 
 while not done:
     for event in pygame.event.get():
@@ -175,8 +176,16 @@ while not done:
             else:
                 if event.key == pygame.K_z:
                     zoom *= 1.1
+                    # Below is hard math for keeping the camera centered. It works, I think
+                    campos = [campos[0]*1.1 + 320*(1-1.1), campos[1]*1.1 + 320*(1-1.1)]
                 if event.key == pygame.K_x:
                     zoom /= 1.1
+                    # Below is hard math for keeping the camera centered. It works, I think
+                    campos = [campos[0]/1.1 + 320*(1-1/1.1), campos[1]/1.1 + 320*(1-1/1.1)]
+                if event.key == pygame.K_c:
+                    # Below is hard math for keeping the camera centered. It works, I think
+                    campos = [campos[0]*4/zoom + 320*(1-4/zoom), campos[1]*4/zoom + 320*(1-4/zoom)]
+                    zoom = 4
                 if event.key == pygame.K_UP:
                     campos[1] += 16 * zoom
                 if event.key == pygame.K_DOWN:
