@@ -46,7 +46,7 @@ class MapLoader:
         )
 
     def loadDrawMap(self,map,name,transparent=False):
-        with open(f"maps\{map}\{name}.txt") as file:
+        with open(f"maps/{map}/{name}.txt") as file:
             lines = file.readlines()
         drawmap = pygame.Surface((int(lines[0].split(".")[0]),int(lines[0].split(".")[1])))
         if transparent:
@@ -65,14 +65,14 @@ class MapLoader:
         return drawmap
 
     def loadBoundsMap(self,map):
-        with open(f"maps\{map}\\bounds.txt") as file:
+        with open(f"maps/{map}/bounds.txt") as file:
             lines = file.readlines()
         for line in lines:
             line.strip()
         return Bounds(lines)
 
     def getWarpPoints(self,map):
-        with open(f"maps\{map}\objects.txt") as file:
+        with open(f"maps/{map}/objects.txt") as file:
             lines = file.readlines()
         sPos = eval(lines[0].split(';')[1])
         warps = [[sPos[0]*16,sPos[1]*-16]]
@@ -83,7 +83,7 @@ class MapLoader:
         return warps
 
     def getEncounters(self, map):
-        with open(f"maps\{map}\encounters.txt") as file:
+        with open(f"maps/{map}/encounters.txt") as file:
             lines = file.readlines()
         for line in lines:
             line.strip()

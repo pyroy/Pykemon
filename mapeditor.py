@@ -15,29 +15,29 @@ def saveMap(layer, data, path):
         layer.write(line)
 
 def saveAllMaps():
-    saveMap(map,          mapl,   f"maps\\{name}\\map.txt")
-    saveMap(alphamap,     amapl,  f"maps\\{name}\\alpha.txt")
-    saveMap(betamap,      bemapl, f"maps\\{name}\\beta.txt")
-    saveMap(boundmap,     bmapl,  f"maps\\{name}\\bounds.txt")
-    saveMap(objects,      omapl,  f"maps\\{name}\\objects.txt")
-    saveMap(encountermap, emapl,  f"maps\\{name}\\encounters.txt")
+    saveMap(map,          mapl,   f"maps/{name}/map.txt")
+    saveMap(alphamap,     amapl,  f"maps/{name}/alpha.txt")
+    saveMap(betamap,      bemapl, f"maps/{name}/beta.txt")
+    saveMap(boundmap,     bmapl,  f"maps/{name}/bounds.txt")
+    saveMap(objects,      omapl,  f"maps/{name}/objects.txt")
+    saveMap(encountermap, emapl,  f"maps/{name}/encounters.txt")
 
 def deleteAllMaps():
-    os.remove(f"maps\\{name}\\map.txt")
-    os.remove(f"maps\\{name}\\beta.txt")
-    os.remove(f"maps\\{name}\\alpha.txt")
-    os.remove(f"maps\\{name}\\bounds.txt")
-    os.remove(f"maps\\{name}\\objects.txt")
-    os.remove(f"maps\\{name}\\encounters.txt")
+    os.remove(f"maps/{name}/map.txt")
+    os.remove(f"maps/{name}/beta.txt")
+    os.remove(f"maps/{name}/alpha.txt")
+    os.remove(f"maps/{name}/bounds.txt")
+    os.remove(f"maps/{name}/objects.txt")
+    os.remove(f"maps/{name}/encounters.txt")
 
 def openAllLayers(name, mode):
     global map, betamap, alphamap, boundmap, objects, encountermap
-    map          = open(f"maps\\{name}\\map.txt",     mode)
-    betamap      = open(f"maps\\{name}\\beta.txt",    mode)
-    alphamap     = open(f"maps\\{name}\\alpha.txt",   mode)
-    boundmap     = open(f"maps\\{name}\\bounds.txt",  mode)
-    objects      = open(f"maps\\{name}\\objects.txt", mode)
-    encountermap = open(f"maps\\{name}\\encounters.txt", mode)
+    map          = open(f"maps/{name}/map.txt",     mode)
+    betamap      = open(f"maps/{name}/beta.txt",    mode)
+    alphamap     = open(f"maps/{name}/alpha.txt",   mode)
+    boundmap     = open(f"maps/{name}/bounds.txt",  mode)
+    objects      = open(f"maps/{name}/objects.txt", mode)
+    encountermap = open(f"maps/{name}/encounters.txt", mode)
 
 def closeAllLayers():
     map.close()
