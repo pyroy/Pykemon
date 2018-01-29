@@ -45,8 +45,8 @@ class MapLoader:
             self.getEncounters(map)
         )
 
-    def loadDrawMap(self,map,name,transparent=False):
-        with open(f"maps/{map}/{name}.txt") as file:
+    def loadDrawMap(self,groundmap,name,transparent=False):
+        with open(f"maps/{groundmap}/{name}.txt") as file:
             lines = file.readlines()
         drawmap = pygame.Surface((int(lines[0].split(".")[0]),int(lines[0].split(".")[1])))
         if transparent:

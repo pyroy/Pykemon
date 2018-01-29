@@ -182,7 +182,7 @@ activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
 menuitem = 0
 while not done:
     console.executeNextEvent()
-    zoom += 0 # @Terts: WHAT?!?!?!
+    zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
     ttt = pygame.Surface((200/zoom, 200/zoom))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

@@ -1,10 +1,10 @@
 import pygame,os
 
-def drawmap(map):
-    for y in range(len(map) - 1):
-        for x in range(len(map[y + 1].split("."))):
-            locx = int(map[y + 1].split(".")[x].split(",")[0])
-            locy = int(map[y + 1].split(".")[x].split(",")[1])
+def drawmap(mapdata):
+    for y in range(len(mapdata) - 1):
+        for x in range(len(mapdata[y + 1].split("."))):
+            locx = int(mapdata[y + 1].split(".")[x].split(",")[0])
+            locy = int(mapdata[y + 1].split(".")[x].split(",")[1])
             ttt.blit(tileset, (x * 16, y * 16), (locx * 16, locy * 16, 16, 16))
 
 def saveMap(layer, data, path):
@@ -15,7 +15,7 @@ def saveMap(layer, data, path):
         layer.write(line)
 
 def saveAllMaps():
-    saveMap(map,          mapl,   f"maps/{name}/map.txt")
+    saveMap(groundmap,    mapl,   f"maps/{name}/map.txt")
     saveMap(alphamap,     amapl,  f"maps/{name}/alpha.txt")
     saveMap(betamap,      bemapl, f"maps/{name}/beta.txt")
     saveMap(boundmap,     bmapl,  f"maps/{name}/bounds.txt")
@@ -31,8 +31,8 @@ def deleteAllMaps():
     os.remove(f"maps/{name}/encounters.txt")
 
 def openAllLayers(name, mode):
-    global map, betamap, alphamap, boundmap, objects, encountermap
-    map          = open(f"maps/{name}/map.txt",     mode)
+    global groundmap, betamap, alphamap, boundmap, objects, encountermap
+    groundmap    = open(f"maps/{name}/map.txt",     mode)
     betamap      = open(f"maps/{name}/beta.txt",    mode)
     alphamap     = open(f"maps/{name}/alpha.txt",   mode)
     boundmap     = open(f"maps/{name}/bounds.txt",  mode)
@@ -40,7 +40,7 @@ def openAllLayers(name, mode):
     encountermap = open(f"maps/{name}/encounters.txt", mode)
 
 def closeAllLayers():
-    map.close()
+    groundmap.close()
     alphamap.close()
     betamap.close()
     objects.close()
@@ -53,28 +53,30 @@ if a == 'l':
     try:
         openAllLayers(name, "r+")
     except:
-        print("Make sure the map '{name}' exists and has all the necessary files.")
+        print(f"Make sure the map '{name}' exists and has all the necessary files.")
         input()
         quit()
 
 elif a == 'c':
     name = input("name of new map: ")
-    if not os.path.exists(os.getcwd()+'/maps/{}/'.format(n)):
-        os.makedirs(os.getcwd()+'/maps/{}/'.format(n))
+    if not os.path.exists(os.getcwd()+f'/maps/{name}/'):
+        os.makedirs(os.getcwd()+f'/maps/{name}/')
 
     openAllLayers(name, "w+")
     width  = int(input("width = " ))*16
     height = int(input("height = "))*16
-    map.write     (f'{width}.{height}\n')
-    alphamap.write(f'{width}.{height}\n')
-    betamap.write (f'{width}.{height}\n')
+    groundmap.write(f'{width}.{height}\n')
+    alphamap.write (f'{width}.{height}\n')
+    betamap.write  (f'{width}.{height}\n')
 
-    for layer, default, separator in [(map, '0,1', '.'), (alphamap, '0,0', '.'), (betamap, '0,0', '.'), (boundmap, '0', ''), (encountermap, '0', '')]:
+    for layer, default, separator in [(groundmap, '0,1', '.'), (alphamap, '0,0', '.'), (betamap, '0,0', '.'), (boundmap, '0', ''), (encountermap, '0', '')]:
         for _ in range(int(height/16)):
             layer.write(separator.join([default] * int(width/16)) + '\n')
 
-    objects.write('objectPlayerPos;[0,0];\n'.format(n))
+    objects.write('objectPlayerPos;[0,0];\n')
     closeAllLayers()
+    print(f"{name} has been created! please run again to edit it.")
+    input()
     quit()
 
 elif a == 'd':
@@ -110,7 +112,7 @@ encounter = pygame.image.load("textures/encounter.png").convert_alpha()
 warp      = pygame.image.load("textures/warp.png").convert_alpha()
 player    = pygame.image.load("textures/player-kaori.png").convert_alpha()
 
-mapl   = map.readlines()
+mapl   = groundmap.readlines()
 bmapl  = boundmap.readlines()
 bemapl = betamap.readlines()
 amapl  = alphamap.readlines()
@@ -130,14 +132,14 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.KEYDOWN:
-            if pygame.key.get_pressed()[pygame.K_SPACE]:
+            if pygame.key.get_pressed()[pygame.K_SPACE]: #Selecting tiles
                 if pygame.key.get_pressed()[pygame.K_r]:
                     if event.key == pygame.K_UP:
                         scrollpos += 640
                         pointerpos[1] -= 20
                         if pointerpos[1] < 0:
-                            pointerpos[1] = 0
-                            scrollpos = 0
+                            pointerpos[1] = 0 #pointerpos is the position of the selection sprite
+                            scrollpos = 0 #and scrollpos is which 'page' you are on
                     if event.key == pygame.K_DOWN:
                         scrollpos -= 640
                         pointerpos[1] += 20
@@ -236,10 +238,7 @@ while not done:
             elif state == 'boundmap':
                 try:
                     f = list(bmapl[y])
-                    if event.button == 1:
-                        f[x] = str((int(f[x])+1)%2)
-                    elif event.button == 0:
-                        f[x] = str((int(f[x]) - 1) % 2)
+                    f[x] = str((int(f[x])+1)%2)
                     bmapl[y] = "".join(f)
                 except IndexError:
                     pass
@@ -313,9 +312,18 @@ while not done:
 
     screen.fill((0,0,20))
     screen.blit(pygame.transform.scale(ttt, (int(width*zoom),int(height*zoom))), (campos[0],campos[1]))
-    pygame.draw.rect(screen, (255,0,255), (640,0,640+8*16*2-640,640))
-    screen.blit(pygame.transform.scale(tileset, (8*16*2,tileset.get_height()*2)), (640,scrollpos))
-    pygame.draw.rect(screen, (255,0,0), (640+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
+    if state in ["groundmap", "betamap", "alphamap"]:
+        pygame.draw.rect(screen, (255,0,255), (640,0,640+8*16*2-640,640))
+        screen.blit(pygame.transform.scale(tileset, (8*16*2,tileset.get_height()*2)), (640,scrollpos))
+        pygame.draw.rect(screen, (255,0,0), (640+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
+    if state == "boundmap":
+        pygame.draw.rect(screen, (20,20,20), (640,0,640+8*16*2-640,640))
+        screen.blit(pygame.transform.scale(good, (100,100)), (720,130))
+        screen.blit(pygame.transform.scale(bad, (100,100)), (720,420))
+        screen.blit(font.render("no collision",True,(200,255,200)),(700,250))
+        screen.blit(font.render("collision",True,(255,200,200)),(715,550))
+    if state == "encountermap":
+        screen.blit(font.render("WIP",True,(255,255,255)),(740,300))
     pygame.draw.line(screen,(0,255,0),(640,0),(640,640),3)
     screen.blit(stateblit,(0,0))
 
