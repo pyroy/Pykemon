@@ -14,6 +14,7 @@ MAIN GAME
 	Console functionality 50%
 	NPC Sprites
 	Object-Console support
+  Remove usage of the "map"-binding, since it conflicts with built-in map
 
 BATTLE
   DONE:
