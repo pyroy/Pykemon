@@ -35,14 +35,14 @@ class MapLoader:
     def __init__(self):
         self.tileset = pygame.image.load("textures/tileset-blackvolution.png")
 
-    def loadMapObject(self, map):
+    def loadMapObject(self, groundmap):
         return Map(
-            self.loadDrawMap(map, "map"),
-            self.loadDrawMap(map, "alpha", transparent=True),
-            self.loadDrawMap(map, "beta", transparent=True),
-            self.loadBoundsMap(map),
-            self.getWarpPoints(map),
-            self.getEncounters(map)
+            self.loadDrawMap(groundmap, "map"),
+            self.loadDrawMap(groundmap, "alpha", transparent=True),
+            self.loadDrawMap(groundmap, "beta", transparent=True),
+            self.loadBoundsMap(groundmap),
+            self.getWarpPoints(groundmap),
+            self.getEncounters(groundmap)
         )
 
     def loadDrawMap(self,groundmap,name,transparent=False):
@@ -64,15 +64,15 @@ class MapLoader:
 
         return drawmap
 
-    def loadBoundsMap(self,map):
-        with open(f"maps/{map}/bounds.txt") as file:
+    def loadBoundsMap(self,groundmap):
+        with open(f"maps/{groundmap}/bounds.txt") as file:
             lines = file.readlines()
         for line in lines:
             line.strip()
         return Bounds(lines)
 
-    def getWarpPoints(self,map):
-        with open(f"maps/{map}/objects.txt") as file:
+    def getWarpPoints(self,groundmap):
+        with open(f"maps/{groundmap}/objects.txt") as file:
             lines = file.readlines()
         sPos = eval(lines[0].split(';')[1])
         warps = [[sPos[0]*16,sPos[1]*-16]]
@@ -82,8 +82,8 @@ class MapLoader:
                 warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*-16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*-16]])
         return warps
 
-    def getEncounters(self, map):
-        with open(f"maps/{map}/encounters.txt") as file:
+    def getEncounters(self, groundmap):
+        with open(f"maps/{groundmap}/encounters.txt") as file:
             lines = file.readlines()
         for line in lines:
             line.strip()
