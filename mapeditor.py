@@ -73,6 +73,8 @@ elif a == 'c':
         for _ in range(int(height/16)):
             layer.write(separator.join([default] * int(width/16)) + '\n')
 
+    encountermap.write('0;NONE')
+
     objects.write('objectPlayerPos;[0,0];\n')
     closeAllLayers()
     print(f"{name} has been created! please run again to edit it.")

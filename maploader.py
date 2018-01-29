@@ -15,12 +15,15 @@ class Bounds:
 
 class Encounters:
     def __init__(self, e):
-        self.encounters = e
+        print(e)
+        self.encountermap =             e[: [i[1] for i in e].index(';') ]
+        self.encounterDefinitions =    e[ [i[1] for i in e].index(';'): ]
 
     def checkEncounters(self,x,y):
-        y = -y
-        if y in range(len(self.encounters)) and x in range(len(self.encounters[0])):
-            return int(self.encounters[y][x])
+        return int(self.encountermap[-y][x]) #no need for extra bound check since player is always in bounds.
+
+    def generateEncounter(self, encountertype):
+        return self.encounterDefinitions
 
 Map = namedtuple("Map", [
     "ground",
