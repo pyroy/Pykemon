@@ -1,18 +1,21 @@
-Pyroy proudly presents...
+pyroy proudly presents...
 
 Pykemon!
 
 -----[Credits]-----
-Font: Jackey @ nonty.net/font/
-Trainer Sprites: Kaori @ spriters-resource.net
-Tileset 1: Shinygold @ fanart.pokefans.net/tutorials/mapping/tilesets
-Pokemon Data: stefankendall @ github.com/stefankendall/pokemondatacollector/
-
+Font:                        Jackey @ nonty.net/font/
+Trainer Sprites:         Kaori @ spriters-resource.net
+Tileset 1:                  Shinygold @ fanart.pokefans.net/tutorials/mapping/tilesets
+Pokemon Data:         stefankendall @ github.com/stefankendall/pokemondatacollector/
+Pokemon Sprites:      Nintendo @ https://veekun.com/dex/downloads
 -----[Tools used to create this game]-----
-- Python 3.4.0
-- Pygame
-- paint.net
-- Py2exe
+Coding:                            Python & Pygame
+Compiling:                        Py2exe
+Sprites:                            paint.net
+Project Management:       GitHub
 
+Special thanks to my boy Terts Diepraam for 
+helping my shitty code out of its miserable state 
+with his elegant coding manners.
 
-This screen will disappear in 1 second..
+This screen will disappear in 2 seconds..

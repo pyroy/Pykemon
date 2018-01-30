@@ -173,7 +173,7 @@ h = f.render('test',False,(255,255,255)).get_height()+3
 for index, line in enumerate(creditscreen):
     screen.blit(f.render(line,False,(255,255,255)), (5,h*index))
 pygame.display.flip()
-time.sleep(1)
+time.sleep(2)
 
 nl.loadNPC('bob')
 nl.loadNPC('will')
