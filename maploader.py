@@ -55,7 +55,6 @@ class Encounters:
 
     def getPokemonData(self, data):
         self.name = data.split(':')[0]
-        print(data.split(':'))
         self.level = ChanceList(*eval(data.split(':')[1]))
         return self.name, self.level
 
