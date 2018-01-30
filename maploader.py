@@ -1,3 +1,5 @@
+import random
+
 import pygame
 from collections import namedtuple
 
@@ -13,17 +15,49 @@ class Bounds:
             else:
                 return True
 
+class ChanceList:
+    def __init__(self, list1, list2):
+        self.list1, self.list2 = list1, list2
+
+    def choose(self):
+        if sum(self.list2) != 1:
+            return None
+
+        self.accumulatedList2 = [sum(self.list2[:i]) for i in range(len(self.list2))]
+        self.pick = random.random()
+        for i in self.accumulatedList2[::-1]:
+            if self.pick > i:
+                return self.list1[ self.accumulatedList2.index(i) ]
+
 class Encounters:
     def __init__(self, e):
-        print(e)
         self.encountermap =             e[: [i[1] for i in e].index(';') ]
         self.encounterDefinitions =    e[ [i[1] for i in e].index(';'): ]
+
+        self.encounters = { }
+
+        for encounterType in self.encounterDefinitions:
+            if encounterType.split(';')[1] == 'NONE\n':
+                self.encounters[ encounterType.split(';')[0] ] = None
+            else:
+                self.encounters[ encounterType.split(';')[0] ] = ChanceList(
+                    [ self.getPokemonData(pokemon) for pokemon in encounterType.split(';')[2].split('&') ],
+                    eval( encounterType.split(';')[1] ) )
+        
 
     def checkEncounters(self,x,y):
         return int(self.encountermap[-y][x]) #no need for extra bound check since player is always in bounds.
 
-    def generateEncounter(self, encountertype):
-        return self.encounterDefinitions
+    def generateEncounter(self, encountertype): #is actually an int in a string but since we're passing from a text file I'm keeping it a string. This way we can bind it to letters as well.
+        pokemon = self.encounters[ encountertype ].choose()
+        level = pokemon[1].choose()
+        return pokemon[0], level #name, level
+
+    def getPokemonData(self, data):
+        self.name = data.split(':')[0]
+        print(data.split(':'))
+        self.level = ChanceList(*eval(data.split(':')[1]))
+        return self.name, self.level
 
 Map = namedtuple("Map", [
     "ground",
