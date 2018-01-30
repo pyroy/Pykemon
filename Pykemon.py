@@ -53,7 +53,7 @@ class Player:
         self.moving = False
 
     def draw(self,pos):
-        global battle
+        global battle, activeBattle
         if len(self.anim) > 1:
             self.framesSinceStartAnim = (self.framesSinceStartAnim + 1) % (len(self.anim) * self.animDelay)
             self.currentStance = self.anim[math.floor(self.framesSinceStartAnim/self.animDelay)]
@@ -66,10 +66,15 @@ class Player:
             self.remainingDuration -= 1
         else:
             self.moving = False
-            if currentMap.encounters.checkEncounters(self.pos[0]//16,self.pos[1]//16) > 0:
+            encounterTile = currentMap.encounters.checkEncounters(self.pos[0]//16,self.pos[1]//16)
+            if encounterTile > 0:
                 if random.randint(0, 10) == 0:
-                    # TODO: Start a RANDOMIZED battlescene
                     battle = True
+                    EncounterData = currentMap.encounters.generateEncounter( str(encounterTile) )
+                    foe = pkm.Trainer('Damion')
+                    foe.party.append(pkm.Pokemon(EncounterData[0]))
+                    foe.party[0].setlevel(EncounterData[1])
+                    activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
 
     def updateAnim(self,animName,delay):
         self.animName = animName
@@ -173,11 +178,8 @@ time.sleep(1)
 nl.loadNPC('bob')
 nl.loadNPC('will')
 
-foe = pkm.Trainer('Damion')
-foe.party.append(pkm.Pokemon('Numel'))
-
 battle = False
-activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
+activeBattle = None
 
 menuitem = 0
 while not done:
