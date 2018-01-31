@@ -1,5 +1,6 @@
 import random
 from collections import namedtuple
+from itertools import reduce
 
 import pygame
 
@@ -34,7 +35,7 @@ class ChanceList:
         for index, value in enumerate(self.accumulatedChances):
             if self.pick <= value:
                 return self.items[index]
-        print("Hey, you suck!")
+        raise Error("Well, this is awkward, this was not supposed to happen.")
 
 class Encounters:
     def __init__(self, e):
