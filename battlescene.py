@@ -6,7 +6,10 @@ dex = pkm.dex.Dex()
 def getSprite(name, state='back'):
     if state == 'front':
         return pygame.image.load('textures/main-sprites/diamond-pearl/{}.png'.format(dex.getIndex(name)))
-    else: return pygame.image.load('textures/main-sprites/diamond-pearl/back/{}.png'.format(dex.getIndex(name)))
+    elif state == 'back':
+        return pygame.image.load('textures/main-sprites/diamond-pearl/back/{}.png'.format(dex.getIndex(name)))
+    else:
+        raise ValueError("Invalid state argument.")
 
 class Background:
     def __init__(self, time='Day', place='Forest'):
