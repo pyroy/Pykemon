@@ -142,8 +142,12 @@ scrollpos = 0
 #buttons for encounter
 addEncounterButton = Simplebutton(200,50,(60,60,60),"Add Encounter...",pygame.font.Font("jackeyfont.ttf",20))
 addEncounterButton.border = 1
-addEncounterButton.pos = (700,400)
+addEncounterButton.pos = (680,400)
 addEncounterButton.textcolor = (255,255,255)
+
+@addEncounterButton.link
+def action1():
+    print('I work!')
 
 #main loop
 while not done:
@@ -346,6 +350,9 @@ while not done:
     if state == "encountermap":
         screen.blit(font.render("WIP",True,(255,255,255)),(740,300))
         addEncounterButton.draw(screen)
+
+    screen.blit(font2.render("a - alpha, b - beta, g - ground, n - bounds, e - encounters, o -objects, z/x - zoom",False,(255,255,255),(0,0,0)), (0,622))
+        
     pygame.draw.line(screen,(0,255,0),(640,0),(640,640),3)
     screen.blit(stateblit,(0,0))
 
