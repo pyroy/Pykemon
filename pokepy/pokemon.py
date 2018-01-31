@@ -11,10 +11,6 @@
 #\---------------------------------/#
 #####################################
 
-## TODO: Remove old stats implementation (commented out) on approval
-## TODO: Update documentation
-## Search for TERTSEDIT
-
 import sys, os
 from collections import namedtuple
 path = os.path.dirname(__file__)
@@ -106,13 +102,6 @@ class Pokemon:
             'SPDEF': self.baseData['stats']['special_defense'],
             'SPD':   self.baseData['stats']['speed']
         }
-        # TERTSEDIT
-        # self.baseHP = self.baseData['stats']['hp']
-        # self.baseATK = self.baseData['stats']['attack']
-        # self.baseDEF = self.baseData['stats']['defense']
-        # self.baseSPATK = self.baseData['stats']['special_attack']
-        # self.baseSPDEF = self.baseData['stats']['special_defense']
-        # self.baseSPD = self.baseData['stats']['speed']
         self.EVs = dict(zip(STATS, [0,0,0,0,0,0]))
         self.IVs = dict(zip(STATS, self.PID.get_IVs()))
         self.nature = self.PID.get_nature()
@@ -138,13 +127,6 @@ class Pokemon:
         # ATK, DEF, SPATK and SPDEF all have the same calculation
         for stat in STATS[1:-1]:
             self.stats[stat] = round(self.modifiers[stat] * int((2*self.baseStats[stat] + self.IVs[stat] +  int(self.EVs[stat]/4))*self.level/100) + 5)
-        # TERTSEDIT
-        # self.HP = round(self.modifiers[0] * int( (2*self.baseHP + self.IVs[0] + int(self.EVs[0]/4))*self.level/100 ) + self.level + 10)
-        # self.ATK = round(self.modifiers[1] * int( (2*self.baseATK + self.IVs[1] + int(self.EVs[1]/4))*self.level/100 ) + 5)
-        # self.DEF = round(self.modifiers[2] * int( (2*self.baseDEF + self.IVs[2] + int(self.EVs[2]/4))*self.level/100 ) + 5)
-        # self.SPATK = round(self.modifiers[3] * int( (2*self.baseSPATK + self.IVs[3] + int(self.EVs[3]/4))*self.level/100 ) + 5)
-        # self.SPDEF = round(self.modifiers[4] * int( (2*self.baseSPDEF + self.IVs[4] + int(self.EVs[4]/4))*self.level/100 ) + 5)
-        # self.SPD = int( (2*self.baseSPD + self.IVs[5] + int(self.EVs[5]/4))*self.level/100 ) + 5
 
     def getstats(self):
         return self.currentStats
@@ -172,7 +154,7 @@ class Pokemon:
         if movedata[0] == 'physical': damage = (((2*self.level/5+2)*amount*self.currentStats['ATK']/pokemon.currentStats['DEF'])/50+2)*mod
         if movedata[0] == 'special': damage = (((2*self.level/5+2)*amount*self.currentStats['SPATK']/pokemon.currentStats['SPDEF'])/50+2)*mod
         pokemon.takedamage(damage)
-        if mod == 0: return [0,damage] ## TODO: Change to logarithm
+        if mod == 0: return [0,damage]
         if mod == 0.25: return [1,damage]
         if mod == 0.5: return [2,damage]
         if mod == 1: return [3,damage]
@@ -186,31 +168,12 @@ class Pokemon:
         self.currentStats[stat] *= amount
         self.currentStats[stat] = max(1, self.currentStats[stat])
         return [stat, amount]
-        # TERTSEDIT
-        # if stat == 'ATK': self.cATK *= amount; self.cATK = max(1,self.cATK);
-        #     return ['ATK',amount]
-        # if stat == 'DEF': self.cDEF *= amount; self.cDEF = max(1,self.cDEF);
-        #     return ['DEF',amount]
-        # if stat == 'SPATK': self.cSPATK *= amount; self.cSPATK = max(1,self.cSPATK);
-        #     return ['SPATK',amount]
-        # if stat == 'SPDEF': self.cSPDEF *= amount; self.cSPDEF = max(1,self.cSPDEF);
-        #     return ['SPDEF',amount]
-        # if stat == 'SPD': self.cSPD *= amount; self.cSPD = max(1,self.cSPD);
-        #     return ['SPD',amount]
 
     def returnstats(self,hptoo=False): #If you go out of battle, you dont want HP to magically restore as well
         if hptoo:
             self.currentStats = dict(self.stats)
         else:
             self.currentStats = dict(self.stats, HP=self.currentStats['HP'])
-        # TERTSEDIT
-        # self.cATK = self.ATK
-        # self.cDEF = self.DEF
-        # self.cSPATK = self.SPATK
-        # self.cSPDEF = self.SPDEF
-        # self.cSPD = self.SPD
-        # if hptoo:
-        #     self.cHP = self.HP
 
 class Battle:
     def __init__(self,party1,party2,master,AI=True):
