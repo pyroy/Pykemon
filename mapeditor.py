@@ -1,5 +1,8 @@
 import pygame,os
 
+from mapeditorgui.pygamesliders import *
+from mapeditorgui.pygamebuttons import *
+
 def drawmap(mapdata):
     for y in range(len(mapdata) - 1):
         for x in range(len(mapdata[y + 1].split("."))):
@@ -106,13 +109,20 @@ done = False
 campos = [0,0]
 pointerpos = [0,0]
 
-# texures
+#textures
 tileset   = pygame.image.load("textures/tileset-blackvolution.png").convert_alpha()
 good      = pygame.image.load("textures/good.png").convert_alpha()
 bad       = pygame.image.load("textures/bad.png").convert_alpha()
-encounter = pygame.image.load("textures/encounter.png").convert_alpha()
 warp      = pygame.image.load("textures/warp.png").convert_alpha()
 player    = pygame.image.load("textures/player-kaori.png").convert_alpha()
+
+#pokeball sprites
+encounterSprites = {}
+src = pygame.image.load("textures/pokeballs.png").convert_alpha()
+for i in range(25):
+    blankSlate = pygame.Surface((64,64), pygame.SRCALPHA)
+    blankSlate.blit(src, (0,0), ((i%5)*64,(i//5)*64,64,64))
+    encounterSprites[str(i+1)] = pygame.transform.scale(blankSlate, (16,16))
 
 mapl   = groundmap.readlines()
 bmapl  = boundmap.readlines()
@@ -129,6 +139,12 @@ state = 'groundmap'
 zoom = 4
 scrollpos = 0
 
+#buttons for encounter
+addEncounterButton = Simplebutton(150,50,(60,60,60),"Add Encounter...",font2)
+addEncounterButton.border = 1
+addEncounterButton.pos = (600,400)
+
+#main loop
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -201,7 +217,6 @@ while not done:
                 if event.key == pygame.K_s:
                     saveAllMaps()
                     print("saved!")
-
                 if event.key == pygame.K_g:
                     state = 'groundmap'
                     stateblit = font.render("editing groundmap", False, (255, 255, 255))
@@ -221,6 +236,9 @@ while not done:
                     state = 'encountermap'
                     stateblit = font.render("editing encounters", False, (255, 255, 255))
         if event.type == pygame.MOUSEBUTTONDOWN:
+            #button check
+            addEncounterButton.push(event)
+            #tile check
             x = int((event.pos[0]-campos[0])/16/zoom)
             y = int((event.pos[1]-campos[1])/16/zoom)
             if state == 'groundmap':
@@ -242,7 +260,7 @@ while not done:
                     f = list(bmapl[y])
                     f[x] = str((int(f[x])+1)%2)
                     bmapl[y] = "".join(f)
-                except IndexError:
+                except:
                     pass
             elif state == 'betamap':
                 try:
@@ -280,7 +298,7 @@ while not done:
                     elif event.button == 0:
                         f[x] = str((int(f[x])-1)%2)
                     emapl[y] = "".join(f)
-                except IndexError:
+                except:
                     pass
 
     width,height = int(mapl[0].split(".")[0]),int(mapl[0].split(".")[1])
@@ -302,8 +320,8 @@ while not done:
     elif state == 'encountermap':
         for y in range(len(emapl)):
             for x in range(len(emapl[y])):
-                if emapl[y][x] == '1':
-                    ttt.blit(encounter, (x * 16, y * 16))
+                if emapl[y][x] in encounterSprites.keys():
+                    ttt.blit(encounterSprites[ emapl[y][x] ], (x * 16, y * 16))
 
     for i in omapl[1:]:
         if i.split(';')[0] == 'objectWarp':
@@ -326,6 +344,7 @@ while not done:
         screen.blit(font.render("collision",True,(255,200,200)),(715,550))
     if state == "encountermap":
         screen.blit(font.render("WIP",True,(255,255,255)),(740,300))
+        addEncounterButton.draw(screen)
     pygame.draw.line(screen,(0,255,0),(640,0),(640,640),3)
     screen.blit(stateblit,(0,0))
 
