@@ -16,6 +16,7 @@ class Background:
         self.source = pygame.image.load('textures/bgsource.png').convert_alpha()
         self.times = None;
         self.time = time
+
     def get(self):
         dfg = pygame.Surface((257,145))
         dfg.blit(self.source, (0,0), (259,147,257,145))
@@ -32,11 +33,13 @@ class Battle:
         self.sp2Pos = -200
         self.bg = Background()
         self.friendSize = pygame.Rect(0,0,80,80)
+
     def update(self):
         if self.state < 40:
             self.state += 1
             self.sp1Pos -= 6
             self.sp2Pos += 6
+
     def draw(self):
         self.draws.fill((0,0,0))
         self.draws.blit( pygame.transform.scale(self.bg.get(), (600,430)), (0,0) )
