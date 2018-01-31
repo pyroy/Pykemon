@@ -140,9 +140,10 @@ zoom = 4
 scrollpos = 0
 
 #buttons for encounter
-addEncounterButton = Simplebutton(150,50,(60,60,60),"Add Encounter...",font2)
+addEncounterButton = Simplebutton(200,50,(60,60,60),"Add Encounter...",pygame.font.Font("jackeyfont.ttf",20))
 addEncounterButton.border = 1
-addEncounterButton.pos = (600,400)
+addEncounterButton.pos = (700,400)
+addEncounterButton.textcolor = (255,255,255)
 
 #main loop
 while not done:
