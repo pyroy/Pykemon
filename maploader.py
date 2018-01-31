@@ -1,7 +1,7 @@
 import random
+from collections import namedtuple
 
 import pygame
-from collections import namedtuple
 
 class Bounds:
     def __init__(self,b):
@@ -31,22 +31,28 @@ class ChanceList:
 
 class Encounters:
     def __init__(self, e):
-        self.encountermap =             e[: [i[1] for i in e].index(';') ]
-        self.encounterDefinitions =    e[ [i[1] for i in e].index(';'): ]
+        self.map =          e[:[i[1] for i in e].index(';') ]
+        self.definitions =  e[ [i[1] for i in e].index(';'):]
 
         self.encounters = { }
 
-        for encounterType in self.encounterDefinitions:
-            if encounterType.split(';')[1] == 'NONE\n':
-                self.encounters[ encounterType.split(';')[0] ] = None
+        for encounterType in self.definitions:
+            key, *rest = [x.strip() for x in encounterType.split(';')]
+            chances = rest[0]
+            if len(rest) == 2:
+                pokemon = rest[1].split('&')
+
+            if chances.upper() == 'NONE':
+                self.encounters[key] = None
             else:
-                self.encounters[ encounterType.split(';')[0] ] = ChanceList(
-                    [ self.getPokemonData(pokemon) for pokemon in encounterType.split(';')[2].split('&') ],
-                    eval( encounterType.split(';')[1] ) )
-        
+                self.encounters[key] = ChanceList(
+                    [self.getPokemonData(p) for p in pokemon],
+                    eval(chances)
+                )
+
 
     def checkEncounters(self,x,y):
-        return int(self.encountermap[-y][x]) #no need for extra bound check since player is always in bounds.
+        return int(self.map[-y][x]) #no need for extra bound check since player is always in bounds.
 
     def generateEncounter(self, encountertype): #is actually an int in a string but since we're passing from a text file I'm keeping it a string. This way we can bind it to letters as well.
         pokemon = self.encounters[ encountertype ].choose()
