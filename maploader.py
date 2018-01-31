@@ -84,18 +84,18 @@ class MapLoader:
     def __init__(self):
         self.tileset = pygame.image.load("textures/tileset-blackvolution.png")
 
-    def loadMapObject(self, groundmap):
+    def loadMapObject(self, mapname):
         return Map(
-            self.loadDrawMap(groundmap, "map"),
-            self.loadDrawMap(groundmap, "alpha", transparent=True),
-            self.loadDrawMap(groundmap, "beta", transparent=True),
-            self.loadBoundsMap(groundmap),
-            self.getWarpPoints(groundmap),
-            self.getEncounters(groundmap)
+            self.loadDrawMap  (mapname, "map"),
+            self.loadDrawMap  (mapname, "alpha", transparent=True),
+            self.loadDrawMap  (mapname, "beta" , transparent=True),
+            self.loadBoundsMap(mapname),
+            self.getWarpPoints(mapname),
+            self.getEncounters(mapname)
         )
 
-    def loadDrawMap(self,groundmap,name,transparent=False):
-        with open(f"maps/{groundmap}/{name}.txt") as file:
+    def loadDrawMap(self, mapname, layer, transparent=False):
+        with open(f"maps/{mapname}/{layer}.txt") as file:
             lines = file.readlines()
         drawmap = pygame.Surface((int(lines[0].split(".")[0]),int(lines[0].split(".")[1])))
         if transparent:
@@ -113,15 +113,15 @@ class MapLoader:
 
         return drawmap
 
-    def loadBoundsMap(self,groundmap):
-        with open(f"maps/{groundmap}/bounds.txt") as file:
+    def loadBoundsMap(self,mapname):
+        with open(f"maps/{mapname}/bounds.txt") as file:
             lines = file.readlines()
         for line in lines:
             line.strip()
         return Bounds(lines)
 
-    def getWarpPoints(self,groundmap):
-        with open(f"maps/{groundmap}/objects.txt") as file:
+    def getWarpPoints(self,mapname):
+        with open(f"maps/{mapname}/objects.txt") as file:
             lines = file.readlines()
         sPos = eval(lines[0].split(';')[1])
         warps = [[sPos[0]*16,sPos[1]*-16]]
@@ -131,8 +131,8 @@ class MapLoader:
                 warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*-16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*-16]])
         return warps
 
-    def getEncounters(self, groundmap):
-        with open(f"maps/{groundmap}/encounters.txt") as file:
+    def getEncounters(self, mapname):
+        with open(f"maps/{mapname}/encounters.txt") as file:
             lines = file.readlines()
         for line in lines:
             line.strip()
