@@ -35,11 +35,11 @@ def deleteAllMaps():
 
 def openAllLayers(name, mode):
     global groundmap, betamap, alphamap, boundmap, objects, encountermap
-    groundmap    = open(f"maps/{name}/map.txt",     mode)
-    betamap      = open(f"maps/{name}/beta.txt",    mode)
-    alphamap     = open(f"maps/{name}/alpha.txt",   mode)
-    boundmap     = open(f"maps/{name}/bounds.txt",  mode)
-    objects      = open(f"maps/{name}/objects.txt", mode)
+    groundmap    = open(f"maps/{name}/map.txt",        mode)
+    betamap      = open(f"maps/{name}/beta.txt",       mode)
+    alphamap     = open(f"maps/{name}/alpha.txt",      mode)
+    boundmap     = open(f"maps/{name}/bounds.txt",     mode)
+    objects      = open(f"maps/{name}/objects.txt",    mode)
     encountermap = open(f"maps/{name}/encounters.txt", mode)
 
 def closeAllLayers():
@@ -352,7 +352,7 @@ while not done:
         addEncounterButton.draw(screen)
 
     screen.blit(font2.render("a - alpha, b - beta, g - ground, n - bounds, e - encounters, o -objects, z/x - zoom",False,(255,255,255),(0,0,0)), (0,622))
-        
+
     pygame.draw.line(screen,(0,255,0),(640,0),(640,640),3)
     screen.blit(stateblit,(0,0))
 
