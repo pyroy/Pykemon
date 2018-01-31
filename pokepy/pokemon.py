@@ -80,13 +80,13 @@ class Moveset:
     def get_moves(self): return [i[0] for i in self.moves]
 
 class Trainer:
-        def __init__(self,name):
-                self.name = name
-                self.party = []
-                self.bag = {'Key Items': [],
-                            'Pokeballs': [],
-                            'Berries': [],
-                            'Medical': []}
+    def __init__(self,name):
+        self.name = name
+        self.party = []
+        self.bag = {'Key Items': [],
+                    'Pokeballs': [],
+                    'Berries': [],
+                    'Medical': []}
 
 #The big boy class
 class Pokemon:
