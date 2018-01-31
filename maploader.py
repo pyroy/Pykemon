@@ -16,18 +16,25 @@ class Bounds:
                 return True
 
 class ChanceList:
-    def __init__(self, list1, list2):
-        self.list1, self.list2 = list1, list2
+    def __init__(self, items, chances):
+        self.items, self.chances = items, chances
+        self.accumulatedChances = [sum(self.chances[:i]) for i in range(1, len(self.chances)+1)]
 
     def choose(self):
-        if sum(self.list2) != 1:
-            return None
+        # Terts:
+        # Not sure, but this might lead to some floating point rounding errors
+        # Which is why I think this shouldn't fail silently
+        if sum(self.chances) != 1:
+            raise ValueError("Chances do not add up to 1")
 
-        self.accumulatedList2 = [sum(self.list2[:i]) for i in range(len(self.list2))]
         self.pick = random.random()
-        for i in self.accumulatedList2[::-1]:
-            if self.pick > i:
-                return self.list1[ self.accumulatedList2.index(i) ]
+        print(self.pick)
+        print(self.accumulatedChances)
+        print(self.items)
+        for index, value in enumerate(self.accumulatedChances):
+            if self.pick <= value:
+                return self.items[index]
+        print("Hey, you suck!")
 
 class Encounters:
     def __init__(self, e):
@@ -50,12 +57,11 @@ class Encounters:
                     eval(chances)
                 )
 
-
     def checkEncounters(self,x,y):
         return int(self.map[-y][x]) #no need for extra bound check since player is always in bounds.
 
     def generateEncounter(self, encountertype): #is actually an int in a string but since we're passing from a text file I'm keeping it a string. This way we can bind it to letters as well.
-        pokemon = self.encounters[ encountertype ].choose()
+        pokemon = self.encounters[encountertype].choose()
         level = pokemon[1].choose()
         return pokemon[0], level #name, level
 
