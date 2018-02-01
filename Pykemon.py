@@ -6,6 +6,7 @@ from collections import namedtuple
 import maploader, npcloader
 import battlescene
 import pokepy.pokemon as pkm
+from player import Player
 
 #pygame setup
 import pygame
@@ -13,103 +14,6 @@ pygame.init()
 screen = pygame.display.set_mode((600, 600))
 clock = pygame.time.Clock()
 done = False
-
-#Player class
-class Player:
-    def __init__(self,bounds):
-        self.pos = [0,0]
-        self.texturemap = pygame.image.load("textures/player-kaori.png").convert_alpha()
-        self.textures = {
-            'downidle'  : (0,0),
-            'down1'     : (20,0),
-            'down2'     : (40,0),
-            'upidle'    : (0,25),
-            'up1'       : (20,25),
-            'up2'       : (40,25),
-            'rightidle' : (0,50),
-            'right1'    : (20,50),
-            'right2'    : (40,50),
-            'leftidle'  : (0,75),
-            'left1'     : (20,75),
-            'left2'     : (40,75)
-        }
-        self.animations = {
-            'idledown'  : ['downidle'],
-            'idleup'    : ['upidle'],
-            'idleright' : ['rightidle'],
-            'idleleft'  : ['leftidle'],
-            'walkdown'  : ['downidle','down2','downidle','down1'],
-            'walkup'    : ['upidle','up2','upidle','up1'],
-            'walkright' : ['rightidle','right2','rightidle','right1'],
-            'walkleft'  : ['leftidle','left2','leftidle','left1']
-        }
-        self.currentStance = 'downidle'
-        self.updateAnim('idledown', 1)
-        self.displacement = [0,0]
-        self.remainingDuration = 0
-        self.bounds = bounds
-        self.trainerdata = pkm.Trainer('Player')
-        self.trainerdata.party.append(pkm.Pokemon('Starmie'))
-        self.moving = False
-
-    def draw(self,pos):
-        global battle, activeBattle
-        if len(self.anim) > 1:
-            self.framesSinceStartAnim = (self.framesSinceStartAnim + 1) % (len(self.anim) * self.animDelay)
-            self.currentStance = self.anim[math.floor(self.framesSinceStartAnim/self.animDelay)]
-        else:
-            self.currentStance = self.anim[0]
-        ttt.blit(self.texturemap, pos, self.textures[self.currentStance]+(20,25))
-        if self.remainingDuration:
-            self.pos[0] += self.displacement[0]
-            self.pos[1] += self.displacement[1]
-            self.remainingDuration -= 1
-        else:
-            self.moving = False
-            encounterTile = currentMap.encounters.checkEncounters(self.pos[0]//16,self.pos[1]//16)
-            if encounterTile > 0:
-                if random.randint(0, 10) == 0:
-                    battle = True
-                    EncounterData = currentMap.encounters.generateEncounter( str(encounterTile) )
-                    foe = pkm.Trainer('Damion')
-                    foe.party.append(pkm.Pokemon(EncounterData[0]))
-                    foe.party[0].setlevel(EncounterData[1])
-                    activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
-
-    def updateAnim(self,animName,delay):
-        self.animName = animName
-        self.anim = self.animations[animName]
-        self.animDelay = delay
-        self.framesSinceStartAnim = 0
-
-    def updateMovement(self,displacement,duration,dir):
-        if self.bounds.checkBounds( int(self.pos[0]/16)+dir[0],int(self.pos[1]/16)+dir[1] ):
-            if nl.checkBounds( [int(self.pos[0]/16)+dir[0],-1*int(self.pos[1]/16)-dir[1]] ):
-                self.remainingDuration = duration
-                self.displacement = displacement
-                self.moving = True
-
-    def warp(self,map,pos):
-        global currentMap
-        screen.fill((0,0,0))
-        # loadblit = pygame.font.Font('jackeyfont.ttf',60).render('LOADING',False,(255,255,255),(0,0,0))
-        # loadblitja = pygame.font.Font('jackeyfont.ttf',60).render('読み込み中', False, (255, 255, 255), (0, 0, 0))
-        # screen.blit(loadblit,(300-loadblit.get_width()/2,int(285-loadblit.get_height())))
-        # screen.blit(loadblitja, (300 - loadblitja.get_width() / 2, 315))
-        # pygame.display.flip()
-        currentMap = ml.loadMapObject(map)
-        self.bounds = currentMap.bounds
-        self.pos = currentMap.warps[0]
-        self.resetAnimations()
-
-    def checkWarps(self,warps):
-        for warp in warps[1:]:
-            if player.pos == warp[0]:
-                player.warp(warp[1],warp[2])
-                break
-
-    def resetAnimations(self):
-        pass
 
 #Console
 
@@ -223,16 +127,28 @@ while not done:
         ttt.blit(currentMap.ground, (drawx,drawy)) #groundmap
         ttt.blit(currentMap.beta, (drawx, drawy)) #betamap
 
+        flag = player.update(currentMap)
+        if flag == 'stopped moving':
+            encounterTile = currentMap.encounters.checkEncounters(player.pos[0]//16,player.pos[1]//16)
+            if encounterTile > 0:
+                if random.randint(0, 10) == 0:
+                    battle = True
+                    EncounterData = currentMap.encounters.generateEncounter( str(encounterTile) )
+                    foe = pkm.Trainer('Damion')
+                    foe.party.append(pkm.Pokemon(EncounterData[0]))
+                    foe.party[0].setlevel(EncounterData[1])
+                    activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
+
         drawPlayer = True
         nl.update([int(player.pos[0]/16),-1*int(player.pos[1]/16)])
         for npc in nl.npcs:
             surface, position = npc.getDrawData()
             if position[1] * 16 + drawy - 13 > ttt.get_height()/2-13 and drawPlayer:
-                player.draw((ttt.get_width()/2-10,ttt.get_height()/2-13))
+                player.draw((ttt.get_width()/2-10,ttt.get_height()/2-13), ttt)
                 drawPlayer = False
             position = (position[0] * 16 + drawx - 1, position[1] * 16 + drawy - 13)
             ttt.blit(surface, position)
-        if drawPlayer: player.draw((ttt.get_width()/2-10,ttt.get_height()/2-13))
+        if drawPlayer: player.draw((ttt.get_width()/2-10,ttt.get_height()/2-13), ttt)
 
         ttt.blit(currentMap.alpha,(drawx, drawy)) #alphamap
 
@@ -242,24 +158,24 @@ while not done:
 
     if not player.moving and not menu and not battle:
         if pygame.key.get_pressed()[pygame.K_DOWN]:
-            player.updateMovement([0,-2],8,(0,-1))
+            player.setMovement([0,-2],8,(0,-1), nl)
             if not player.animName == 'walkdown':
-                player.updateAnim('walkdown', 4)
+                player.setAnimation('walkdown', 4)
         elif pygame.key.get_pressed()[pygame.K_UP]:
-            player.updateMovement([0,2],8,(0,1))
+            player.setMovement([0,2],8,(0,1), nl)
             if not player.animName == 'walkup':
-                player.updateAnim('walkup', 4)
+                player.setAnimation('walkup', 4)
         elif pygame.key.get_pressed()[pygame.K_RIGHT]:
-            player.updateMovement([2,0],8,(1,0))
+            player.setMovement([2,0],8,(1,0), nl)
             if not player.animName == 'walkright':
-                player.updateAnim('walkright', 4)
+                player.setAnimation('walkright', 4)
         elif pygame.key.get_pressed()[pygame.K_LEFT]:
-            player.updateMovement([-2,0],8,(-1,0))
+            player.setMovement([-2,0],8,(-1,0), nl)
             if not player.animName == 'walkleft':
-                player.updateAnim('walkleft', 4)
+                player.setAnimation('walkleft', 4)
         else:
             if player.animName.startswith('walk'):
-                player.updateAnim(player.animName.replace('walk', 'idle'), 4)
+                player.setAnimation(player.animName.replace('walk', 'idle'), 4)
 
     if menuframes:
         menupos -= menudisp*(10-menuframes)
