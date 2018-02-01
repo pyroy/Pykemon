@@ -56,10 +56,6 @@ class Player:
         else:
             self.moving = False
             return 'stopped moving'
-            encounterTile = currentMap.encounters.checkEncounters(self.pos[0]//16,self.pos[1]//16)
-            if encounterTile > 0:
-                if random.randint(0, 10) == 0:
-                    return 'start battle'
 
     def updateAnimation(self):
         if len(self.anim) > 1:
