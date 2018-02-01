@@ -1,6 +1,5 @@
 import random
 from collections import namedtuple
-from itertools import reduce
 
 import pygame
 
