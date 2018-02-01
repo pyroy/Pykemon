@@ -41,6 +41,8 @@ class Encounters:
         self.encounters = { }
 
         for encounterType in self.definitions:
+            # Pokemon syntax:    {pokemon name}({list of levels},{list of chances})
+            # Definition syntax: {name}:{list of chances};{pokemon1}&{pokemon2}& etc.
             key, *rest = [x.strip() for x in encounterType.split(';')]
             chances = rest[0]
             if len(rest) == 2:
@@ -63,9 +65,10 @@ class Encounters:
         return pokemon[0], level #name, level
 
     def getPokemonData(self, data):
-        self.name = data.split(':')[0]
-        self.level = ChanceList(*eval(data.split(':')[1]))
-        return self.name, self.level
+        name, level_data = data.split('(')
+        level_data = '(' + level_data
+        level = ChanceList(*eval(level_data))
+        return name, level
 
 Map = namedtuple("Map", [
     "ground",
