@@ -42,7 +42,7 @@ class Encounters:
 
         for encounterType in self.definitions:
             # Pokemon syntax:    {pokemon name}({list of levels},{list of chances})
-            # Definition syntax: {name}:{list of chances};{pokemon1}&{pokemon2}& etc.
+            # Definition syntax: {name};{list of chances};{pokemon1}&{pokemon2}& etc.
             key, *rest = [x.strip() for x in encounterType.split(';')]
             chances = rest[0]
             if len(rest) == 2:
