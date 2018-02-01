@@ -28,9 +28,6 @@ class ChanceList:
             raise ValueError("Chances do not add up to 1")
 
         self.pick = random.random()
-        print(self.pick)
-        print(self.accumulatedChances)
-        print(self.items)
         for index, value in enumerate(self.accumulatedChances):
             if self.pick <= value:
                 return self.items[index]
