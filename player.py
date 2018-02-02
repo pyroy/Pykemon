@@ -78,8 +78,7 @@ class Player:
                 self.moving = True
 
     def warp(self,map,pos):
-        global currentMap
-        screen.fill((0,0,0))
+        global currentMap, ml
         # loadblit = pygame.font.Font('jackeyfont.ttf',60).render('LOADING',False,(255,255,255),(0,0,0))
         # loadblitja = pygame.font.Font('jackeyfont.ttf',60).render('読み込み中', False, (255, 255, 255), (0, 0, 0))
         # screen.blit(loadblit,(300-loadblit.get_width()/2,int(285-loadblit.get_height())))
@@ -93,8 +92,7 @@ class Player:
     def checkWarps(self,warps):
         for warp in warps[1:]:
             if self.pos == warp[0]:
-                self.warp(warp[1],warp[2])
-                break
+                return (warp[1], warp[2])
 
     def resetAnimations(self):
         pass

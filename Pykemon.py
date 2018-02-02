@@ -185,7 +185,10 @@ while not done:
         activeBattle.update()
         activeBattle.draw() #scene in battle
 
-    player.checkWarps(currentMap.warps)
+    warp = player.checkWarps(currentMap.warps)
+    if warp:
+        screen.fill((0,0,0))
+        player.warp(*warp)
 
     pygame.display.flip()
     clock.tick(60)
