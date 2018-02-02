@@ -78,7 +78,7 @@ class Player:
                 self.moving = True
 
     def warp(self,map,pos):
-        global currentMap, ml
+        global currentMap
         # loadblit = pygame.font.Font('jackeyfont.ttf',60).render('LOADING',False,(255,255,255),(0,0,0))
         # loadblitja = pygame.font.Font('jackeyfont.ttf',60).render('読み込み中', False, (255, 255, 255), (0, 0, 0))
         # screen.blit(loadblit,(300-loadblit.get_width()/2,int(285-loadblit.get_height())))
