@@ -1,5 +1,6 @@
 #standard imports
 import math, time, random
+import pickle
 from collections import namedtuple
 
 #main imports
@@ -18,12 +19,14 @@ done = False
 #Console
 
 Event = namedtuple("Event", ["event","data"])
-dummyEvent = Event("dialog","Hey, sexy ;)")
+dummyEvent = Event("SAY","Hey, sexy ;)")
 
 class Console:
-    def __init__(self):
+    def __init__(self, data):
         self.state = 0
         self.queue = []
+        self.datapath = data
+        self.data = pickle.load(open(data,'rb'))
 
     def dialogBox(self, text):
         print(text, 'ID:'+str(self.state))
@@ -33,13 +36,36 @@ class Console:
             eventToExecute = self.queue[0]
             self.queue.remove(eventToExecute)
             self.state += 1
-            if eventToExecute.event == 'dialog':
+            if eventToExecute.event == 'SAY':
                 self.dialogBox(eventToExecute.data)
-
+            if eventToExecute.event == 'SET':
+                self.data[ eventToExecute.data[0] ] = eventToExecute.data[1]
+                pickle.dump( self.data, open(self.datapath, 'wb') )
+            if eventToExecute.event == 'IF':
+                if self.data[eventToExecute.data[0]]:
+                    self.addEvent[ interpret(eventToExecute.data[1][0]) ]
+                else: self.addEvent[ interpret(eventToExecute.data[1][1]) ]
+            
     def addEvent(self, event):
-        self.queue.append(event)
+        if type(event) == list:
+            for eventikko in event: self.queue.append(eventikko)
+        else: self.queue.append(event)
 
-console = Console()
+    def executeScript(self, scriptPath):
+        file = open(scriptPath)
+        lines = file.readlines()
+        for line in lines: self.addEvent( interpret(line) )
+        file.close()
+
+    def interpret(self, data):
+        commands = data.split(';')
+        toReturn = []
+        for command in commands:
+            commandType = command.split(':')[0]
+            commandData = eval(command.split(':')[1])
+            toReturn.append( Event(commandType, commandData) )
+
+console = Console('data/globals.p')
 
 dex = pkm.dex.Dex() #Pokemon dex data
 nl = npcloader.NPCLoader(console)
