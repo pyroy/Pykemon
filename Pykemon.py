@@ -48,14 +48,12 @@ class Console:
     def addEvent(self, event):
         if type(event) == list:
             self.queue.extend(event)
-        else:
-            self.queue.append(event)
+        else: self.queue.append(event)
 
     def executeScript(self, scriptPath):
-        file = open(scriptPath)
-        lines = file.readlines()
+        with open(scriptPath) as file:
+            lines = file.readlines()
         for line in lines: self.addEvent( interpret(line) )
-        file.close()
 
     def interpret(self, data):
         commands = data.split(';')
