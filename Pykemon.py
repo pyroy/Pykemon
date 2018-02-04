@@ -33,8 +33,7 @@ class Console:
 
     def executeNextEvent(self):
         if self.queue:
-            eventToExecute = self.queue[0]
-            self.queue.remove(eventToExecute)
+            eventToExecute = self.queue.pop(0)
             self.state += 1
             if eventToExecute.event == 'SAY':
                 self.dialogBox(eventToExecute.data)
@@ -45,10 +44,10 @@ class Console:
                 if self.data[eventToExecute.data[0]]:
                     self.addEvent[ interpret(eventToExecute.data[1][0]) ]
                 else: self.addEvent[ interpret(eventToExecute.data[1][1]) ]
-            
+
     def addEvent(self, event):
         if type(event) == list:
-            for eventikko in event: self.queue.append(eventikko)
+            self.queue.extend(event)
         else: self.queue.append(event)
 
     def executeScript(self, scriptPath):
@@ -141,7 +140,7 @@ while not done:
             elif event.key == pygame.K_DOWN and not battle and menu:
                 menuitem = min(4, menuitem + 1)
             elif event.key == pygame.K_RETURN and not battle and menuitem == 0 and menu:
-                console.addEvent( Event('dialog','saving! please don\'t turn off the console!'))
+                console.addEvent( Event('SAY','saving! please don\'t turn off the console!'))
             elif event.key == pygame.K_RETURN and not battle and not menu:
                 #player.activate()
                 pass;
