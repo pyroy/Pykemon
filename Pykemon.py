@@ -48,7 +48,8 @@ class Console:
     def addEvent(self, event):
         if type(event) == list:
             self.queue.extend(event)
-        else: self.queue.append(event)
+        else:
+            self.queue.append(event)
 
     def executeScript(self, scriptPath):
         file = open(scriptPath)
