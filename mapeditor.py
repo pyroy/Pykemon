@@ -1,4 +1,6 @@
-import pygame,os
+import pygame
+import os
+import sys
 
 from mapeditorgui.pygamesliders import *
 from mapeditorgui.pygamebuttons import *
@@ -50,17 +52,7 @@ def closeAllLayers():
     boundmap.close()
     encountermap.close()
 
-a = input("load, create or delete? (l/c/d) >")
-if a == 'l':
-    name = input("load map: ")
-    try:
-        openAllLayers(name, "r+")
-    except:
-        print(f"Make sure the map '{name}' exists and has all the necessary files.")
-        input()
-        quit()
-
-elif a == 'c':
+def create_map():
     name = input("name of new map: ")
     if not os.path.exists(os.getcwd()+f'/maps/{name}/'):
         os.makedirs(os.getcwd()+f'/maps/{name}/')
@@ -80,24 +72,63 @@ elif a == 'c':
 
     objects.write('objectPlayerPos;[0,0];\n')
     closeAllLayers()
-    print(f"{name} has been created! please run again to edit it.")
-    input()
-    quit()
 
-elif a == 'd':
-    name = input("delete map: ")
-    if not name:
-        quit()
-    if name == input("Type the name of the map again to delete:"):
-        deleteAllMaps()
-        quit()
-    else:
-        print("Names did not match: map was not deleted.")
-        quit()
+if len(sys.argv) > 1:
+    name = sys.argv[1]
+    print(f"Loading map: {sys.argv}")
+    while True:
+        if name == "":
+            print("No name is entered.")
+            print("The program will quit.")
+        try:
+            openAllLayers(name, "r+")
+            break
+        except:
+            print(f"Make sure the map '{name}' exists and has all the necessary files.")
+            print("Hit enter without hitting a key to quit.")
+            name = input("load map: ")
 else:
-    print("Input was not recognized.")
-    input()
-    quit()
+    a = ""
+    while a not in ['l', 'c', 'd']:
+        a = input("load, create or delete? (l/c/d) >")
+        if a == 'l':
+            while True:
+                name = input("load map: ")
+                if name == "":
+                    print("No name is entered.")
+                    print("The program will quit.")
+                try:
+                    openAllLayers(name, "r+")
+                    break
+                except:
+                    print(f"Make sure the map '{name}' exists and has all the necessary files.")
+                    print("Hit enter without hitting a key to quit.")
+
+        elif a == 'c':
+            create_map()
+            print(f"{name} has been created!")
+            print("The edit screen will now be opened.")
+            try:
+                openALlLayers(name, "r+")
+            except:
+                # It'd be really weird to go here,
+                # since you just created the necessary files
+                assert False, "WTFFFFFFFF"
+
+        elif a == 'd':
+            name = input("delete map: ")
+            if not name:
+                quit()
+            if name == input("Type the name of the map again to delete:"):
+                deleteAllMaps()
+                quit()
+            else:
+                print("Names did not match: map was not deleted.")
+                quit()
+        else:
+            print("Input was not recognized.")
+            input()
+            quit()
 
 pygame.init()
 
@@ -110,18 +141,22 @@ campos = [0,0]
 pointerpos = [0,0]
 
 #textures
-tileset   = pygame.image.load("textures/tileset-blackvolution.png").convert_alpha()
-good      = pygame.image.load("textures/good.png").convert_alpha()
-bad       = pygame.image.load("textures/bad.png").convert_alpha()
-warp      = pygame.image.load("textures/warp.png").convert_alpha()
-player    = pygame.image.load("textures/player-kaori.png").convert_alpha()
+tileset     = pygame.image.load("textures/tileset-blackvolution.png").convert_alpha()
+good        = pygame.image.load("textures/good.png" ).convert_alpha()
+bad         = pygame.image.load("textures/bad.png"  ).convert_alpha()
+ledge_up    = pygame.image.load("textures/up.png"   ).convert_alpha()
+ledge_right = pygame.image.load("textures/right.png").convert_alpha()
+ledge_down  = pygame.image.load("textures/down.png" ).convert_alpha()
+ledge_left  = pygame.image.load("textures/left.png" ).convert_alpha()
+warp        = pygame.image.load("textures/warp.png" ).convert_alpha()
+player      = pygame.image.load("textures/player-kaori.png").convert_alpha()
 
 #pokeball sprites
 encounterSprites = {}
 src = pygame.image.load("textures/pokeballs.png").convert_alpha()
 for i in range(25):
     blankSlate = pygame.Surface((64,64), pygame.SRCALPHA)
-    blankSlate.blit(src, (0,0), ((i%5)*64,(i//5)*64,64,64))
+    blankSlate.blit(src, (0,0), ((i%5)*64,(i//5)*64, 64, 64))
     encounterSprites[str(i+1)] = pygame.transform.scale(blankSlate, (16,16))
 
 mapl   = groundmap.readlines()
@@ -322,6 +357,14 @@ while not done:
                     ttt.blit(good, (x * 16, y * 16))
                 if bmapl[y][x] == '1':
                     ttt.blit(bad, (x * 16, y * 16))
+                if bmapl[y][x] == 'u':
+                    ttt.blit(ledge_up,    (x * 16, y * 16))
+                if bmapl[y][x] == 'r':
+                    ttt.blit(ledge_right, (x * 16, y * 16))
+                if bmapl[y][x] == 'd':
+                    ttt.blit(ledge_down,  (x * 16, y * 16))
+                if bmapl[y][x] == 'l':
+                    ttt.blit(ledge_left,  (x * 16, y * 16))
     elif state == 'encountermap':
         for y in range(len(emapl)):
             for x in range(len(emapl[y])):
