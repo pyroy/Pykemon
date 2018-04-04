@@ -91,17 +91,19 @@ menuframes = 0
 menudisp = 0
 #End Menu vars
 
-with open("credits.txt", "r") as file:
-    creditscreen = map(lambda line: line.strip(), file.readlines())
+quickstart = True # nice to have for quicker debugging
+if not quickstart:
+    with open("credits.txt", "r") as file:
+        creditscreen = map(lambda line: line.strip(), file.readlines())
 
-screen.fill((0,0,0))
-counter = 0
-f = pygame.font.SysFont("arial",20)
-h = f.render('test',False,(255,255,255)).get_height()+3
-for index, line in enumerate(creditscreen):
-    screen.blit(f.render(line,False,(255,255,255)), (5,h*index))
-pygame.display.flip()
-time.sleep(2)
+    screen.fill((0,0,0))
+    counter = 0
+    f = pygame.font.SysFont("arial",20)
+    h = f.render('test',False,(255,255,255)).get_height()+3
+    for index, line in enumerate(creditscreen):
+        screen.blit(f.render(line,False,(255,255,255)), (5,h*index))
+    pygame.display.flip()
+    time.sleep(2)
 
 nl.loadNPC('bob')
 nl.loadNPC('will')
