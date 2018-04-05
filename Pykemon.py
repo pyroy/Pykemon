@@ -67,11 +67,11 @@ console = Console('data/globals.p')
 
 dex = pkm.dex.Dex() #Pokemon dex data
 npcloader = npcloader.NPCLoader(console)
-ml = maploader.MapLoader()
+maploader = maploader.MapLoader()
 
 #Maploader objects
 mapToLoad = 'editmap'
-currentMap = ml.loadMapObject(mapToLoad)
+currentMap = maploader.loadMapObject(mapToLoad)
 #End Maploader objects
 
 player = Player(currentMap.bounds, npcloader)
@@ -215,7 +215,7 @@ while not done:
     if warp:
         screen.fill((0,0,0))
         warp_map, warp_pos = warp
-        currentMap = ml.loadMapObject(warp_map)
+        currentMap = maploader.loadMapObject(warp_map)
         player.warp(currentMap, npcloader, warp_pos)
 
     pygame.display.flip()
