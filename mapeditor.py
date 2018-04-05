@@ -315,9 +315,9 @@ while not done:
                 try:
                     f = bemapl[y+1].split(".")
                     if x == len(f)-1:
-                        f[x] = '{},{}\n'.format(pointerpos[0],pointerpos[1])
+                        f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
                     else:
-                        f[x] = '{},{}'.format(pointerpos[0], pointerpos[1])
+                        f[x] = f"{pointerpos[0]},{pointerpos[1]}"
                     tF = ''
                     for i in f:
                         tF += '.'
@@ -329,9 +329,9 @@ while not done:
                 try:
                     f = amapl[y+1].split(".")
                     if x == len(f)-1:
-                        f[x] = '{},{}\n'.format(pointerpos[0],pointerpos[1])
+                        f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
                     else:
-                        f[x] = '{},{}'.format(pointerpos[0], pointerpos[1])
+                        f[x] = f"{pointerpos[0]},{pointerpos[1]}"
                     tF = ''
                     for i in f:
                         tF += '.'
