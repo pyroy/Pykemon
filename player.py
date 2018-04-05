@@ -20,6 +20,7 @@ class Player:
             'left1'     : (20,75),
             'left2'     : (40,75)
         }
+        # @SPEED: We could 'map' these directly into the coordinates above for a slight speed improvement
         self.animations = {
             'idledown'  : ['downidle'],
             'idleup'    : ['upidle'],
