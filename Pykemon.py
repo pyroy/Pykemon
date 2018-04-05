@@ -77,7 +77,7 @@ currentMap = ml.loadMapObject(mapToLoad)
 player = Player(currentMap.bounds, npcloader)
 player.pos = currentMap.warps[0]
 
-ttt = pygame.Surface((200,200))
+map_surface = pygame.Surface((200,200))
 zoom = 1
 
 #Menu vars
@@ -91,7 +91,7 @@ menuframes = 0
 menudisp = 0
 #End Menu vars
 
-quickstart = True # nice to have for quicker debugging
+quickstart = True # turn on for quick debugging
 if not quickstart:
     with open("credits.txt", "r") as file:
         creditscreen = map(lambda line: line.strip(), file.readlines())
@@ -115,7 +115,7 @@ menuitem = 0
 while not done:
     console.executeNextEvent()
     zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
-    ttt = pygame.Surface((200/zoom, 200/zoom))
+    map_surface = pygame.Surface((200/zoom, 200/zoom))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
@@ -147,11 +147,11 @@ while not done:
                 pass;
 
     if not battle: #scene outside battle
-        drawx = ttt.get_width()/2-player.pos[0]-8
-        drawy = ttt.get_height()/2+player.pos[1]
+        drawx = map_surface.get_width()/2-player.pos[0]-8
+        drawy = map_surface.get_height()/2+player.pos[1]
 
-        ttt.blit(currentMap.ground, (drawx,drawy)) #groundmap
-        ttt.blit(currentMap.beta, (drawx, drawy)) #betamap
+        map_surface.blit(currentMap.ground, (drawx,drawy)) #groundmap
+        map_surface.blit(currentMap.beta, (drawx, drawy)) #betamap
 
         flag = player.update(currentMap)
         if flag == 'stopped moving':
@@ -169,16 +169,16 @@ while not done:
         npcloader.update([int(player.pos[0]/16),-1*int(player.pos[1]/16)])
         for npc in npcloader.npcs:
             surface, position = npc.getDrawData()
-            if position[1] * 16 + drawy - 13 > ttt.get_height()/2-13 and drawPlayer:
-                player.draw((ttt.get_width()/2-10,ttt.get_height()/2-13), ttt)
+            if position[1] * 16 + drawy - 13 > map_surface.get_height()/2-13 and drawPlayer:
+                player.draw((map_surface.get_width()/2-10,map_surface.get_height()/2-13), map_surface)
                 drawPlayer = False
             position = (position[0] * 16 + drawx - 1, position[1] * 16 + drawy - 13)
-            ttt.blit(surface, position)
-        if drawPlayer: player.draw((ttt.get_width()/2-10,ttt.get_height()/2-13), ttt)
+            map_surface.blit(surface, position)
+        if drawPlayer: player.draw((map_surface.get_width()/2-10,map_surface.get_height()/2-13), map_surface)
 
-        ttt.blit(currentMap.alpha,(drawx, drawy)) #alphamap
+        map_surface.blit(currentMap.alpha,(drawx, drawy)) #alphamap
 
-        screen.blit(pygame.transform.scale(ttt, (600,600)), (0,0))
+        screen.blit(pygame.transform.scale(map_surface, (600,600)), (0,0))
         screen.blit(pygame.transform.scale(menublit,(200,2*184)), (400+menupos, 0))
         screen.blit(menuselect, (400+menupos, menuitem*70))
 

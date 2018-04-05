@@ -3,21 +3,22 @@ MAP EDITOR
   DONE:
 	Object support
   Resizing
+  Ledges
   TODO:
 	Object placement
 	Custom tilesets
-  Ledges!!!!
   Fix scrolling
 
 MAIN GAME
   DONE:
 	NPC-Console support
 	NPC loading in maps
+  Ledges
   TODO:
 	Console functionality 50%
 	NPC Sprites
 	Object-Console support
-  Ledges!!!!
+  Ledge jump animations
 
 BATTLE
   DONE:
