@@ -137,7 +137,7 @@ pygame.init()
 edit_area = pygame.Rect(0, 0, 640, 640)
 sidebar_area = pygame.Rect(edit_area.width, 0, 8*16*2, edit_area.height)
 screen = pygame.display.set_mode((edit_area.width+sidebar_area.width, edit_area.height), pygame.RESIZABLE)
-pygame.display.set_caption("Map Editor")
+pygame.display.set_caption("Pykemon Map Editor")
 clock = pygame.time.Clock()
 done = False
 
@@ -287,68 +287,70 @@ while not done:
         if event.type == pygame.MOUSEBUTTONDOWN:
             #button check
             addEncounterButton.push(event)
-            #tile check
-            x = int((event.pos[0]-campos[0])/16/zoom)
-            y = int((event.pos[1]-campos[1])/16/zoom)
-            if state == 'groundmap':
-                try:
-                    f = mapl[y+1].split(".")
-                    if x == len(f)-1:
-                        f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
-                    else:
-                        f[x] = f"{pointerpos[0]},{pointerpos[1]}"
-                    tF = ''
-                    for i in f:
-                        tF += '.'
-                        tF += i
-                    mapl[y+1] = tF[1:]
-                except IndexError:
-                    pass
-            elif state == 'boundmap':
-                try:
-                    f = list(bmapl[y])
-                    f[x] = str((int(f[x])+1)%2)
-                    bmapl[y] = "".join(f)
-                except:
-                    pass
-            elif state == 'betamap':
-                try:
-                    f = bemapl[y+1].split(".")
-                    if x == len(f)-1:
-                        f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
-                    else:
-                        f[x] = f"{pointerpos[0]},{pointerpos[1]}"
-                    tF = ''
-                    for i in f:
-                        tF += '.'
-                        tF += i
-                    bemapl[y+1] = tF[1:]
-                except IndexError:
-                    pass
-            elif state == 'alphamap':
-                try:
-                    f = amapl[y+1].split(".")
-                    if x == len(f)-1:
-                        f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
-                    else:
-                        f[x] = f"{pointerpos[0]},{pointerpos[1]}"
-                    tF = ''
-                    for i in f:
-                        tF += '.'
-                        tF += i
-                    amapl[y+1] = tF[1:]
-                except IndexError:
-                    pass
-            elif state == 'encountermap':
-                try:
-                    f = list(emapl[y])
-                    if event.button == 1:
+
+            if edit_area.collidepoint(event.pos[0], event.pos[1]):
+                #tile check
+                x = int((event.pos[0]-campos[0])/16/zoom)
+                y = int((event.pos[1]-campos[1])/16/zoom)
+                if state == 'groundmap':
+                    try:
+                        f = mapl[y+1].split(".")
+                        if x == len(f)-1:
+                            f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
+                        else:
+                            f[x] = f"{pointerpos[0]},{pointerpos[1]}"
+                        tF = ''
+                        for i in f:
+                            tF += '.'
+                            tF += i
+                        mapl[y+1] = tF[1:]
+                    except IndexError:
+                        pass
+                elif state == 'boundmap':
+                    try:
+                        f = list(bmapl[y])
                         f[x] = str((int(f[x])+1)%2)
-                    elif event.button == 0:
-                        f[x] = str((int(f[x])-1)%2)
-                    emapl[y] = "".join(f)
-                except:
-                    pass
+                        bmapl[y] = "".join(f)
+                    except:
+                        pass
+                elif state == 'betamap':
+                    try:
+                        f = bemapl[y+1].split(".")
+                        if x == len(f)-1:
+                            f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
+                        else:
+                            f[x] = f"{pointerpos[0]},{pointerpos[1]}"
+                        tF = ''
+                        for i in f:
+                            tF += '.'
+                            tF += i
+                        bemapl[y+1] = tF[1:]
+                    except IndexError:
+                        pass
+                elif state == 'alphamap':
+                    try:
+                        f = amapl[y+1].split(".")
+                        if x == len(f)-1:
+                            f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
+                        else:
+                            f[x] = f"{pointerpos[0]},{pointerpos[1]}"
+                        tF = ''
+                        for i in f:
+                            tF += '.'
+                            tF += i
+                        amapl[y+1] = tF[1:]
+                    except IndexError:
+                        pass
+                elif state == 'encountermap':
+                    try:
+                        f = list(emapl[y])
+                        if event.button == 1:
+                            f[x] = str((int(f[x])+1)%2)
+                        elif event.button == 0:
+                            f[x] = str((int(f[x])-1)%2)
+                        emapl[y] = "".join(f)
+                    except:
+                        pass
 
     width,height = int(mapl[0].split(".")[0]),int(mapl[0].split(".")[1])
     map_surface = pygame.Surface((width,height))
@@ -421,7 +423,7 @@ while not done:
     x = int((p[0] - campos[0]) / 16 / zoom)
     y = int((p[1] - campos[1]) / 16 / zoom)
 
-    posblit = font2.render("{}, {}".format(x,y), False, (255, 255, 255), (0,0,0))
+    posblit = font2.render(f"{x}, {y}", False, (255, 255, 255), (0,0,0))
     screen.blit(posblit, (p[0]+15,p[1]))
 
     pygame.display.flip()
