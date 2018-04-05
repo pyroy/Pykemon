@@ -73,6 +73,7 @@ def create_map():
     objects.write('objectPlayerPos;[0,0];\n')
     closeAllLayers()
 
+## LOAD CL ARGUMENT
 if len(sys.argv) > 1:
     name = sys.argv[1]
     print(f"Loading map: {sys.argv}")
@@ -87,6 +88,7 @@ if len(sys.argv) > 1:
             print(f"Make sure the map '{name}' exists and has all the necessary files.")
             print("Hit enter without hitting a key to quit.")
             name = input("load map: ")
+## MENU
 else:
     a = ""
     while a not in ['l', 'c', 'd']:
