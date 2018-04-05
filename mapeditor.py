@@ -202,7 +202,7 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.VIDEORESIZE:
-            edit_rect = pygame.Rect(0, 0, event.dict["size"][0]-sidebar_rect.width, event.dict["size"][1])
+            edit_rect.size = (event.dict["size"][0]-sidebar_rect.width, event.dict["size"][1])
             sidebar_rect = pygame.Rect(edit_rect.width, 0, 8*16*2, edit_rect.height)
             screen = pygame.display.set_mode(event.dict["size"], pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:

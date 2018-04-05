@@ -12,7 +12,8 @@ from player import Player
 #pygame setup
 import pygame
 pygame.init()
-screen = pygame.display.set_mode((600, 600))
+screen_rect = pygame.Rect(0, 0, 600, 600)
+screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
 
@@ -78,7 +79,7 @@ player = Player(currentMap.bounds, npcloader)
 player.pos = currentMap.warps[0]
 
 map_surface = pygame.Surface((200,200))
-zoom = 1
+zoom = 3
 
 #Menu vars
 menublit = pygame.image.load('textures/menu.png')
@@ -86,7 +87,7 @@ menublit.convert_alpha()
 menuselect = pygame.image.load('textures/menuselect.png')
 menuselect.convert_alpha()
 menu = False
-menupos = 200
+menupos = 0
 menuframes = 0
 menudisp = 0
 #End Menu vars
@@ -115,10 +116,13 @@ menuitem = 0
 while not done:
     console.executeNextEvent()
     zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
-    map_surface = pygame.Surface((200/zoom, 200/zoom))
+    map_surface = pygame.Surface((screen_rect.width/zoom, screen_rect.height/zoom))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+        if event.type == pygame.VIDEORESIZE:
+            screen_rect.size = event.dict['size']
+            screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_z and not battle:
                 zoom *= 1.1
@@ -178,9 +182,9 @@ while not done:
 
         map_surface.blit(currentMap.alpha,(drawx, drawy)) #alphamap
 
-        screen.blit(pygame.transform.scale(map_surface, (600,600)), (0,0))
-        screen.blit(pygame.transform.scale(menublit,(200,2*184)), (400+menupos, 0))
-        screen.blit(menuselect, (400+menupos, menuitem*70))
+        screen.blit(pygame.transform.scale(map_surface, screen_rect.size), (0,0))
+        screen.blit(pygame.transform.scale(menublit,(200,2*184)), (screen_rect.width+menupos, 0))
+        screen.blit(menuselect, (screen_rect.width+menupos, menuitem*70))
 
     if not player.moving and not menu and not battle:
         if pygame.key.get_pressed()[pygame.K_DOWN]:
