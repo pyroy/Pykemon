@@ -5,6 +5,7 @@ MAP EDITOR
   TODO:
 	Object placement
 	Custom tilesets
+  Ledges!!!!
 
 MAIN GAME
   DONE:
