@@ -2,10 +2,12 @@
 MAP EDITOR
   DONE:
 	Object support
+  Resizing
   TODO:
 	Object placement
 	Custom tilesets
   Ledges!!!!
+  Fix scrolling
 
 MAIN GAME
   DONE:

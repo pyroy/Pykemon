@@ -5,12 +5,12 @@ import sys
 from mapeditorgui.pygamesliders import *
 from mapeditorgui.pygamebuttons import *
 
-def draw_map(mapdata):
+def draw_map(mapdata, surface):
     for y in range(len(mapdata) - 1):
         for x in range(len(mapdata[y + 1].split("."))):
             locx = int(mapdata[y + 1].split(".")[x].split(",")[0])
             locy = int(mapdata[y + 1].split(".")[x].split(",")[1])
-            ttt.blit(tileset, (x * 16, y * 16), (locx * 16, locy * 16, 16, 16))
+            surface.blit(tileset, (x * 16, y * 16), (locx * 16, locy * 16, 16, 16))
 
 def saveMap(layer, data, path):
     layer.close()
@@ -134,9 +134,9 @@ else:
 
 pygame.init()
 
-edit_area_size = (640, 640)
-sidebar_width = 8*16*2
-screen = pygame.display.set_mode((edit_area_size[0]+sidebar_width,edit_area_size[1]), pygame.RESIZABLE)
+edit_area = pygame.Rect(0, 0, 640, 640)
+sidebar_area = pygame.Rect(edit_area.width, 0, 8*16*2, edit_area.height)
+screen = pygame.display.set_mode((edit_area.width+sidebar_area.width, edit_area.height), pygame.RESIZABLE)
 pygame.display.set_caption("Map Editor")
 clock = pygame.time.Clock()
 done = False
@@ -195,28 +195,29 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.VIDEORESIZE:
-            edit_area_size = (event.dict["size"][0]-sidebar_width, event.dict["size"][1])
+            edit_area = pygame.Rect(0, 0, event.dict["size"][0]-sidebar_area.width, event.dict["size"][1])
+            sidebar_area = pygame.Rect(edit_area.width, 0, 8*16*2, edit_area.height)
             screen = pygame.display.set_mode(event.dict["size"], pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:
             if pygame.key.get_pressed()[pygame.K_SPACE]: #Selecting tiles
-                if pygame.key.get_pressed()[pygame.K_r]:
+                if pygame.key.get_pressed()[pygame.K_LSHIFT]:
                     if event.key == pygame.K_UP:
-                        scrollpos += edit_area_size[1]
+                        scrollpos += edit_area.height
                         pointerpos[1] -= 20
                         if pointerpos[1] < 0:
                             pointerpos[1] = 0 #pointerpos is the position of the selection sprite
                             scrollpos = 0 #and scrollpos is which 'page' you are on
                     if event.key == pygame.K_DOWN:
-                        scrollpos -= edit_area_size[1]
+                        scrollpos -= edit_area.height
                         pointerpos[1] += 20
                         if pointerpos[1] > 99:
                             pointerpos[1] = 99
-                            scrollpos = -edit_area_size[1]*4
+                            scrollpos = -edit_area.height*4
                 else:
                     if event.key == pygame.K_UP:
                         pointerpos[1] -= 1
                         if pointerpos[1] < 40:
-                            scrollpos = -edit_area_size[1]
+                            scrollpos = -edit_area.height
                         if pointerpos[1] < 20:
                             scrollpos = 0
                         if pointerpos[1] < 0:
@@ -224,13 +225,13 @@ while not done:
                     if event.key == pygame.K_DOWN:
                         pointerpos[1] += 1
                         if pointerpos[1] > 19:
-                            scrollpos = -edit_area_size[1]
+                            scrollpos = -edit_area.height
                         if pointerpos[1] > 39:
-                            scrollpos = -edit_area_size[1]*2
+                            scrollpos = -edit_area.height*2
                         if pointerpos[1] > 59:
-                            scrollpos = -edit_area_size[1] * 3
+                            scrollpos = -edit_area.height * 3
                         if pointerpos[1] > 79:
-                            scrollpos = -edit_area_size[1] * 4
+                            scrollpos = -edit_area.height * 4
                         if pointerpos[1] > 99:
                             pointerpos[1] = 99
                     if event.key == pygame.K_LEFT:
@@ -245,14 +246,14 @@ while not done:
                 if event.key == pygame.K_z:
                     zoom *= 1.1
                     # Below is hard math for keeping the camera centered. It works, I think...
-                    campos = [campos[0]*1.1 + 320*(1-1.1), campos[1]*1.1 + 320*(1-1.1)]
+                    campos = [campos[0]*1.1 + edit_area.width/2*(1-1.1), campos[1]*1.1 + edit_area.height/2*(1-1.1)]
                 if event.key == pygame.K_x:
                     zoom /= 1.1
                     # Below is hard math for keeping the camera centered. It works, I think...
-                    campos = [campos[0]/1.1 + 320*(1-1/1.1), campos[1]/1.1 + 320*(1-1/1.1)]
+                    campos = [campos[0]/1.1 + edit_area.width/2*(1-1/1.1), campos[1]/1.1 + edit_area.height/2*(1-1/1.1)]
                 if event.key == pygame.K_c:
                     # Below is hard math for keeping the camera centered. It works, I think...
-                    campos = [campos[0]*4/zoom + 320*(1-4/zoom), campos[1]*4/zoom + 320*(1-4/zoom)]
+                    campos = [campos[0]*4/zoom + edit_area.width/2*(1-4/zoom), campos[1]*4/zoom + edit_area.height/2*(1-4/zoom)]
                     zoom = 4
                 if event.key == pygame.K_UP:
                     campos[1] += 16 * zoom
@@ -293,9 +294,9 @@ while not done:
                 try:
                     f = mapl[y+1].split(".")
                     if x == len(f)-1:
-                        f[x] = '{},{}\n'.format(pointerpos[0],pointerpos[1])
+                        f[x] = f"{pointerpos[0]},{pointerpos[1]}\n"
                     else:
-                        f[x] = '{},{}'.format(pointerpos[0], pointerpos[1])
+                        f[x] = f"{pointerpos[0]},{pointerpos[1]}"
                     tF = ''
                     for i in f:
                         tF += '.'
@@ -350,54 +351,57 @@ while not done:
                     pass
 
     width,height = int(mapl[0].split(".")[0]),int(mapl[0].split(".")[1])
-    ttt = pygame.Surface((width,height))
+    map_surface = pygame.Surface((width,height))
 
-    draw_map(mapl)
-    draw_map(bemapl)
+    draw_map(mapl, map_surface)
+    draw_map(bemapl, map_surface)
     e = eval(omapl[0].split(";")[1])
-    ttt.blit(player, (e[0]*16-2,e[1]*-16-17), (0,0,20,25))
-    draw_map(amapl)
+    map_surface.blit(player, (e[0]*16-2,e[1]*-16-17), (0,0,20,25))
+    draw_map(amapl, map_surface)
 
     if state == 'boundmap':
         for y in range(len(bmapl)):
             for x in range(len(bmapl[y])):
                 if bmapl[y][x] == '0':
-                    ttt.blit(good, (x * 16, y * 16))
+                    map_surface.blit(good, (x * 16, y * 16))
                 if bmapl[y][x] == '1':
-                    ttt.blit(bad, (x * 16, y * 16))
+                    map_surface.blit(bad, (x * 16, y * 16))
                 if bmapl[y][x] == 'u':
-                    ttt.blit(ledge_up,    (x * 16, y * 16))
+                    map_surface.blit(ledge_up,    (x * 16, y * 16))
                 if bmapl[y][x] == 'r':
-                    ttt.blit(ledge_right, (x * 16, y * 16))
+                    map_surface.blit(ledge_right, (x * 16, y * 16))
                 if bmapl[y][x] == 'd':
-                    ttt.blit(ledge_down,  (x * 16, y * 16))
+                    map_surface.blit(ledge_down,  (x * 16, y * 16))
                 if bmapl[y][x] == 'l':
-                    ttt.blit(ledge_left,  (x * 16, y * 16))
+                    map_surface.blit(ledge_left,  (x * 16, y * 16))
     elif state == 'encountermap':
         for y in range(len(emapl)):
             for x in range(len(emapl[y])):
                 if emapl[y][x] in encounterSprites.keys():
-                    ttt.blit(encounterSprites[ emapl[y][x] ], (x * 16, y * 16))
+                    map_surface.blit(encounterSprites[ emapl[y][x] ], (x * 16, y * 16))
 
     for i in omapl[1:]:
         if i.split(';')[0] == 'objectWarp':
             p = eval(i.split(';')[1])
-            ttt.blit(warp, (p[0]*16,p[1]*16))
-            f = pygame.font.SysFont("arial",10).render("to {}".format(i.split(';')[2]), False, (255,0,0))
-            ttt.blit(f,(8+p[0]*16-f.get_width()/2,p[1]*16+f.get_height()))
+            warp_destination = i.split(';')[2]
+            map_surface.blit(warp, (p[0]*16,p[1]*16))
+            f = pygame.font.SysFont("arial",10).render(f"to {warp_destination}", False, (255,0,0))
+            map_surface.blit(f,(8+p[0]*16-f.get_width()/2,p[1]*16+f.get_height()))
 
     screen.fill((0,0,20))
-    screen.blit(pygame.transform.scale(ttt, (int(width*zoom),int(height*zoom))), (campos[0],campos[1]))
+    screen.blit(pygame.transform.scale(map_surface, (int(width*zoom),int(height*zoom))), (campos[0],campos[1]))
+
+    # DRAW SIDEBAR
     if state in ["groundmap", "betamap", "alphamap"]:
-        pygame.draw.rect(screen, (255,0,255), (edit_area_size[0],0,sidebar_width,edit_area_size[1]))
-        screen.blit(pygame.transform.scale(tileset, (sidebar_width,tileset.get_height()*2)), (edit_area_size[0],scrollpos))
-        pygame.draw.rect(screen, (255,0,0), (edit_area_size[0]+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
+        pygame.draw.rect(screen, (255,0,255), sidebar_area)
+        screen.blit(pygame.transform.scale(tileset, (sidebar_area.width,tileset.get_height()*2)), (edit_area.width,scrollpos))
+        pygame.draw.rect(screen, (255,0,0), (edit_area.width+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
     if state == "boundmap":
-        pygame.draw.rect(screen, (20,20,20), (edit_area_size[0],0,sidebar_width,edit_area_size[1]))
-        screen.blit(pygame.transform.scale(good, (100,100)), (edit_area_size[0]+80,130))
-        screen.blit(pygame.transform.scale(bad, (100,100)), (edit_area_size[0]+80,420))
-        screen.blit(font.render("no collision",True,(200,255,200)),(edit_area_size[0]+80,250))
-        screen.blit(font.render("collision",True,(255,200,200)),(edit_area_size[0]+80,550))
+        pygame.draw.rect(screen, (20,20,20), sidebar_area)
+        screen.blit(pygame.transform.scale(good, (100,100)), (edit_area.width+80,130))
+        screen.blit(pygame.transform.scale(bad, (100,100)), (edit_area.width+80,420))
+        screen.blit(font.render("no collision",True,(200,255,200)),(edit_area.width+80,250))
+        screen.blit(font.render("collision",True,(255,200,200)),(edit_area.width+80,550))
     if state == "encountermap":
         screen.blit(font.render("WIP",True,(255,255,255)),(740,300))
         addEncounterButton.draw(screen)
@@ -406,11 +410,13 @@ while not done:
                              False,
                              (255,255,255),
                              (0,0,0)),
-                             (0,edit_area_size[1]-18))
+                             (0,edit_area.height-18))
 
-    pygame.draw.line(screen,(0,255,0),(edit_area_size[0],0),(edit_area_size[0],edit_area_size[1]),3)
+    # DRAW "editing ..." text
+    pygame.draw.line(screen,(0,255,0),(edit_area.width,0),(edit_area.width,edit_area.height),3)
     screen.blit(stateblit,(0,0))
 
+    # DRAW MOUSE POSITION TEXT
     p = pygame.mouse.get_pos()
     x = int((p[0] - campos[0]) / 16 / zoom)
     y = int((p[1] - campos[1]) / 16 / zoom)
