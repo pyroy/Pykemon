@@ -5,7 +5,7 @@ import sys
 from mapeditorgui.pygamesliders import *
 from mapeditorgui.pygamebuttons import *
 
-def drawmap(mapdata):
+def draw_map(mapdata):
     for y in range(len(mapdata) - 1):
         for x in range(len(mapdata[y + 1].split("."))):
             locx = int(mapdata[y + 1].split(".")[x].split(",")[0])
@@ -134,7 +134,9 @@ else:
 
 pygame.init()
 
-screen = pygame.display.set_mode((640+8*16*2,640))
+edit_area_size = (640, 640)
+sidebar_width = 8*16*2
+screen = pygame.display.set_mode((edit_area_size[0]+sidebar_width,edit_area_size[1]), pygame.RESIZABLE)
 pygame.display.set_caption("Map Editor")
 clock = pygame.time.Clock()
 done = False
@@ -185,32 +187,36 @@ addEncounterButton.textcolor = (255,255,255)
 @addEncounterButton.link
 def action1():
     print('I work!')
+    # TODO: Right now even works when not visible!!!!!!!
 
 #main loop
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+        if event.type == pygame.VIDEORESIZE:
+            edit_area_size = (event.dict["size"][0]-sidebar_width, event.dict["size"][1])
+            screen = pygame.display.set_mode(event.dict["size"], pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:
             if pygame.key.get_pressed()[pygame.K_SPACE]: #Selecting tiles
                 if pygame.key.get_pressed()[pygame.K_r]:
                     if event.key == pygame.K_UP:
-                        scrollpos += 640
+                        scrollpos += edit_area_size[1]
                         pointerpos[1] -= 20
                         if pointerpos[1] < 0:
                             pointerpos[1] = 0 #pointerpos is the position of the selection sprite
                             scrollpos = 0 #and scrollpos is which 'page' you are on
                     if event.key == pygame.K_DOWN:
-                        scrollpos -= 640
+                        scrollpos -= edit_area_size[1]
                         pointerpos[1] += 20
                         if pointerpos[1] > 99:
                             pointerpos[1] = 99
-                            scrollpos = -640*4
+                            scrollpos = -edit_area_size[1]*4
                 else:
                     if event.key == pygame.K_UP:
                         pointerpos[1] -= 1
                         if pointerpos[1] < 40:
-                            scrollpos = -640
+                            scrollpos = -edit_area_size[1]
                         if pointerpos[1] < 20:
                             scrollpos = 0
                         if pointerpos[1] < 0:
@@ -218,13 +224,13 @@ while not done:
                     if event.key == pygame.K_DOWN:
                         pointerpos[1] += 1
                         if pointerpos[1] > 19:
-                            scrollpos = -640
+                            scrollpos = -edit_area_size[1]
                         if pointerpos[1] > 39:
-                            scrollpos = -640*2
+                            scrollpos = -edit_area_size[1]*2
                         if pointerpos[1] > 59:
-                            scrollpos = -640 * 3
+                            scrollpos = -edit_area_size[1] * 3
                         if pointerpos[1] > 79:
-                            scrollpos = -640 * 4
+                            scrollpos = -edit_area_size[1] * 4
                         if pointerpos[1] > 99:
                             pointerpos[1] = 99
                     if event.key == pygame.K_LEFT:
@@ -346,11 +352,11 @@ while not done:
     width,height = int(mapl[0].split(".")[0]),int(mapl[0].split(".")[1])
     ttt = pygame.Surface((width,height))
 
-    drawmap(mapl)
-    drawmap(bemapl)
+    draw_map(mapl)
+    draw_map(bemapl)
     e = eval(omapl[0].split(";")[1])
     ttt.blit(player, (e[0]*16-2,e[1]*-16-17), (0,0,20,25))
-    drawmap(amapl)
+    draw_map(amapl)
 
     if state == 'boundmap':
         for y in range(len(bmapl)):
@@ -383,22 +389,26 @@ while not done:
     screen.fill((0,0,20))
     screen.blit(pygame.transform.scale(ttt, (int(width*zoom),int(height*zoom))), (campos[0],campos[1]))
     if state in ["groundmap", "betamap", "alphamap"]:
-        pygame.draw.rect(screen, (255,0,255), (640,0,640+8*16*2-640,640))
-        screen.blit(pygame.transform.scale(tileset, (8*16*2,tileset.get_height()*2)), (640,scrollpos))
-        pygame.draw.rect(screen, (255,0,0), (640+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
+        pygame.draw.rect(screen, (255,0,255), (edit_area_size[0],0,sidebar_width,edit_area_size[1]))
+        screen.blit(pygame.transform.scale(tileset, (sidebar_width,tileset.get_height()*2)), (edit_area_size[0],scrollpos))
+        pygame.draw.rect(screen, (255,0,0), (edit_area_size[0]+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
     if state == "boundmap":
-        pygame.draw.rect(screen, (20,20,20), (640,0,640+8*16*2-640,640))
-        screen.blit(pygame.transform.scale(good, (100,100)), (720,130))
-        screen.blit(pygame.transform.scale(bad, (100,100)), (720,420))
-        screen.blit(font.render("no collision",True,(200,255,200)),(700,250))
-        screen.blit(font.render("collision",True,(255,200,200)),(715,550))
+        pygame.draw.rect(screen, (20,20,20), (edit_area_size[0],0,sidebar_width,edit_area_size[1]))
+        screen.blit(pygame.transform.scale(good, (100,100)), (edit_area_size[0]+80,130))
+        screen.blit(pygame.transform.scale(bad, (100,100)), (edit_area_size[0]+80,420))
+        screen.blit(font.render("no collision",True,(200,255,200)),(edit_area_size[0]+80,250))
+        screen.blit(font.render("collision",True,(255,200,200)),(edit_area_size[0]+80,550))
     if state == "encountermap":
         screen.blit(font.render("WIP",True,(255,255,255)),(740,300))
         addEncounterButton.draw(screen)
 
-    screen.blit(font2.render("a - alpha, b - beta, g - ground, n - bounds, e - encounters, o -objects, z/x - zoom",False,(255,255,255),(0,0,0)), (0,622))
+    screen.blit(font2.render("a - alpha, b - beta, g - ground, n - bounds, e - encounters, o -objects, z/x - zoom",
+                             False,
+                             (255,255,255),
+                             (0,0,0)),
+                             (0,edit_area_size[1]-18))
 
-    pygame.draw.line(screen,(0,255,0),(640,0),(640,640),3)
+    pygame.draw.line(screen,(0,255,0),(edit_area_size[0],0),(edit_area_size[0],edit_area_size[1]),3)
     screen.blit(stateblit,(0,0))
 
     p = pygame.mouse.get_pos()
