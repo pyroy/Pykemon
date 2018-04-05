@@ -134,6 +134,7 @@ else:
 
 pygame.init()
 
+# Global variables
 edit_area = pygame.Rect(0, 0, 640, 640)
 sidebar_area = pygame.Rect(edit_area.width, 0, 8*16*2, edit_area.height)
 screen = pygame.display.set_mode((edit_area.width+sidebar_area.width, edit_area.height), pygame.RESIZABLE)
@@ -188,6 +189,12 @@ addEncounterButton.textcolor = (255,255,255)
 def action1():
     print('I work!')
     # TODO: Right now even works when not visible!!!!!!!
+
+boundmap_data = {
+    'lines': bmapl,
+    'selected tile': 'neg',
+    'tileset': ['neg', 'u', 'r', 'd', 'l']
+}
 
 #main loop
 while not done:
@@ -247,43 +254,54 @@ while not done:
                     zoom *= 1.1
                     # Below is hard math for keeping the camera centered. It works, I think...
                     campos = [campos[0]*1.1 + edit_area.width/2*(1-1.1), campos[1]*1.1 + edit_area.height/2*(1-1.1)]
-                if event.key == pygame.K_x:
+                elif event.key == pygame.K_x:
                     zoom /= 1.1
                     # Below is hard math for keeping the camera centered. It works, I think...
                     campos = [campos[0]/1.1 + edit_area.width/2*(1-1/1.1), campos[1]/1.1 + edit_area.height/2*(1-1/1.1)]
-                if event.key == pygame.K_c:
+                elif event.key == pygame.K_c:
                     # Below is hard math for keeping the camera centered. It works, I think...
                     campos = [campos[0]*4/zoom + edit_area.width/2*(1-4/zoom), campos[1]*4/zoom + edit_area.height/2*(1-4/zoom)]
                     zoom = 4
-                if event.key == pygame.K_UP:
+                elif event.key == pygame.K_UP:
                     campos[1] += 16 * zoom
-                if event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN:
                     campos[1] -= 16 * zoom
-                if event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_LEFT:
                     campos[0] += 16 * zoom
-                if event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT:
                     campos[0] -= 16 * zoom
-                if event.key == pygame.K_s:
+                elif event.key == pygame.K_s and pygame.key.get_pressed()[pygame.K_LCTRL]:
                     saveAllMaps()
                     print("saved!")
-                if event.key == pygame.K_g:
+                elif event.key == pygame.K_1:
                     state = 'groundmap'
                     stateblit = font.render("editing groundmap", False, (255, 255, 255))
-                if event.key == pygame.K_b:
-                    state = 'betamap'
-                    stateblit = font.render("editing betamap", False, (255, 255, 255))
-                if event.key == pygame.K_n:
-                    state = 'boundmap'
-                    stateblit = font.render("editing boundmap", False, (255, 255, 255))
-                if event.key == pygame.K_a:
+                elif event.key == pygame.K_2:
                     state = 'alphamap'
                     stateblit = font.render("editing alphamap", False, (255, 255, 255))
-                if event.key == pygame.K_o:
+                elif event.key == pygame.K_3:
+                    state = 'betamap'
+                    stateblit = font.render("editing betamap", False, (255, 255, 255))
+                elif event.key == pygame.K_4:
+                    state = 'boundmap'
+                    stateblit = font.render("editing boundmap", False, (255, 255, 255))
+                elif event.key == pygame.K_5:
                     state = 'objectmap'
                     stateblit = font.render("editing objects", False, (255, 255, 255))
-                if event.key == pygame.K_e:
+                elif event.key == pygame.K_6:
                     state = 'encountermap'
                     stateblit = font.render("editing encounters", False, (255, 255, 255))
+                elif state == 'boundmap':
+                    if event.key == pygame.K_w:
+                        boundmap_data['selected tile'] = 'u'
+                    elif event.key == pygame.K_d:
+                        boundmap_data['selected tile'] = 'r'
+                    elif event.key == pygame.K_s:
+                        boundmap_data['selected tile'] = 'd'
+                    elif event.key == pygame.K_a:
+                        boundmap_data['selected tile'] = 'l'
+                    elif event.key == pygame.K_q:
+                        boundmap_data['selected tile'] = 'neg'
         if event.type == pygame.MOUSEBUTTONDOWN:
             #button check
             addEncounterButton.push(event)
@@ -309,7 +327,13 @@ while not done:
                 elif state == 'boundmap':
                     try:
                         f = list(bmapl[y])
-                        f[x] = str((int(f[x])+1)%2)
+                        if boundmap_data['selected tile'] == 'neg':
+                            if f[x] not in ['0', '1']:
+                                f[x] = '0'
+                            else:
+                                f[x] = str((int(f[x])+1)%2)
+                        else:
+                            f[x] = boundmap_data['selected tile']
                         bmapl[y] = "".join(f)
                     except:
                         pass
@@ -408,7 +432,7 @@ while not done:
         screen.blit(font.render("WIP",True,(255,255,255)),(740,300))
         addEncounterButton.draw(screen)
 
-    screen.blit(font2.render("a - alpha, b - beta, g - ground, n - bounds, e - encounters, o -objects, z/x - zoom",
+    screen.blit(font2.render("1 - ground, 2 - alpha, 3 - beta, 4 - bounds, 5 - objects, 6 - encounters, z/x - zoom, c - reset camera, ctrl+s - save map",
                              False,
                              (255,255,255),
                              (0,0,0)),

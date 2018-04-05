@@ -3,7 +3,7 @@ import pygame
 import pokemon as pkm
 
 class Player:
-    def __init__(self,bounds):
+    def __init__(self,bounds, npc):
         self.pos = [0,0]
         self.texturemap = pygame.image.load("textures/player-kaori.png").convert_alpha()
         self.textures = {
@@ -35,6 +35,7 @@ class Player:
         self.displacement = [0,0]
         self.remainingDuration = 0
         self.bounds = bounds
+        self.npcloader = npc
         self.trainerdata = pkm.Trainer('Player')
         self.trainerdata.party.append(pkm.Pokemon('Starmie'))
         self.moving = False
@@ -54,6 +55,15 @@ class Player:
             self.pos[1] += self.displacement[1]
             self.remainingDuration -= 1
         else:
+            pos_div = (int(self.pos[0]/16), int(self.pos[1]/16))
+            if self.bounds.at_pos(*pos_div) == 'u':
+                self.setMovement((0, 2), 8, (0, 1))
+            if self.bounds.at_pos(*pos_div) == 'r':
+                self.setMovement((2, 0), 8, (1, 0))
+            if self.bounds.at_pos(*pos_div) == 'd':
+                self.setMovement((0, -2), 8, (0, -1))
+            if self.bounds.at_pos(*pos_div) == 'l':
+                self.setMovement((-2, 0), 8, (-1, 0))
             self.moving = False
             return 'stopped moving'
 
@@ -70,14 +80,14 @@ class Player:
         self.animDelay = delay
         self.framesSinceStartAnim = 0
 
-    def setMovement(self,displacement,duration,dir,npcloader):
-        if self.bounds.checkBounds( int(self.pos[0]/16)+dir[0],int(self.pos[1]/16)+dir[1] ):
-            if npcloader.checkBounds( [int(self.pos[0]/16)+dir[0],-1*int(self.pos[1]/16)-dir[1]] ):
+    def setMovement(self,displacement, duration, dir):
+        if self.bounds.checkBounds(int(self.pos[0]/16)+dir[0], int(self.pos[1]/16)+dir[1], dir):
+            if self.npcloader.checkBounds( [int(self.pos[0]/16)+dir[0],-1*int(self.pos[1]/16)-dir[1]] ):
                 self.remainingDuration = duration
                 self.displacement = displacement
                 self.moving = True
 
-    def warp(self,map,pos):
+    def warp(self,map, npc,pos):
         global currentMap
         # loadblit = pygame.font.Font('jackeyfont.ttf',60).render('LOADING',False,(255,255,255),(0,0,0))
         # loadblitja = pygame.font.Font('jackeyfont.ttf',60).render('読み込み中', False, (255, 255, 255), (0, 0, 0))
@@ -86,6 +96,7 @@ class Player:
         # pygame.display.flip()
         currentMap = ml.loadMapObject(map)
         self.bounds = currentMap.bounds
+        self.npcloader = npc
         self.pos = currentMap.warps[0]
         self.resetAnimations()
 

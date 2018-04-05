@@ -66,7 +66,7 @@ class Console:
 console = Console('data/globals.p')
 
 dex = pkm.dex.Dex() #Pokemon dex data
-nl = npcloader.NPCLoader(console)
+npcloader = npcloader.NPCLoader(console)
 ml = maploader.MapLoader()
 
 #Maploader objects
@@ -74,7 +74,7 @@ mapToLoad = 'editmap'
 currentMap = ml.loadMapObject(mapToLoad)
 #End Maploader objects
 
-player = Player(currentMap.bounds)
+player = Player(currentMap.bounds, npcloader)
 player.pos = currentMap.warps[0]
 
 ttt = pygame.Surface((200,200))
@@ -105,8 +105,8 @@ if not quickstart:
     pygame.display.flip()
     time.sleep(2)
 
-nl.loadNPC('bob')
-nl.loadNPC('will')
+npcloader.loadNPC('bob')
+npcloader.loadNPC('will')
 
 battle = False
 activeBattle = None
@@ -166,8 +166,8 @@ while not done:
                     activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
 
         drawPlayer = True
-        nl.update([int(player.pos[0]/16),-1*int(player.pos[1]/16)])
-        for npc in nl.npcs:
+        npcloader.update([int(player.pos[0]/16),-1*int(player.pos[1]/16)])
+        for npc in npcloader.npcs:
             surface, position = npc.getDrawData()
             if position[1] * 16 + drawy - 13 > ttt.get_height()/2-13 and drawPlayer:
                 player.draw((ttt.get_width()/2-10,ttt.get_height()/2-13), ttt)
@@ -184,19 +184,19 @@ while not done:
 
     if not player.moving and not menu and not battle:
         if pygame.key.get_pressed()[pygame.K_DOWN]:
-            player.setMovement([0,-2],8,(0,-1), nl)
+            player.setMovement([0,-2],8,(0,-1))
             if not player.animName == 'walkdown':
                 player.setAnimation('walkdown', 4)
         elif pygame.key.get_pressed()[pygame.K_UP]:
-            player.setMovement([0,2],8,(0,1), nl)
+            player.setMovement([0,2],8,(0,1))
             if not player.animName == 'walkup':
                 player.setAnimation('walkup', 4)
         elif pygame.key.get_pressed()[pygame.K_RIGHT]:
-            player.setMovement([2,0],8,(1,0), nl)
+            player.setMovement([2,0],8,(1,0))
             if not player.animName == 'walkright':
                 player.setAnimation('walkright', 4)
         elif pygame.key.get_pressed()[pygame.K_LEFT]:
-            player.setMovement([-2,0],8,(-1,0), nl)
+            player.setMovement([-2,0],8,(-1,0))
             if not player.animName == 'walkleft':
                 player.setAnimation('walkleft', 4)
         else:

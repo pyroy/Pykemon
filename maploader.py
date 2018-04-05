@@ -7,10 +7,21 @@ class Bounds:
     def __init__(self,b):
         self.bounds = b
 
-    def checkBounds(self,x,y):
+    def at_pos(self, x, y):
+        return self.bounds[-y][x]
+
+    def checkBounds(self, x, y, dir=(0, 0)):
         y = -y
         if y in range(len(self.bounds)) and x in range(len(self.bounds[0])):
-            if int(self.bounds[y][x]) == 1:
+            if self.bounds[y][x] == '1':
+                return False
+            elif self.bounds[y][x] == 'u' and not dir == ( 0, 1):
+                return False
+            elif self.bounds[y][x] == 'r' and not dir == ( 1, 0):
+                return False
+            elif self.bounds[y][x] == 'd' and not dir == ( 0,-1):
+                return False
+            elif self.bounds[y][x] == 'l' and not dir == (-1, 0):
                 return False
             else:
                 return True
