@@ -135,9 +135,9 @@ else:
 pygame.init()
 
 # Global variables
-edit_area = pygame.Rect(0, 0, 640, 640)
-sidebar_area = pygame.Rect(edit_area.width, 0, 8*16*2, edit_area.height)
-screen = pygame.display.set_mode((edit_area.width+sidebar_area.width, edit_area.height), pygame.RESIZABLE)
+edit_rect = pygame.Rect(0, 0, 640, 640)
+sidebar_rect = pygame.Rect(edit_rect.width, 0, 8*16*2, edit_rect.height)
+screen = pygame.display.set_mode((edit_rect.width+sidebar_rect.width, edit_rect.height), pygame.RESIZABLE)
 pygame.display.set_caption("Pykemon Map Editor")
 clock = pygame.time.Clock()
 done = False
@@ -202,29 +202,29 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.VIDEORESIZE:
-            edit_area = pygame.Rect(0, 0, event.dict["size"][0]-sidebar_area.width, event.dict["size"][1])
-            sidebar_area = pygame.Rect(edit_area.width, 0, 8*16*2, edit_area.height)
+            edit_rect = pygame.Rect(0, 0, event.dict["size"][0]-sidebar_rect.width, event.dict["size"][1])
+            sidebar_rect = pygame.Rect(edit_rect.width, 0, 8*16*2, edit_rect.height)
             screen = pygame.display.set_mode(event.dict["size"], pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:
             if pygame.key.get_pressed()[pygame.K_SPACE]: #Selecting tiles
                 if pygame.key.get_pressed()[pygame.K_LSHIFT]:
                     if event.key == pygame.K_UP:
-                        scrollpos += edit_area.height
+                        scrollpos += edit_rect.height
                         pointerpos[1] -= 20
                         if pointerpos[1] < 0:
                             pointerpos[1] = 0 #pointerpos is the position of the selection sprite
                             scrollpos = 0 #and scrollpos is which 'page' you are on
                     if event.key == pygame.K_DOWN:
-                        scrollpos -= edit_area.height
+                        scrollpos -= edit_rect.height
                         pointerpos[1] += 20
                         if pointerpos[1] > 99:
                             pointerpos[1] = 99
-                            scrollpos = -edit_area.height*4
+                            scrollpos = -edit_rect.height*4
                 else:
                     if event.key == pygame.K_UP:
                         pointerpos[1] -= 1
                         if pointerpos[1] < 40:
-                            scrollpos = -edit_area.height
+                            scrollpos = -edit_rect.height
                         if pointerpos[1] < 20:
                             scrollpos = 0
                         if pointerpos[1] < 0:
@@ -232,13 +232,13 @@ while not done:
                     if event.key == pygame.K_DOWN:
                         pointerpos[1] += 1
                         if pointerpos[1] > 19:
-                            scrollpos = -edit_area.height
+                            scrollpos = -edit_rect.height
                         if pointerpos[1] > 39:
-                            scrollpos = -edit_area.height*2
+                            scrollpos = -edit_rect.height*2
                         if pointerpos[1] > 59:
-                            scrollpos = -edit_area.height * 3
+                            scrollpos = -edit_rect.height * 3
                         if pointerpos[1] > 79:
-                            scrollpos = -edit_area.height * 4
+                            scrollpos = -edit_rect.height * 4
                         if pointerpos[1] > 99:
                             pointerpos[1] = 99
                     if event.key == pygame.K_LEFT:
@@ -253,14 +253,14 @@ while not done:
                 if event.key == pygame.K_z:
                     zoom *= 1.1
                     # Below is hard math for keeping the camera centered. It works, I think...
-                    campos = [campos[0]*1.1 + edit_area.width/2*(1-1.1), campos[1]*1.1 + edit_area.height/2*(1-1.1)]
+                    campos = [campos[0]*1.1 + edit_rect.width/2*(1-1.1), campos[1]*1.1 + edit_rect.height/2*(1-1.1)]
                 elif event.key == pygame.K_x:
                     zoom /= 1.1
                     # Below is hard math for keeping the camera centered. It works, I think...
-                    campos = [campos[0]/1.1 + edit_area.width/2*(1-1/1.1), campos[1]/1.1 + edit_area.height/2*(1-1/1.1)]
+                    campos = [campos[0]/1.1 + edit_rect.width/2*(1-1/1.1), campos[1]/1.1 + edit_rect.height/2*(1-1/1.1)]
                 elif event.key == pygame.K_c:
                     # Below is hard math for keeping the camera centered. It works, I think...
-                    campos = [campos[0]*4/zoom + edit_area.width/2*(1-4/zoom), campos[1]*4/zoom + edit_area.height/2*(1-4/zoom)]
+                    campos = [campos[0]*4/zoom + edit_rect.width/2*(1-4/zoom), campos[1]*4/zoom + edit_rect.height/2*(1-4/zoom)]
                     zoom = 4
                 elif event.key == pygame.K_UP:
                     campos[1] += 16 * zoom
@@ -306,7 +306,7 @@ while not done:
             #button check
             addEncounterButton.push(event)
 
-            if edit_area.collidepoint(event.pos[0], event.pos[1]):
+            if edit_rect.collidepoint(event.pos[0], event.pos[1]):
                 #tile check
                 x = int((event.pos[0]-campos[0])/16/zoom)
                 y = int((event.pos[1]-campos[1])/16/zoom)
@@ -419,15 +419,15 @@ while not done:
 
     # DRAW SIDEBAR
     if state in ["groundmap", "betamap", "alphamap"]:
-        pygame.draw.rect(screen, (255,0,255), sidebar_area)
-        screen.blit(pygame.transform.scale(tileset, (sidebar_area.width,tileset.get_height()*2)), (edit_area.width,scrollpos))
-        pygame.draw.rect(screen, (255,0,0), (edit_area.width+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
+        pygame.draw.rect(screen, (255,0,255), sidebar_rect)
+        screen.blit(pygame.transform.scale(tileset, (sidebar_rect.width,tileset.get_height()*2)), (edit_rect.width,scrollpos))
+        pygame.draw.rect(screen, (255,0,0), (edit_rect.width+pointerpos[0]*32,pointerpos[1]*32+scrollpos,32,32), 2)
     if state == "boundmap":
-        pygame.draw.rect(screen, (20,20,20), sidebar_area)
-        screen.blit(pygame.transform.scale(good, (100,100)), (edit_area.width+80,130))
-        screen.blit(pygame.transform.scale(bad, (100,100)), (edit_area.width+80,420))
-        screen.blit(font.render("no collision",True,(200,255,200)),(edit_area.width+80,250))
-        screen.blit(font.render("collision",True,(255,200,200)),(edit_area.width+80,550))
+        pygame.draw.rect(screen, (20,20,20), sidebar_rect)
+        screen.blit(pygame.transform.scale(good, (100,100)), (edit_rect.width+80,130))
+        screen.blit(pygame.transform.scale(bad, (100,100)), (edit_rect.width+80,420))
+        screen.blit(font.render("no collision",True,(200,255,200)),(edit_rect.width+80,250))
+        screen.blit(font.render("collision",True,(255,200,200)),(edit_rect.width+80,550))
     if state == "encountermap":
         screen.blit(font.render("WIP",True,(255,255,255)),(740,300))
         addEncounterButton.draw(screen)
@@ -436,10 +436,10 @@ while not done:
                              False,
                              (255,255,255),
                              (0,0,0)),
-                             (0,edit_area.height-18))
+                             (0,edit_rect.height-18))
 
     # DRAW "editing ..." text
-    pygame.draw.line(screen,(0,255,0),(edit_area.width,0),(edit_area.width,edit_area.height),3)
+    pygame.draw.line(screen,(0,255,0),(edit_rect.width,0),(edit_rect.width,edit_rect.height),3)
     screen.blit(stateblit,(0,0))
 
     # DRAW MOUSE POSITION TEXT
