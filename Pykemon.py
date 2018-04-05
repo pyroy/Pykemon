@@ -214,7 +214,9 @@ while not done:
     warp = player.checkWarps(currentMap.warps)
     if warp:
         screen.fill((0,0,0))
-        player.warp(*warp)
+        warp_map, warp_pos = warp
+        currentMap = ml.loadMapObject(warp_map)
+        player.warp(currentMap, npcloader, warp_pos)
 
     pygame.display.flip()
     clock.tick(60)
