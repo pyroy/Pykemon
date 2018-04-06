@@ -19,6 +19,7 @@ MAIN GAME
 	NPC Sprites
 	Object-Console support
   Ledge jump animations
+  Running!
 
 BATTLE
   DONE:
