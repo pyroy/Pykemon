@@ -109,8 +109,8 @@ if not quickstart:
 npcloader.loadNPC('bob')
 npcloader.loadNPC('will')
 
-battle = False
-activeBattle = None
+currentScene = 'World'
+activeBattle = None #Actual BattleScene object
 
 menuitem = 0
 while not done:
@@ -124,33 +124,36 @@ while not done:
             screen_rect.size = event.dict['size']
             screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_z and not battle:
-                zoom *= 1.1
-            elif event.key == pygame.K_x and not battle:
-                zoom /= 1.1
-            elif event.key == pygame.K_m and not battle:
-                if not menuframes:
-                    menu = not menu
-                    if menu:
-                        menuframes = 10
-                        menudisp = 200/45
-                    else:
-                        menuframes = 10
-                        menudisp = -200/45
-            elif event.key == pygame.K_BACKSLASH and not battle:
-                a = input("load map: ")
-                player.warp(a,[0,0])
-            elif event.key == pygame.K_UP and not battle and menu:
-                menuitem = max(0, menuitem - 1)
-            elif event.key == pygame.K_DOWN and not battle and menu:
-                menuitem = min(4, menuitem + 1)
-            elif event.key == pygame.K_RETURN and not battle and menuitem == 0 and menu:
-                console.addEvent( Event('SAY','saving! please don\'t turn off the console!'))
-            elif event.key == pygame.K_RETURN and not battle and not menu:
-                #player.activate()
-                pass;
+            if currentScene == 'World':
+                if event.key == pygame.K_z:
+                    zoom *= 1.1
+                elif event.key == pygame.K_x:
+                    zoom /= 1.1
+                elif event.key == pygame.K_m:
+                    if not menuframes:
+                        menu = not menu
+                        if menu:
+                            menuframes = 10
+                            menudisp = 200/45
+                        else:
+                            menuframes = 10
+                            menudisp = -200/45
+                elif event.key == pygame.K_BACKSLASH:
+                    a = input("load map: ")
+                    player.warp(a,[0,0])
+                elif event.key == pygame.K_UP and menu:
+                    menuitem = max(0, menuitem - 1)
+                elif event.key == pygame.K_DOWN and menu:
+                    menuitem = min(4, menuitem + 1)
+                elif event.key == pygame.K_RETURN and menuitem == 0 and menu:
+                    console.addEvent( Event('SAY','saving! please don\'t turn off the console!'))
+                elif event.key == pygame.K_RETURN and menuitem == 1 and menu:
+                    currentScene = 'Options'
+                elif event.key == pygame.K_RETURN and not menu:
+                    #player.activate()
+                    pass;
 
-    if not battle: #scene outside battle
+    if currentScene == 'World': #scene outside battle
         drawx = map_surface.get_width()/2-player.pos[0]-8
         drawy = map_surface.get_height()/2+player.pos[1]
 
@@ -186,7 +189,7 @@ while not done:
         screen.blit(pygame.transform.scale(menublit,(200,2*184)), (screen_rect.width+menupos, 0))
         screen.blit(menuselect, (screen_rect.width+menupos, menuitem*70))
 
-    if not player.moving and not menu and not battle:
+    if not player.moving and not menu and currentScene == 'World':
         if pygame.key.get_pressed()[pygame.K_DOWN]:
             player.setMovement([0,-2],8,(0,-1))
             if not player.animName == 'walkdown':
@@ -211,7 +214,7 @@ while not done:
         menupos -= menudisp*(10-menuframes)
         menuframes -= 1
 
-    if battle:
+    if currentScene == 'Battle':
         activeBattle.update()
         activeBattle.draw() #scene in battle
 
