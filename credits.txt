@@ -1,4 +1,4 @@
-pyroy proudly presents...
+Terts & pyroy proudly present...
 
 Pykemon!
 
@@ -14,9 +14,5 @@ Coding:                            Python & Pygame
 Compiling:                        Py2exe
 Sprites:                            paint.net
 Project Management:       GitHub
-
-Special thanks to my boy Terts Diepraam for 
-helping my shitty code out of its miserable state 
-with his elegant coding manners.
 
 This screen will disappear in 2 seconds..
