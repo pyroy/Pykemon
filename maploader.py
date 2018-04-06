@@ -126,8 +126,7 @@ class MapLoader:
     def loadBoundsMap(self,mapname):
         with open(f"maps/{mapname}/bounds.txt") as file:
             lines = file.readlines()
-        for line in lines:
-            line.strip()
+        lines = list(map(lambda line: line.strip(), lines))
         return Bounds(lines)
 
     def getWarpPoints(self,mapname):
