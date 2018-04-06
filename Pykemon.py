@@ -210,25 +210,37 @@ while not done:
         screen.blit(menuselect, (screen_rect.width+menupos, menuitem*70))
 
     if not player.moving and not menu and currentScene == 'World':
+        if pygame.key.get_pressed()[pygame.K_LSHIFT]:
+            movement_type = 'run'
+            movement_speed = 4
+            movement_length = 4
+        else:
+            movement_type = 'walk'
+            movement_speed = 2
+            movement_length = 8
+
         if pygame.key.get_pressed()[pygame.K_DOWN]:
-            player.setMovement([0,-2],8,(0,-1))
-            if not player.animName == 'walkdown':
-                player.setAnimation('walkdown', 4)
+            player.setMovement([0,-movement_speed],movement_length,(0,-1))
+            if not player.animName == f'{movement_type}down':
+                player.setAnimation(f'{movement_type}down', 8)
         elif pygame.key.get_pressed()[pygame.K_UP]:
-            player.setMovement([0,2],8,(0,1))
-            if not player.animName == 'walkup':
-                player.setAnimation('walkup', 4)
+            player.setMovement([0,movement_speed],movement_length,(0,1))
+            if not player.animName == f'{movement_type}up':
+                player.setAnimation(f'{movement_type}up', 8)
         elif pygame.key.get_pressed()[pygame.K_RIGHT]:
-            player.setMovement([2,0],8,(1,0))
-            if not player.animName == 'walkright':
-                player.setAnimation('walkright', 4)
+            player.setMovement([movement_speed,0],movement_length,(1,0))
+            if not player.animName == f'{movement_type}right':
+                player.setAnimation(f'{movement_type}right', 8)
         elif pygame.key.get_pressed()[pygame.K_LEFT]:
-            player.setMovement([-2,0],8,(-1,0))
-            if not player.animName == 'walkleft':
-                player.setAnimation('walkleft', 4)
+            player.setMovement([-movement_speed,0],movement_length,(-1,0))
+            if not player.animName == f'{movement_type}left':
+                player.setAnimation(f'{movement_type}left', 8)
         else:
             if player.animName.startswith('walk'):
                 player.setAnimation(player.animName.replace('walk', 'idle'), 4)
+            elif player.animName.startswith('run'):
+                player.setAnimation(player.animName.replace('run', 'idle'), 4)
+
 
     if menuframes:
         menupos -= menudisp*(10-menuframes)
@@ -240,7 +252,7 @@ while not done:
 
     if currentScene == 'Options': #code is nu compleet shit, maar ik weet al hoe ik normaal ga maken
         screen.fill((255,255,255))
-        
+
         if selected == len(rows): labelback = font.render("back",False,(255,0,0))
         else: labelback = font.render("back",False,(0,0,0))
 

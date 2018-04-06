@@ -18,7 +18,19 @@ class Player:
             'right2'    : (40,50),
             'leftidle'  : (0,75),
             'left1'     : (20,75),
-            'left2'     : (40,75)
+            'left2'     : (40,75),
+            'run_down1' : (60, 0),
+            'run_down2' : (80, 0),
+            'run_down3' : (100,0),
+            'run_up1'   : (60, 25),
+            'run_up2'   : (80, 25),
+            'run_up3'   : (100,25),
+            'run_right1': (60, 50),
+            'run_right2': (80, 50),
+            'run_right3': (100,50),
+            'run_left1' : (60, 75),
+            'run_left2' : (80, 75),
+            'run_left3' : (100,75),
         }
         # @SPEED: We could 'map' these directly into the coordinates above for a slight speed improvement
         self.animations = {
@@ -26,10 +38,14 @@ class Player:
             'idleup'    : ['upidle'],
             'idleright' : ['rightidle'],
             'idleleft'  : ['leftidle'],
-            'walkdown'  : ['downidle','down2','downidle','down1'],
-            'walkup'    : ['upidle','up2','upidle','up1'],
-            'walkright' : ['rightidle','right2','rightidle','right1'],
-            'walkleft'  : ['leftidle','left2','leftidle','left1']
+            'walkdown'  : ['down2','downidle','down1','downidle'],
+            'walkup'    : ['up2','upidle','up1','upidle'],
+            'walkright' : ['right2','rightidle','right1','rightidle'],
+            'walkleft'  : ['left2','leftidle','left1','leftidle'],
+            'rundown'   : ['run_down2', 'run_down1', 'run_down3', 'run_down1'],
+            'runup'     : ['run_up2', 'run_up1', 'run_up3', 'run_up1'],
+            'runright'  : ['run_right2', 'run_right1', 'run_right3', 'run_right1'],
+            'runleft'   : ['run_left2', 'run_left1', 'run_left3', 'run_left1'],
         }
         self.currentStance = 'downidle'
         self.setAnimation('idledown', 1)
