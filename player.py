@@ -90,7 +90,6 @@ class Player:
                 self.moving = True
 
     def warp(self,new_map, npc,pos):
-        global currentMap
         self.bounds = new_map.bounds
         self.npcloader = npc
         self.pos = new_map.warps[0]
