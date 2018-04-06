@@ -59,14 +59,15 @@ class Player:
             pos_div = (int(self.pos[0]/16), int(self.pos[1]/16))
             if self.bounds.at_pos(*pos_div) == 'u':
                 self.setMovement((0, 2), 8, (0, 1))
-            if self.bounds.at_pos(*pos_div) == 'r':
+            elif self.bounds.at_pos(*pos_div) == 'r':
                 self.setMovement((2, 0), 8, (1, 0))
-            if self.bounds.at_pos(*pos_div) == 'd':
+            elif self.bounds.at_pos(*pos_div) == 'd':
                 self.setMovement((0, -2), 8, (0, -1))
-            if self.bounds.at_pos(*pos_div) == 'l':
+            elif self.bounds.at_pos(*pos_div) == 'l':
                 self.setMovement((-2, 0), 8, (-1, 0))
-            self.moving = False
-            return 'stopped moving'
+            else:
+                self.moving = False
+                return 'stopped moving'
 
     def updateAnimation(self):
         if len(self.anim) > 1:
