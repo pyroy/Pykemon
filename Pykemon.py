@@ -18,7 +18,6 @@ clock = pygame.time.Clock()
 done = False
 
 #Console
-
 Event = namedtuple("Event", ["event","data"])
 dummyEvent = Event("SAY","Hey, sexy ;)")
 
@@ -112,6 +111,13 @@ npcloader.loadNPC('will')
 currentScene = 'World'
 activeBattle = None #Actual BattleScene object
 
+#Options menu vars
+font = pygame.font.SysFont('arial', 30)
+selected = 0; rowindex = 0
+try: options = pickle.load(open('data\options.p','rb'))
+except: options = {}
+options = {'empty':0,'test':1}
+
 menuitem = 0
 while not done:
     console.executeNextEvent()
@@ -152,6 +158,20 @@ while not done:
                 elif event.key == pygame.K_RETURN and not menu:
                     #player.activate()
                     pass;
+            if currentScene == 'Options':
+                if event.key == pygame.K_UP:
+                    selected = max(0, selected - 1)
+                    print(selected)
+                elif event.key == pygame.K_DOWN:
+                    selected = min(len(rows), selected + 1)
+                    print(selected)
+                elif event.key == pygame.K_LEFT:
+                    rowindex = max(0, rowindex - 1)
+                elif event.key == pygame.K_RIGHT:
+                    rowindex = min(len(rows[row])-1, rowindex + 1)
+                elif event.key == pygame.K_RETURN and selected == len(rows):
+                    pickle.dump(options, open('options.p','wb'))
+                    currentScene = 'World'; selected = 0; rowindex = 0
 
     if currentScene == 'World': #scene outside battle
         drawx = map_surface.get_width()/2-player.pos[0]-8
@@ -217,6 +237,22 @@ while not done:
     if currentScene == 'Battle':
         activeBattle.update()
         activeBattle.draw() #scene in battle
+
+    if currentScene == 'Options': #code is nu compleet shit, maar ik weet al hoe ik normaal ga maken
+        screen.fill((255,255,255))
+        
+        if selected == len(rows): labelback = font.render("back",False,(255,0,0))
+        else: labelback = font.render("back",False,(0,0,0))
+
+        rows = {1: ['empty','test']}
+
+        for row in rows:
+            for label in rows[row]:
+                if options[label]:
+                    screen.blit(font.render(label, False, (255,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1),row*screen_rect.height/(1+len(rows.keys()))))
+                else: screen.blit(font.render(label, False, (0,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1),row*screen_rect.height/(1+len(rows.keys()))))
+
+        screen.blit(labelback,(0,screen_rect.height-50))
 
     warp = player.checkWarps(currentMap.warps)
     if warp:
