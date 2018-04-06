@@ -143,6 +143,5 @@ class MapLoader:
     def getEncounters(self, mapname):
         with open(f"maps/{mapname}/encounters.txt") as file:
             lines = file.readlines()
-        for line in lines:
-            line.strip()
+        lines = list(map(lambda line: line.strip(), lines))
         return Encounters(lines)
