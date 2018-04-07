@@ -194,9 +194,10 @@ while not done:
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
                     foe.party[0].setlevel(EncounterData[1])
                     activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
+                    currentScene = 'Battle'
 
         drawPlayer = True
-        npcloader.update([int(player.pos[0]/16),-1*int(player.pos[1]/16)])
+        npcloader.update([player.pos[0]//16,-1*player.pos[1]//16])
         for npc in npcloader.npcs:
             surface, position = npc.getDrawData()
             if position[1] * 16 + drawy - 13 > map_surface.get_height()/2-13 and drawPlayer:
