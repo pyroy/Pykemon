@@ -14,12 +14,12 @@ MAIN GAME
 	NPC-Console support
 	NPC loading in maps
   Ledges
+  Running
   TODO:
 	Console functionality 50%
 	NPC Sprites
 	Object-Console support
   Ledge jump animations
-  Running!
 
 BATTLE
   DONE:
