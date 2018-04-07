@@ -4,8 +4,10 @@ import pickle
 from collections import namedtuple
 
 #main imports
-import maploader, npcloader
+import maploader
+import npcloader
 import battlescene
+import keybinding
 import pokepy.pokemon as pkm
 from player import Player
 
@@ -123,6 +125,7 @@ while not done:
     console.executeNextEvent()
     zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
     map_surface = pygame.Surface((screen_rect.width/zoom, screen_rect.height/zoom))
+    key_action = keybinding.get_action_pressed(pygame.key.get_pressed(), currentScene)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
@@ -210,7 +213,7 @@ while not done:
         screen.blit(menuselect, (screen_rect.width+menupos, menuitem*70))
 
     if not player.moving and not menu and currentScene == 'World':
-        if pygame.key.get_pressed()[pygame.K_LSHIFT]:
+        if key_action('run'):
             movement_type = 'run'
             movement_speed = 4
             movement_length = 4
@@ -219,19 +222,19 @@ while not done:
             movement_speed = 2
             movement_length = 8
 
-        if pygame.key.get_pressed()[pygame.K_DOWN]:
+        if key_action('south'):
             player.setMovement([0,-movement_speed],movement_length,(0,-1))
             if not player.animName == f'{movement_type}down':
                 player.setAnimation(f'{movement_type}down', 8)
-        elif pygame.key.get_pressed()[pygame.K_UP]:
+        elif key_action('north'):
             player.setMovement([0,movement_speed],movement_length,(0,1))
             if not player.animName == f'{movement_type}up':
                 player.setAnimation(f'{movement_type}up', 8)
-        elif pygame.key.get_pressed()[pygame.K_RIGHT]:
+        elif key_action('east'):
             player.setMovement([movement_speed,0],movement_length,(1,0))
             if not player.animName == f'{movement_type}right':
                 player.setAnimation(f'{movement_type}right', 8)
-        elif pygame.key.get_pressed()[pygame.K_LEFT]:
+        elif key_action('west'):
             player.setMovement([-movement_speed,0],movement_length,(-1,0))
             if not player.animName == f'{movement_type}left':
                 player.setAnimation(f'{movement_type}left', 8)
