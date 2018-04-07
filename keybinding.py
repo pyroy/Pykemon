@@ -4,7 +4,7 @@ from pygame import *
 controls_filename = "controls.ini"
 
 # Returns a function which checks whether the key corresponding with a action
-# via the 'controls.ini' file 
+# via the 'controls.ini' file. 
 def get_action_pressed(key_dict, scene):
     def pressed(action):
         return all(key_dict[string_to_key[keybinding[scene][action_key]]] for action_key in action.split('+'))
