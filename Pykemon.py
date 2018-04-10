@@ -215,30 +215,18 @@ while not done:
 
     if not player.moving and not menu and currentScene == 'World':
         if key_action('run'):
-            movement_type = 'run'
-            movement_speed = 4
-            movement_length = 4
+            move_type = 'run'
         else:
-            movement_type = 'walk'
-            movement_speed = 2
-            movement_length = 8
+            move_type = 'walk'
 
-        if key_action('south'):
-            player.setMovement([0,-movement_speed],movement_length,(0,-1))
-            if not player.animName == f'{movement_type}down':
-                player.setAnimation(f'{movement_type}down', 8)
-        elif key_action('north'):
-            player.setMovement([0,movement_speed],movement_length,(0,1))
-            if not player.animName == f'{movement_type}up':
-                player.setAnimation(f'{movement_type}up', 8)
+        if key_action('north'):
+            player.move(move_type, 'north')
         elif key_action('east'):
-            player.setMovement([movement_speed,0],movement_length,(1,0))
-            if not player.animName == f'{movement_type}right':
-                player.setAnimation(f'{movement_type}right', 8)
+            player.move(move_type, 'east')
+        elif key_action('south'):
+            player.move(move_type, 'south')
         elif key_action('west'):
-            player.setMovement([-movement_speed,0],movement_length,(-1,0))
-            if not player.animName == f'{movement_type}left':
-                player.setAnimation(f'{movement_type}left', 8)
+            player.move(move_type, 'west')
         else:
             if player.animName.startswith('walk'):
                 player.setAnimation(player.animName.replace('walk', 'idle'), 4)

@@ -6,6 +6,7 @@ class Player:
     def __init__(self,bounds, npc):
         self.pos = [0,0]
         self.texturemap = pygame.image.load("textures/player-kaori.png").convert_alpha()
+        # @SPEED: We could 'map' these directly into the coordinates above for a slight speed improvement
         self.textures = {
             'downidle'  : (0,0),
             'down1'     : (20,0),
@@ -32,23 +33,22 @@ class Player:
             'run_left2' : (80, 75),
             'run_left3' : (100,75),
         }
-        # @SPEED: We could 'map' these directly into the coordinates above for a slight speed improvement
         self.animations = {
-            'idledown'  : ['downidle'],
-            'idleup'    : ['upidle'],
-            'idleright' : ['rightidle'],
-            'idleleft'  : ['leftidle'],
-            'walkdown'  : ['down2','downidle','down1','downidle'],
-            'walkup'    : ['up2','upidle','up1','upidle'],
-            'walkright' : ['right2','rightidle','right1','rightidle'],
-            'walkleft'  : ['left2','leftidle','left1','leftidle'],
-            'rundown'   : ['run_down2', 'run_down1', 'run_down3', 'run_down1'],
-            'runup'     : ['run_up2', 'run_up1', 'run_up3', 'run_up1'],
-            'runright'  : ['run_right2', 'run_right1', 'run_right3', 'run_right1'],
-            'runleft'   : ['run_left2', 'run_left1', 'run_left3', 'run_left1'],
+            'idle_north': ['upidle'],
+            'idle_east' : ['rightidle'],
+            'idle_south': ['downidle'],
+            'idle_west' : ['leftidle'],
+            'walk_north': ['up2','upidle','up1','upidle'],
+            'walk_east' : ['right2','rightidle','right1','rightidle'],
+            'walk_south': ['down2','downidle','down1','downidle'],
+            'walk_west' : ['left2','leftidle','left1','leftidle'],
+            'run_north' : ['run_up2', 'run_up1', 'run_up3', 'run_up1'],
+            'run_east'  : ['run_right2', 'run_right1', 'run_right3', 'run_right1'],
+            'run_south' : ['run_down2', 'run_down1', 'run_down3', 'run_down1'],
+            'run_west'  : ['run_left2', 'run_left1', 'run_left3', 'run_left1'],
         }
         self.currentStance = 'downidle'
-        self.setAnimation('idledown', 1)
+        self.setAnimation('idle_south', 1)
         self.displacement = [0,0]
         self.remainingDuration = 0
         self.bounds = bounds
@@ -66,6 +66,31 @@ class Player:
         self.updateAnimation()
         return flag
 
+    def move(self, type, dir):
+        if type == 'run':
+            move_length = 4
+        elif type == 'walk':
+            move_length = 8
+        else:
+            return Error(f"Invalid move type '{type}''")
+
+        dir = dir.lower()
+        if   dir == 'north':
+            move_dir = (0,1)
+        elif dir == 'east':
+            move_dir = (1,0)
+        elif dir == 'south':
+            move_dir = (0,-1)
+        elif dir == 'west':
+            move_dir = (-1,0)
+        else:
+            return Error(f"Invalid direction ''{dir}''")
+
+        self.setMovement(move_length, move_dir)
+        if not self.animName == f'{type}_{dir}':
+            self.setAnimation(f'{type}_{dir}', 8)
+
+
     def updatePosition(self, currentMap):
         if self.remainingDuration:
             self.pos[0] += self.displacement[0]
@@ -74,13 +99,13 @@ class Player:
         else:
             pos_div = (int(self.pos[0]/16), int(self.pos[1]/16))
             if self.bounds.at_pos(*pos_div) == 'u':
-                self.setMovement((0, 2), 8, (0, 1))
+                self.move('walk', 'north')
             elif self.bounds.at_pos(*pos_div) == 'r':
-                self.setMovement((2, 0), 8, (1, 0))
+                self.move('walk', 'east')
             elif self.bounds.at_pos(*pos_div) == 'd':
-                self.setMovement((0, -2), 8, (0, -1))
+                self.move('walk', 'south')
             elif self.bounds.at_pos(*pos_div) == 'l':
-                self.setMovement((-2, 0), 8, (-1, 0))
+                self.move('walk', 'west')
             else:
                 self.moving = False
                 return 'stopped moving'
@@ -98,23 +123,19 @@ class Player:
         self.animDelay = delay
         self.framesSinceStartAnim = 0
 
-    def setMovement(self,displacement, duration, dir):
+    def setMovement(self, duration, dir):
         if self.bounds.checkBounds(int(self.pos[0]/16)+dir[0], int(self.pos[1]/16)+dir[1], dir):
             if self.npcloader.checkBounds( [int(self.pos[0]/16)+dir[0],-1*int(self.pos[1]/16)-dir[1]] ):
                 self.remainingDuration = duration
-                self.displacement = displacement
+                self.displacement = (dir[0] * 16 // duration, dir[1] * 16 // duration)
                 self.moving = True
 
     def warp(self,new_map, npc,pos):
         self.bounds = new_map.bounds
         self.npcloader = npc
         self.pos = new_map.warps[0]
-        self.resetAnimations()
 
     def checkWarps(self,warps):
         for warp in warps[1:]:
             if self.pos == warp[0]:
                 return (warp[1], warp[2])
-
-    def resetAnimations(self):
-        pass
