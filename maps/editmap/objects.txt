@@ -3,4 +3,4 @@ warp;[14,15];secondmap;[2,0]
 warp;[16,4];editmap_pokecenter1;[8,0]
 NPC;[7,1];bob
 NPC;[7,3];will
-sign;[0,0];['HELP IM A SIGN','just kidding im fine','I can also rhyme','how sublime.']
+sign;[12,5];['HELP IM A SIGN','just kidding im fine','I can also rhyme','how sublime.']

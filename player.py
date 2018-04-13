@@ -4,7 +4,7 @@ import pokemon as pkm
 
 class Player:
     def __init__(self,bounds, npc):
-        self.pos = [0,0]
+        self.pos = (0,0)
         self.texturemap = pygame.image.load("textures/player-kaori.png").convert_alpha()
         # @SPEED: We could 'map' these directly into the coordinates above for a slight speed improvement
         self.textures = {
@@ -49,13 +49,26 @@ class Player:
         }
         self.currentStance = 'downidle'
         self.setAnimation('idle_south', 1)
-        self.displacement = [0,0]
+        self.displacement = (0,0)
         self.remainingDuration = 0
         self.bounds = bounds
         self.npcloader = npc
         self.trainerdata = pkm.Trainer('Player')
         self.trainerdata.party.append(pkm.Pokemon('Starmie'))
         self.moving = False
+        self.direction = 'south'
+
+    def get_direction_coordinates(self):
+        if self.direction == 'north':
+            return (0,1)
+        elif self.direction == 'east':
+            return (1,0)
+        elif self.direction == 'south':
+            return (0,-1)
+        elif self.direction == 'west':
+            return (-1,0)
+        else:
+            raise Error
 
     def draw(self, pos, surface):
         global battle, activeBattle
@@ -72,19 +85,10 @@ class Player:
         elif type == 'walk':
             move_length = 8
         else:
-            return Error(f"Invalid move type '{type}''")
+            raise Error(f"Invalid move type '{type}''")
 
-        dir = dir.lower()
-        if   dir == 'north':
-            move_dir = (0,1)
-        elif dir == 'east':
-            move_dir = (1,0)
-        elif dir == 'south':
-            move_dir = (0,-1)
-        elif dir == 'west':
-            move_dir = (-1,0)
-        else:
-            return Error(f"Invalid direction ''{dir}''")
+        self.direction = dir.lower()
+        move_dir = self.get_direction_coordinates()
 
         self.setMovement(move_length, move_dir)
         if not self.animName == f'{type}_{dir}':

@@ -81,12 +81,18 @@ class Encounters:
         level = ChanceList(*eval(level_data))
         return name, level
 
+Sign = namedtuple("Sign", [
+    "pos",
+    "text"
+])
+
 Map = namedtuple("Map", [
     "ground",
     "alpha",
     "beta",
     "bounds",
     "warps",
+    "signs",
     "encounters"
 ])
 
@@ -101,7 +107,8 @@ class MapLoader:
             self.loadDrawMap  (mapname, "beta" , transparent=True),
             self.loadBoundsMap(mapname),
             self.getWarpPoints(mapname),
-            self.getEncounters(mapname)
+            self.getSigns     (mapname),
+            self.getEncounters(mapname),
         )
 
     def loadDrawMap(self, mapname, layer, transparent=False):
@@ -123,13 +130,13 @@ class MapLoader:
 
         return drawmap
 
-    def loadBoundsMap(self,mapname):
+    def loadBoundsMap(self, mapname):
         with open(f"maps/{mapname}/bounds.txt") as file:
             lines = file.readlines()
         lines = list(map(lambda line: line.strip(), lines))
         return Bounds(lines)
 
-    def getWarpPoints(self,mapname):
+    def getWarpPoints(self, mapname):
         with open(f"maps/{mapname}/objects.txt") as file:
             lines = file.readlines()
         sPos = eval(lines[0].split(';')[1])
@@ -139,6 +146,17 @@ class MapLoader:
             if p[0].lower() == 'warp':
                 warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*-16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*-16]])
         return warps
+
+    def getSigns(self, mapname):
+        with open(f"maps/{mapname}/objects.txt") as file:
+            lines = file.readlines()
+        signs = []
+        for line in lines[1:]:
+            p = line.split(';')
+            # @TODO: Add more types of objects
+            if p[0].lower() == 'sign':
+                signs.append(Sign(tuple(eval(p[1])), eval(p[2])))
+        return signs
 
     def getEncounters(self, mapname):
         with open(f"maps/{mapname}/encounters.txt") as file:

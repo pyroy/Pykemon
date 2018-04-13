@@ -59,7 +59,7 @@ class Console:
         except:
             self.dialogue_active = False
 
-    def execute_events:
+    def execute_events(self):
         while self.queue:
             self.execute_next_event()
 
@@ -82,7 +82,7 @@ class Console:
             self.queue.extend(event)
         else: self.queue.append(event)
 
-    def executeScript(self, scriptPath):
+    def execute_script(self, scriptPath):
         with open(scriptPath) as file:
             lines = file.readlines()
         for line in lines: self.addEvent( interpret(line) )
@@ -152,7 +152,7 @@ options = {'empty':0,'test':1}
 
 menuitem = 0
 while not done:
-    console.execut_events()
+    console.execute_events()
     zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
     map_surface = pygame.Surface((screen_rect.width/zoom, screen_rect.height/zoom))
     pressed_keys = pygame.key.get_pressed()
@@ -165,12 +165,15 @@ while not done:
         # Single key actions
         if event.type == pygame.KEYDOWN:
             key = event.key
+            if console.dialogue_active:
+                if single_key_action(key, 'Dialogue', 'continue'):
+                    console.dialogue_continue()
             if currentScene == 'World':
-                if event.key == pygame.K_z:
+                if key == pygame.K_z:
                     zoom *= 1.1
-                elif event.key == pygame.K_x:
+                elif key == pygame.K_x:
                     zoom /= 1.1
-                elif event.key == pygame.K_m:
+                elif key == pygame.K_m:
                     if not menuframes:
                         menu = not menu
                         if menu:
@@ -179,20 +182,29 @@ while not done:
                         else:
                             menuframes = 10
                             menudisp = -200/45
-                elif event.key == pygame.K_BACKSLASH:
+                elif key == pygame.K_BACKSLASH:
                     a = input("load map: ")
                     player.warp(a,[0,0])
-                elif event.key == pygame.K_UP and menu:
+                elif key == pygame.K_UP and menu:
                     menuitem = max(0, menuitem - 1)
-                elif event.key == pygame.K_DOWN and menu:
+                elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
-                elif event.key == pygame.K_RETURN and menuitem == 0 and menu:
+                elif key == pygame.K_RETURN and menuitem == 0 and menu:
                     console.addEvent( Event('SAY','saving! please don\'t turn off the console!'))
-                elif event.key == pygame.K_RETURN and menuitem == 1 and menu:
+                elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     currentScene = 'Options'
-                elif event.key == pygame.K_RETURN and not menu:
-                    #player.activate()
-                    pass;
+                elif single_key_action(key, 'World', 'select') and not player.moving:
+                    print("Key action!")
+                    for sign in currentMap.signs:
+                        dir = player.get_direction_coordinates()
+                        print("player.pos:", player.pos)
+                        print("player.pos//16:", (player.pos[0] // 16, player.pos[1] // 16))
+                        print("dir:", dir)
+                        print("sign.pos", sign.pos)
+                        if player.pos[0]//16 + dir[0] == sign.pos[0] and player.pos[1]//16 + dir[1] == sign.pos[1]:
+                            print("Adding the event")
+                            console.addEvent(Event("SAY", sign))
+                            break
 
             if currentScene == 'Options':
                 if event.key == pygame.K_UP:
@@ -208,9 +220,6 @@ while not done:
                 elif event.key == pygame.K_RETURN and selected == len(rows):
                     pickle.dump(options, open('options.p','wb'))
                     currentScene = 'World'; selected = 0; rowindex = 0
-            if console.dialogue_active:
-                if single_key_action(key, 'Dialogue', 'continue'):
-                    console.dialogue_continue()
 
     # Continuous key actions
     if not player.moving and not menu and currentScene == 'World':
@@ -233,6 +242,7 @@ while not done:
             elif player.animName.startswith('run'):
                 player.setAnimation(player.animName.replace('run', 'idle'), 4)
 
+    # Drawing the frame
     if currentScene == 'World': #scene outside battle
         drawx = map_surface.get_width()/2-player.pos[0]-8
         drawy = map_surface.get_height()/2+player.pos[1]
@@ -270,15 +280,11 @@ while not done:
         screen.blit(pygame.transform.scale(menublit,(200,2*184)), (screen_rect.width+menupos, 0))
         screen.blit(menuselect, (screen_rect.width+menupos, menuitem*70))
 
-    if menuframes:
-        menupos -= menudisp*(10-menuframes)
-        menuframes -= 1
-
-    if currentScene == 'Battle':
+    elif currentScene == 'Battle':
         activeBattle.update()
         activeBattle.draw() #scene in battle
 
-    if currentScene == 'Options': #code is nu compleet shit, maar ik weet al hoe ik normaal ga maken
+    elif currentScene == 'Options': #code is nu compleet shit, maar ik weet al hoe ik normaal ga maken
         screen.fill((255,255,255))
 
         if selected == len(rows): labelback = font.render("back",False,(255,0,0))
@@ -293,6 +299,10 @@ while not done:
                 else: screen.blit(font.render(label, False, (0,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1),row*screen_rect.height/(1+len(rows.keys()))))
 
         screen.blit(labelback,(0,screen_rect.height-50))
+
+    if menuframes:
+            menupos -= menudisp*(10-menuframes)
+            menuframes -= 1
 
     console.draw_dialogue(screen)
 
