@@ -28,6 +28,27 @@ dummyEvent = Event("SAY",[
     "it gets me all hot n' bothered"
 ])
 
+def take_words_until(s, n):
+    return " ".join(s.split()[:n])
+
+def take_words_from(s, n):
+    return " ".join(s.split()[n:])
+
+def fit_string_with_width(s, font, width):
+    s_surf = font.render(s, False, (255,255,255))
+    if s_surf.get_width() < width:
+        return s_surf, ""
+    for i in range(-1, -len(s), -1):
+        s_surf = font.render(
+        take_words_until(s, i),
+        False,
+        (255,255,255)
+        )
+        if s_surf.get_width() < width:
+            rest_text = take_words_from(s, i)
+            break
+    return s_surf, rest_text
+
 class Console:
     def __init__(self, data):
         self.state = 0
@@ -37,6 +58,7 @@ class Console:
         self.dialogue_texture = pygame.image.load("textures/dialogue box.png").convert_alpha()
         self.font = pygame.font.SysFont("arial",30)
         self.dialogue_active = False
+        self.rest_text = ""
 
     def dialogBox(self, text):
         self.dialogue_active = True
@@ -50,21 +72,36 @@ class Console:
             return
         # First version of positioning
         # Should definitely be refined
+
+        # Positioning and blitting of the background
         scaled = pygame.transform.scale(self.dialogue_texture, (screen.get_width(), self.dialogue_texture.get_height()*screen.get_width()//self.dialogue_texture.get_width()))
         pos_rect = pygame.Rect(0, 0, scaled.get_width(), scaled.get_height())
         pos_rect.centerx = screen.get_width() / 2
         pos_rect.bottom = screen.get_height()
         screen.blit(scaled, pos_rect)
 
-        text_rect = pos_rect.inflate(-pos_rect.width*0.1, -pos_rect.height*0.3)
-        screen.blit(self.font.render(self.current_dialogue_text, False, (255,255,255)), text_rect)
+        # Positioning and blitting of the top row of text
+        text_top_rect = pos_rect.inflate(-pos_rect.width*0.1, -pos_rect.height*0.3)
+        text_top_surf, rest_text = fit_string_with_width(self.current_dialogue_text, self.font, text_top_rect.width)
+        screen.blit(text_top_surf, text_top_rect)
+
+        # Positioning and blitting of the bottom row of text
+        if rest_text:
+            text_bottom_rect = text_top_rect.copy()
+            text_bottom_rect.y = text_top_rect.centery
+            text_bottom_surf, self.rest_text = fit_string_with_width(rest_text, self.font, text_bottom_rect.width)
+            screen.blit(text_bottom_surf, text_bottom_rect)
 
     def dialogue_continue(self):
-        try:
-            self.current_dialogue_text = next(self.dialogue_text)
-            print(self.current_dialogue_text)
-        except StopIteration:
-            self.dialogue_active = False
+        if self.rest_text:
+            self.current_dialogue_text = self.rest_text
+            self.rest_text = ""
+        else:
+            try:
+                self.current_dialogue_text = next(self.dialogue_text)
+                print(self.current_dialogue_text)
+            except StopIteration:
+                self.dialogue_active = False
 
     def execute_events(self):
         while self.queue:
@@ -169,12 +206,10 @@ while not done:
         if event.type == pygame.VIDEORESIZE:
             screen_rect.size = event.dict['size']
             screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
+
         # Single key actions
         if event.type == pygame.KEYDOWN:
             key = event.key
-            if console.dialogue_active:
-                if single_key_action(key, 'Dialogue', 'continue'):
-                    console.dialogue_continue()
             if currentScene == 'World':
                 if key == pygame.K_z:
                     zoom *= 1.1
@@ -183,11 +218,10 @@ while not done:
                 elif key == pygame.K_m:
                     if not menuframes:
                         menu = not menu
+                        menuframes = 10
                         if menu:
-                            menuframes = 10
                             menudisp = 200/45
                         else:
-                            menuframes = 10
                             menudisp = -200/45
                 elif key == pygame.K_BACKSLASH:
                     a = input("load map: ")
@@ -197,21 +231,19 @@ while not done:
                 elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
                 elif key == pygame.K_RETURN and menuitem == 0 and menu:
-                    console.addEvent( Event('SAY','saving! please don\'t turn off the console!'))
+                    console.addEvent( Event('SAY',"saving! please don't turn off the console!"))
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     currentScene = 'Options'
                 elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
-                    print("Key action!")
                     for sign in currentMap.signs:
                         dir = player.get_direction_coordinates()
-                        print("player.pos:", player.pos)
-                        print("player.pos//16:", (player.pos[0] // 16, player.pos[1] // 16))
-                        print("dir:", dir)
-                        print("sign.pos", sign.pos)
                         if player.pos[0]//16 + dir[0] == sign.pos[0] and player.pos[1]//16 + dir[1] == sign.pos[1]:
-                            print("Adding the event")
                             console.addEvent(Event("SAY", sign.text))
                             break
+
+            if console.dialogue_active:
+                if single_key_action(key, 'Dialogue', 'continue'):
+                    console.dialogue_continue()
 
             if currentScene == 'Options':
                 if event.key == pygame.K_UP:

@@ -4,3 +4,5 @@ warp;[16,4];editmap_pokecenter1;[8,0]
 NPC;[7,1];bob
 NPC;[7,3];will
 sign;[12,5];['HELP IM A SIGN','just kidding im fine','I can also rhyme','how sublime.']
+sign;[5,5];['This text will be way to long to fit on the screen, so were going to have to wrap it and maybe even break it up into multiple screens and then break those up into multiple lines as well so we can actually read everything even if developers are too stupid to correctly separate the text.']
+sign;[6,5];['This text will be way to long to fit on the screen, so were going to have to wrap it and maybe even break it up into multiple screens and then break those up into multiple lines as well so we can actually read everything even if developers are too stupid to correctly separate the text.']
