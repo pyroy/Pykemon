@@ -60,11 +60,11 @@ class Player:
 
     def get_direction_coordinates(self):
         if self.direction == 'north':
-            return (0,1)
+            return (0,-1)
         elif self.direction == 'east':
             return (1,0)
         elif self.direction == 'south':
-            return (0,-1)
+            return (0,1)
         elif self.direction == 'west':
             return (-1,0)
         else:
@@ -129,7 +129,7 @@ class Player:
 
     def setMovement(self, duration, dir):
         if self.bounds.checkBounds(int(self.pos[0]/16)+dir[0], int(self.pos[1]/16)+dir[1], dir):
-            if self.npcloader.checkBounds( [int(self.pos[0]/16)+dir[0],-1*int(self.pos[1]/16)-dir[1]] ):
+            if self.npcloader.checkBounds( [int(self.pos[0]/16)+dir[0], int(self.pos[1]/16)+dir[1]] ):
                 self.remainingDuration = duration
                 self.displacement = (dir[0] * 16 // duration, dir[1] * 16 // duration)
                 self.moving = True

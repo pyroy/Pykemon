@@ -8,18 +8,17 @@ class Bounds:
         self.bounds = b
 
     def at_pos(self, x, y):
-        return self.bounds[-y][x]
+        return self.bounds[y][x]
 
     def checkBounds(self, x, y, dir=(0, 0)):
-        y = -y
         if y in range(len(self.bounds)) and x in range(len(self.bounds[0])):
             if self.bounds[y][x] == '1':
                 return False
-            elif self.bounds[y][x] == 'u' and not dir == ( 0, 1):
+            elif self.bounds[y][x] == 'u' and not dir == ( 0,-1):
                 return False
             elif self.bounds[y][x] == 'r' and not dir == ( 1, 0):
                 return False
-            elif self.bounds[y][x] == 'd' and not dir == ( 0,-1):
+            elif self.bounds[y][x] == 'd' and not dir == ( 0, 1):
                 return False
             elif self.bounds[y][x] == 'l' and not dir == (-1, 0):
                 return False
@@ -68,7 +67,7 @@ class Encounters:
                 )
 
     def checkEncounters(self,x,y):
-        return int(self.map[-y][x]) #no need for extra bound check since player is always in bounds.
+        return int(self.map[y][x]) #no need for extra bound check since player is always in bounds.
 
     def generateEncounter(self, encountertype): #is actually an int in a string but since we're passing from a text file I'm keeping it a string. This way we can bind it to letters as well.
         pokemon = self.encounters[encountertype].choose()
@@ -140,11 +139,11 @@ class MapLoader:
         with open(f"maps/{mapname}/objects.txt") as file:
             lines = file.readlines()
         sPos = eval(lines[0].split(';')[1])
-        warps = [[sPos[0]*16,sPos[1]*-16]]
+        warps = [[sPos[0]*16,sPos[1]*16]]
         for line in lines[1:]:
             p = line.split(';')
             if p[0].lower() == 'warp':
-                warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*-16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*-16]])
+                warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*16]])
         return warps
 
     def getSigns(self, mapname):

@@ -21,7 +21,12 @@ done = False
 
 #Console
 Event = namedtuple("Event", ["event","data"])
-dummyEvent = Event("SAY",["Hey, sexy ;)", "Isn't this lovely?"])
+dummyEvent = Event("SAY",[
+    "Hey, sexy ;)",
+    "Isn't this lovely?",
+    "yes sweetie",
+    "it gets me all hot n' bothered"
+])
 
 class Console:
     def __init__(self, data):
@@ -37,6 +42,7 @@ class Console:
         self.dialogue_active = True
         self.dialogue_text = iter(text)
         self.current_dialogue_text = next(self.dialogue_text)
+        print(self.current_dialogue_text)
         print(text, 'ID:'+str(self.state))
 
     def draw_dialogue(self, screen):
@@ -56,7 +62,8 @@ class Console:
     def dialogue_continue(self):
         try:
             self.current_dialogue_text = next(self.dialogue_text)
-        except:
+            print(self.current_dialogue_text)
+        except StopIteration:
             self.dialogue_active = False
 
     def execute_events(self):
@@ -193,7 +200,7 @@ while not done:
                     console.addEvent( Event('SAY','saving! please don\'t turn off the console!'))
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     currentScene = 'Options'
-                elif single_key_action(key, 'World', 'select') and not player.moving:
+                elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
                     print("Key action!")
                     for sign in currentMap.signs:
                         dir = player.get_direction_coordinates()
@@ -203,7 +210,7 @@ while not done:
                         print("sign.pos", sign.pos)
                         if player.pos[0]//16 + dir[0] == sign.pos[0] and player.pos[1]//16 + dir[1] == sign.pos[1]:
                             print("Adding the event")
-                            console.addEvent(Event("SAY", sign))
+                            console.addEvent(Event("SAY", sign.text))
                             break
 
             if currentScene == 'Options':
@@ -245,7 +252,7 @@ while not done:
     # Drawing the frame
     if currentScene == 'World': #scene outside battle
         drawx = map_surface.get_width()/2-player.pos[0]-8
-        drawy = map_surface.get_height()/2+player.pos[1]
+        drawy = map_surface.get_height()/2-player.pos[1]
 
         map_surface.blit(currentMap.ground, (drawx,drawy)) #groundmap
         map_surface.blit(currentMap.beta, (drawx, drawy)) #betamap
@@ -264,7 +271,7 @@ while not done:
                     currentScene = 'Battle'
 
         drawPlayer = True
-        npcloader.update([player.pos[0]//16,-1*player.pos[1]//16])
+        npcloader.update([player.pos[0]//16,1*player.pos[1]//16])
         for npc in npcloader.npcs:
             surface, position = npc.getDrawData()
             if position[1] * 16 + drawy - 13 > map_surface.get_height()/2-13 and drawPlayer:
