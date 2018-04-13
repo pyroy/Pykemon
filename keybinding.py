@@ -3,12 +3,15 @@ from pygame import *
 
 controls_filename = "controls.ini"
 
-# Returns a function which checks whether the key corresponding with a action
-# via the 'controls.ini' file. 
-def get_action_pressed(key_dict, scene):
-    def pressed(action):
-        return all(key_dict[string_to_key[keybinding[scene][action_key]]] for action_key in action.split('+'))
-    return pressed
+def single_key_action(key, scene, action):
+    """Returns whether a key matches an action.
+       Should be used in the event loop."""
+    return string_to_key[keybinding[scene][action]] == key
+
+def continuous_key_action(pressed, scene, action):
+    """Returns whether the key matching an action is pressed.
+       Should be used in the main loop."""
+    return pressed[string_to_key[keybinding[scene][action]]]
 
 def create_default_config():
     config  = configparser.ConfigParser()
@@ -23,6 +26,9 @@ def create_default_config():
         },
         'Battle': {},
         'Menu': {},
+        'Dialogue': {
+            'continue': 'return'
+        }
     })
     with open(controls_filename, 'w') as configfile:
         config.write(configfile)
@@ -37,7 +43,8 @@ string_to_key = {
     'lcrtl': K_LCTRL,
     'rcrtl': K_RCTRL,
     'lalt': K_LALT,
-    'Ralt': K_RALT,
+    'ralt': K_RALT,
+    'return': K_RETURN,
     'a': K_a,
     'b': K_b,
     'c': K_c,

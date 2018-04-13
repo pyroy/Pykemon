@@ -7,7 +7,7 @@ from collections import namedtuple
 import maploader
 import npcloader
 import battlescene
-import keybinding
+from   keybinding import single_key_action, continuous_key_action
 import pokepy.pokemon as pkm
 from player import Player
 
@@ -21,19 +21,49 @@ done = False
 
 #Console
 Event = namedtuple("Event", ["event","data"])
-dummyEvent = Event("SAY","Hey, sexy ;)")
+dummyEvent = Event("SAY",["Hey, sexy ;)", "Isn't this lovely?"])
 
 class Console:
     def __init__(self, data):
         self.state = 0
-        self.queue = []
+        self.queue = [dummyEvent]
         self.datapath = data
         self.data = pickle.load(open(data,'rb'))
+        self.dialogue_texture = pygame.image.load("textures/dialogue box.png").convert_alpha()
+        self.font = pygame.font.SysFont("arial",30)
+        self.dialogue_active = False
 
     def dialogBox(self, text):
+        self.dialogue_active = True
+        self.dialogue_text = iter(text)
+        self.current_dialogue_text = next(self.dialogue_text)
         print(text, 'ID:'+str(self.state))
 
-    def executeNextEvent(self):
+    def draw_dialogue(self, screen):
+        if not self.dialogue_active:
+            return
+        # First version of positioning
+        # Should definitely be refined
+        scaled = pygame.transform.scale(self.dialogue_texture, (screen.get_width(), self.dialogue_texture.get_height()*screen.get_width()//self.dialogue_texture.get_width()))
+        pos_rect = pygame.Rect(0, 0, scaled.get_width(), scaled.get_height())
+        pos_rect.centerx = screen.get_width() / 2
+        pos_rect.bottom = screen.get_height()
+        screen.blit(scaled, pos_rect)
+
+        text_rect = pos_rect.inflate(-pos_rect.width*0.1, -pos_rect.height*0.3)
+        screen.blit(self.font.render(self.current_dialogue_text, False, (255,255,255)), text_rect)
+
+    def dialogue_continue(self):
+        try:
+            self.current_dialogue_text = next(self.dialogue_text)
+        except:
+            self.dialogue_active = False
+
+    def execute_events:
+        while self.queue:
+            self.execute_next_event()
+
+    def execute_next_event(self):
         if self.queue:
             eventToExecute = self.queue.pop(0)
             self.state += 1
@@ -122,17 +152,19 @@ options = {'empty':0,'test':1}
 
 menuitem = 0
 while not done:
-    console.executeNextEvent()
+    console.execut_events()
     zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
     map_surface = pygame.Surface((screen_rect.width/zoom, screen_rect.height/zoom))
-    key_action = keybinding.get_action_pressed(pygame.key.get_pressed(), currentScene)
+    pressed_keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.VIDEORESIZE:
             screen_rect.size = event.dict['size']
             screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
+        # Single key actions
         if event.type == pygame.KEYDOWN:
+            key = event.key
             if currentScene == 'World':
                 if event.key == pygame.K_z:
                     zoom *= 1.1
@@ -161,6 +193,7 @@ while not done:
                 elif event.key == pygame.K_RETURN and not menu:
                     #player.activate()
                     pass;
+
             if currentScene == 'Options':
                 if event.key == pygame.K_UP:
                     selected = max(0, selected - 1)
@@ -175,6 +208,30 @@ while not done:
                 elif event.key == pygame.K_RETURN and selected == len(rows):
                     pickle.dump(options, open('options.p','wb'))
                     currentScene = 'World'; selected = 0; rowindex = 0
+            if console.dialogue_active:
+                if single_key_action(key, 'Dialogue', 'continue'):
+                    console.dialogue_continue()
+
+    # Continuous key actions
+    if not player.moving and not menu and currentScene == 'World':
+        if continuous_key_action(pressed_keys, 'World', 'run'):
+            move_type = 'run'
+        else:
+            move_type = 'walk'
+
+        if continuous_key_action(pressed_keys, 'World', 'north'):
+            player.move(move_type, 'north')
+        elif continuous_key_action(pressed_keys, 'World', 'east'):
+            player.move(move_type, 'east')
+        elif continuous_key_action(pressed_keys, 'World', 'south'):
+            player.move(move_type, 'south')
+        elif continuous_key_action(pressed_keys, 'World', 'west'):
+            player.move(move_type, 'west')
+        else:
+            if player.animName.startswith('walk'):
+                player.setAnimation(player.animName.replace('walk', 'idle'), 4)
+            elif player.animName.startswith('run'):
+                player.setAnimation(player.animName.replace('run', 'idle'), 4)
 
     if currentScene == 'World': #scene outside battle
         drawx = map_surface.get_width()/2-player.pos[0]-8
@@ -213,27 +270,6 @@ while not done:
         screen.blit(pygame.transform.scale(menublit,(200,2*184)), (screen_rect.width+menupos, 0))
         screen.blit(menuselect, (screen_rect.width+menupos, menuitem*70))
 
-    if not player.moving and not menu and currentScene == 'World':
-        if key_action('run'):
-            move_type = 'run'
-        else:
-            move_type = 'walk'
-
-        if key_action('north'):
-            player.move(move_type, 'north')
-        elif key_action('east'):
-            player.move(move_type, 'east')
-        elif key_action('south'):
-            player.move(move_type, 'south')
-        elif key_action('west'):
-            player.move(move_type, 'west')
-        else:
-            if player.animName.startswith('walk'):
-                player.setAnimation(player.animName.replace('walk', 'idle'), 4)
-            elif player.animName.startswith('run'):
-                player.setAnimation(player.animName.replace('run', 'idle'), 4)
-
-
     if menuframes:
         menupos -= menudisp*(10-menuframes)
         menuframes -= 1
@@ -257,6 +293,8 @@ while not done:
                 else: screen.blit(font.render(label, False, (0,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1),row*screen_rect.height/(1+len(rows.keys()))))
 
         screen.blit(labelback,(0,screen_rect.height-50))
+
+    console.draw_dialogue(screen)
 
     warp = player.checkWarps(currentMap.warps)
     if warp:

@@ -19,7 +19,7 @@ MAIN GAME
 	Console functionality 50%
 	NPC Sprites
 	Object-Console support
-  	Ledge jump animations
+  Ledge jump animations
 
 BATTLE
   DONE:
