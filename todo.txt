@@ -4,6 +4,7 @@ MAP EDITOR
 	Object support
 	Resizing
 	Ledges
+
   TODO:
 	Object placement
 	Custom tilesets
@@ -15,7 +16,10 @@ MAIN GAME
 	NPC loading in maps
  	Ledges
  	Running
+
   TODO:
+  Font scaling in dialogue
+  Text animation in dialogue
 	Console functionality 50%
 	NPC Sprites
 	Object-Console support
@@ -24,6 +28,7 @@ MAIN GAME
 BATTLE
   DONE:
 	Sprites loading
+
   TODO:
 	Player data saving & reading 50%
 	Display pokemon data
