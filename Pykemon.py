@@ -29,10 +29,7 @@ done = False
 #Console
 Event = namedtuple("Event", ["event","data"])
 dummyEvent = Event("SAY",[
-    "Hey, sexy ;)",
-    "Isn't this lovely?",
-    "yes sweetie",
-    "it gets me all hot n' bothered"
+    "Hello there!"
 ])
 
 def fit_and_center_surface(a, b):
@@ -50,14 +47,14 @@ def take_words_from(s, n):
     return " ".join(s.split()[n:])
 
 def fit_string_with_width(s, font, width):
-    s_surf = font.render(s, False, (255,255,255))
+    s_surf = font.render(s, False, (0,0,0))
     if s_surf.get_width() < width:
         return s_surf, ""
     for i in range(-1, -len(s), -1):
         s_surf = font.render(
         take_words_until(s, i),
         False,
-        (255,255,255)
+        (0,0,0)
         )
         if s_surf.get_width() < width:
             rest_text = take_words_from(s, i)
@@ -70,8 +67,10 @@ class Console:
         self.queue = [dummyEvent]
         self.datapath = data
         self.data = pickle.load(open(data,'rb'))
-        self.dialogue_texture = pygame.image.load("textures/dialogue box.png").convert_alpha()
-        self.font = pygame.font.SysFont("arial",15)
+        self.text_box_textures = pygame.image.load("textures/dialogue box.png").convert_alpha()
+        self.current_text_box_texture = pygame.Surface((250, 44), pygame.SRCALPHA)
+        self.current_text_box_texture.blit(self.text_box_textures, (0,0), (1, 1, 250, 44))
+        self.font = pygame.font.SysFont("calibri",14)
         self.dialogue_active = False
         self.rest_text = ""
 
@@ -91,21 +90,22 @@ class Console:
         # instead of every frame
 
         # Positioning and blitting of the background
-        scaled = pygame.transform.scale(self.dialogue_texture, (screen.get_width(), self.dialogue_texture.get_height()*screen.get_width()//self.dialogue_texture.get_width()))
-        pos_rect = pygame.Rect(0, 0, scaled.get_width(), scaled.get_height())
+        pos_rect = pygame.Rect(0, 0, self.current_text_box_texture.get_width(), self.current_text_box_texture.get_height())
         pos_rect.centerx = screen.get_width() / 2
-        pos_rect.bottom = screen.get_height()
-        screen.blit(scaled, pos_rect)
+        pos_rect.bottom = screen.get_height() - 1
+        screen.blit(self.current_text_box_texture, pos_rect)
 
         # Positioning and blitting of the top row of text
-        text_top_rect = pos_rect.inflate(-pos_rect.width*0.1, -pos_rect.height*0.3)
+        text_rect = pos_rect.inflate(-pos_rect.width*0.1, -pos_rect.height*0.35)
+        text_rect.width -= 30
+        text_top_rect = text_rect.copy()
+        text_top_rect.height = text_rect.height//2
         text_top_surf, rest_text = fit_string_with_width(self.current_dialogue_text, self.font, text_top_rect.width)
         screen.blit(text_top_surf, text_top_rect)
 
         # Positioning and blitting of the bottom row of text
         if rest_text:
-            text_bottom_rect = text_top_rect.copy()
-            text_bottom_rect.y = text_top_rect.centery
+            text_bottom_rect = text_top_rect.copy().move(0, text_top_rect.height)
             text_bottom_surf, self.rest_text = fit_string_with_width(rest_text, self.font, text_bottom_rect.width)
             screen.blit(text_bottom_surf, text_bottom_rect)
 
@@ -277,6 +277,9 @@ while not done:
                 elif event.key == pygame.K_RETURN and selected == len(rows):
                     pickle.dump(options, open('options.p','wb'))
                     currentScene = 'World'; selected = 0; rowindex = 0
+
+            if currentScene == 'Battle':
+                activeBattle.process_single_key_event(key)
 
     # Continuous key actions
     if not player.moving and not menu and currentScene == 'World':

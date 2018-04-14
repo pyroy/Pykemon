@@ -27,6 +27,7 @@ class Battle:
         self.player, self.foe = player, foe
         self.screen_surf = screen
         self.screen_rect = screen.get_rect()
+
         self.visuals_rect = self.screen_rect.copy()
         self.visuals_rect.height = 146
 
@@ -36,22 +37,47 @@ class Battle:
 
         self.inFieldFriend = self.player.party[0]
         self.inFieldFoe = self.foe.party[0]
-        self.state = 0
-        self.sp1Pos = self.screen_rect.width
-        self.sp2Pos = -100
+
+        # State will be either one of: "intro", "select", "animation"
+        self.state = 'intro'
+        self.intro_frame = 0
+        self.foe_pos = -70
+        self.friend_pos = self.screen_rect.width
         self.bg = Background()
         self.friendSize = pygame.Rect(0,0,80,80)
 
+        self.font = pygame.font.SysFont('arial', 14)
+
+    def process_single_key_event(self, key):
+        if self.state == 'select':
+            if single_key_action('Battle', 'select up'):
+                pass
+            elif single_key_action('Battle', 'select right'):
+                pass
+            elif single_key_action('Battle', 'select down'):
+                pass
+            elif single_key_action('Battle', 'select left'):
+                pass
+            elif single_key_action('Battle', 'accept'):
+                pass
+            elif single_key_action('Battle', 'back'):
+                pass
+
     def update(self):
-        if self.state < 40:
-            self.state += 1
-            self.sp1Pos -= 3
-            self.sp2Pos += 3
+        if self.state == 'intro':
+            if self.intro_frame < 40:
+                self.intro_frame += 1
+                self.foe_pos += 6
+                self.friend_pos -= 6
+            else:
+                self.state = 'select'
+
 
     def draw(self):
         self.screen_surf.fill((0,0,0))
         self.screen_surf.blit(self.bg.get(), (0,0))
-        self.screen_surf.blit(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'), (self.sp1Pos,10))
-        self.friendSize = self.screen_surf.blit(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'), (self.sp2Pos,self.visuals_rect.height-self.friendSize.height))
+        self.screen_surf.blit(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'), (self.foe_pos,10))
+        self.friendSize = self.screen_surf.blit(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'), (self.friend_pos,self.visuals_rect.height-self.friendSize.height))
 
-        pygame.draw.rect(self.screen_surf, (255,255,255), self.menu_rect)
+        if self.state == 'select':
+            pygame.draw.rect(self.screen_surf, (255,255,255), self.menu_rect)
