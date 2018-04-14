@@ -14,7 +14,14 @@ from player import Player
 #pygame setup
 import pygame
 pygame.init()
-screen_rect = pygame.Rect(0, 0, 600, 600)
+
+# The pixel screen is the non-scaled surface on which you should blit
+# It will be scaled to fit the screen while keeping its aspect ratio
+pixel_screen_rect = pygame.Rect(0, 0, 256, 192)
+pixel_screen = pygame.Surface(pixel_screen_rect.size)
+screen_rect = pixel_screen_rect.inflate(pixel_screen_rect.size)
+screen_rect.move_ip(-screen_rect.x, -screen_rect.y)
+
 screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
@@ -27,6 +34,14 @@ dummyEvent = Event("SAY",[
     "yes sweetie",
     "it gets me all hot n' bothered"
 ])
+
+def fit_and_center_surface(a, b):
+    a_rect = a.get_rect()
+    b_rect = b.get_rect()
+    a_rect_scaled = a_rect.fit(b_rect)
+    a_scaled = pygame.transform.scale(a, a_rect_scaled.size)
+    coordinates = ((b_rect.width - a_rect_scaled.width)//2, (b_rect.height - a_rect_scaled.height)//2)
+    b.blit(a_scaled, coordinates)
 
 def take_words_until(s, n):
     return " ".join(s.split()[:n])
@@ -56,7 +71,7 @@ class Console:
         self.datapath = data
         self.data = pickle.load(open(data,'rb'))
         self.dialogue_texture = pygame.image.load("textures/dialogue box.png").convert_alpha()
-        self.font = pygame.font.SysFont("arial",30)
+        self.font = pygame.font.SysFont("arial",15)
         self.dialogue_active = False
         self.rest_text = ""
 
@@ -72,6 +87,8 @@ class Console:
             return
         # First version of positioning
         # Should definitely be refined
+        # Positioning should also only be done when the window is resized,
+        # instead of every frame
 
         # Positioning and blitting of the background
         scaled = pygame.transform.scale(self.dialogue_texture, (screen.get_width(), self.dialogue_texture.get_height()*screen.get_width()//self.dialogue_texture.get_width()))
@@ -153,8 +170,9 @@ currentMap = maploader.loadMapObject(mapToLoad)
 player = Player(currentMap.bounds, npcloader)
 player.pos = currentMap.warps[0]
 
-map_surface = pygame.Surface((200,200))
-zoom = 3
+base_resolution = (256, 192)
+map_surface = pygame.Surface((256, 192))
+zoom = 1
 
 #Menu vars
 menublit = pygame.image.load('textures/menu.png')
@@ -198,7 +216,7 @@ menuitem = 0
 while not done:
     console.execute_events()
     zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
-    map_surface = pygame.Surface((screen_rect.width/zoom, screen_rect.height/zoom))
+    map_surface = pygame.Surface((base_resolution[0]//zoom, base_resolution[1]//zoom))
     pressed_keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -299,7 +317,7 @@ while not done:
                     foe = pkm.Trainer('Damion')
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
                     foe.party[0].setlevel(EncounterData[1])
-                    activeBattle = battlescene.Battle(screen, player.trainerdata, foe)
+                    activeBattle = battlescene.Battle(pixel_screen, player.trainerdata, foe)
                     currentScene = 'Battle'
 
         drawPlayer = True
@@ -314,10 +332,9 @@ while not done:
         if drawPlayer: player.draw((map_surface.get_width()/2-10,map_surface.get_height()/2-13), map_surface)
 
         map_surface.blit(currentMap.alpha,(drawx, drawy)) #alphamap
-
-        screen.blit(pygame.transform.scale(map_surface, screen_rect.size), (0,0))
-        screen.blit(pygame.transform.scale(menublit,(200,2*184)), (screen_rect.width+menupos, 0))
-        screen.blit(menuselect, (screen_rect.width+menupos, menuitem*70))
+        pixel_screen.blit(map_surface, (0,0))
+        pixel_screen.blit(pygame.transform.scale(menublit,(200,2*184)), (pixel_screen_rect.width+menupos, 0))
+        pixel_screen.blit(menuselect, (pixel_screen_rect.width+menupos, menuitem*70))
 
     elif currentScene == 'Battle':
         activeBattle.update()
@@ -343,7 +360,7 @@ while not done:
             menupos -= menudisp*(10-menuframes)
             menuframes -= 1
 
-    console.draw_dialogue(screen)
+    console.draw_dialogue(pixel_screen)
 
     warp = player.checkWarps(currentMap.warps)
     if warp:
@@ -351,6 +368,8 @@ while not done:
         warp_map, warp_pos = warp
         currentMap = maploader.loadMapObject(warp_map)
         player.warp(currentMap, npcloader, warp_pos)
+
+    fit_and_center_surface(pixel_screen, screen)
 
     pygame.display.flip()
     clock.tick(60)

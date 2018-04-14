@@ -18,7 +18,6 @@ MAIN GAME
  	Running
 
   TODO:
-  Font scaling in dialogue
   Text animation in dialogue
 	Console functionality 50%
 	NPC Sprites
