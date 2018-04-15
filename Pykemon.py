@@ -54,14 +54,14 @@ def take_words_from(s, n):
 def fit_string_with_width(text, font, width):
     split_at_newlines = text.split('\n')
     s = split_at_newlines[0]
-    s_surf = font.render(s, False, (0, 0, 0))
+    s_surf = font.render(s, False, (0,0,0))
     if s_surf.get_width() < width:
         return s_surf, '\n'.join(split_at_newlines[1:])
     for i in range(-1, -len(s.split()), -1):
         s_surf = font.render(
             take_words_until(s, i),
             False,
-            (0, 0, 0)
+            (0,0,0)
         )
         if s_surf.get_width() < width:
             rest_text = take_words_from(s, i)
@@ -75,7 +75,7 @@ class Console:
         self.state = 0
         self.queue = [dummyEvent]
         self.datapath = data
-        self.data = pickle.load(open(data,'rb'))
+        self.data = pickle.load(open(data, 'rb'))
         self.text_box_textures = pygame.image.load("textures/dialogue box.png").convert_alpha()
         self.current_text_box_texture = pygame.Surface((250, 44), pygame.SRCALPHA)
         self.current_text_box_texture.blit(self.text_box_textures, (0, 0), (1, 1, 250, 44))
@@ -205,12 +205,12 @@ if not quickstart:
     with open("credits.txt", "r") as file:
         creditscreen = map(lambda line: line.strip(), file.readlines())
 
-    screen.fill((0, 0, 0))
+    screen.fill((0,0,0))
     counter = 0
     f = pygame.font.SysFont("arial", 20)
-    h = f.render('test', False, (255, 255, 255)).get_height() + 3
+    h = f.render('test', False, (255,255,255)).get_height() + 3
     for index, line in enumerate(creditscreen):
-        screen.blit(f.render(line, False, (255, 255, 255)), (5, h*index))
+        screen.blit(f.render(line, False, (255,255,255)), (5, h*index))
     pygame.display.flip()
     time.sleep(2)
 
@@ -261,13 +261,13 @@ while not done:
                             menudisp = -200/45
                 elif key == pygame.K_BACKSLASH:
                     a = input("load map: ")
-                    player.warp(a,[0,0])
+                    player.warp(a, [0, 0])
                 elif key == pygame.K_UP and menu:
                     menuitem = max(0, menuitem - 1)
                 elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
                 elif key == pygame.K_RETURN and menuitem == 0 and menu:
-                    console.addEvent( Event('SAY',"saving! please don't turn off the console!"))
+                    console.addEvent(Event('SAY', "saving! please don't turn off the console!"))
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     currentScene = 'Options'
                 elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
@@ -293,8 +293,10 @@ while not done:
                 elif event.key == pygame.K_RIGHT:
                     rowindex = min(len(rows[row])-1, rowindex + 1)
                 elif event.key == pygame.K_RETURN and selected == len(rows):
-                    pickle.dump(options, open('options.p','wb'))
-                    currentScene = 'World'; selected = 0; rowindex = 0
+                    pickle.dump(options, open('options.p', 'wb'))
+                    currentScene = 'World'
+                    selected = 0
+                    rowindex = 0
 
             if currentScene == 'Battle':
                 activeBattle.process_single_key_event(key)
@@ -364,21 +366,21 @@ while not done:
 
     # Code is nu compleet shit, maar ik weet al hoe ik normaal ga maken
     elif currentScene == 'Options':
-        screen.fill((255, 255, 255))
+        screen.fill((255,255,255))
 
         if selected == len(rows):
-            labelback = font.render("back", False, (255, 0, 0))
+            labelback = font.render("back", False, (255,0,0))
         else:
-            labelback = font.render("back", False, (0, 0, 0))
+            labelback = font.render("back", False, (0,0,0))
 
         rows = {1: ['empty', 'test']}
 
         for row in rows:
             for label in rows[row]:
                 if options[label]:
-                    screen.blit(font.render(label, False, (255, 0, 0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
+                    screen.blit(font.render(label, False, (255,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
                 else:
-                    screen.blit(font.render(label, False, (0, 0, 0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
+                    screen.blit(font.render(label, False, (0,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
 
         screen.blit(labelback, (0, screen_rect.height-50))
 
@@ -390,7 +392,7 @@ while not done:
 
     warp = player.checkWarps(currentMap.warps)
     if warp:
-        screen.fill((0, 0, 0))
+        screen.fill((0,0,0))
         warp_map, warp_pos = warp
         currentMap = maploader.loadMapObject(warp_map)
         player.warp(currentMap, npcloader, warp_pos)

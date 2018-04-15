@@ -181,17 +181,17 @@ emapl  = encountermap.readlines()
 
 font  = pygame.font.SysFont("arial", 30)
 font2 = pygame.font.SysFont("arial", 15)
-stateblit = font.render("editing groundmap", False, (255, 255, 255))
+stateblit = font.render("editing groundmap", False, (255,255,255))
 state = 'groundmap'
 
 zoom = 4
 scrollpos = 0
 
 # Buttons for encounter
-addEncounterButton = Simplebutton(200, 50, (60, 60, 60), "Add Encounter...", pygame.font.Font("jackeyfont.ttf", 20))
+addEncounterButton = Simplebutton(200, 50, (60,60,60), "Add Encounter...", pygame.font.Font("jackeyfont.ttf", 20))
 addEncounterButton.border = 1
 addEncounterButton.pos = (680, 400)
-addEncounterButton.textcolor = (255, 255, 255)
+addEncounterButton.textcolor = (255,255,255)
 
 
 @addEncounterButton.link

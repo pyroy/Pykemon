@@ -77,10 +77,10 @@ class Battle:
                 self.state = 'select'
 
     def draw(self):
-        self.screen_surf.fill((0, 0, 0))
+        self.screen_surf.fill((0,0,0))
         self.screen_surf.blit(self.bg.get(), (0, 0))
         self.screen_surf.blit(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'), (self.foe_pos, 10))
         self.friendSize = self.screen_surf.blit(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'), (self.friend_pos, self.visuals_rect.height-self.friendSize.height))
 
         if self.state == 'select':
-            pygame.draw.rect(self.screen_surf, (255, 255, 255), self.menu_rect)
+            pygame.draw.rect(self.screen_surf, (255,255,255), self.menu_rect)
