@@ -101,7 +101,7 @@ class Player:
             self.pos[1] += self.displacement[1]
             self.remainingDuration -= 1
         else:
-            pos_div = (int(self.pos[0]/16), int(self.pos[1]/16))
+            pos_div = (self.pos[0]//16, self.pos[1]//16)
             if self.bounds.at_pos(*pos_div) == 'u':
                 self.move('walk', 'north')
             elif self.bounds.at_pos(*pos_div) == 'r':

@@ -72,8 +72,8 @@ def create_map():
     betamap  .write(f'{width}.{height}\n')
 
     for layer, default, separator in [(groundmap, '0,1', '.'), (alphamap, '0,0', '.'), (betamap, '0,0', '.'), (boundmap, '0', ''), (encountermap, '0', '')]:
-        for _ in range(int(height/16)):
-            layer.write(separator.join([default] * int(width/16)) + '\n')
+        for _ in range(height//16):
+            layer.write(separator.join([default] * width//16) + '\n')
 
     encountermap.write('0;NONE')
 
