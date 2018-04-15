@@ -79,7 +79,7 @@ class Console:
         self.text_box_textures = pygame.image.load("textures/dialogue box.png").convert_alpha()
         self.current_text_box_texture = pygame.Surface((250, 44), pygame.SRCALPHA)
         self.current_text_box_texture.blit(self.text_box_textures, (0, 0), (1, 1, 250, 44))
-        self.font = pygame.font.SysFont("calibri", 14)
+        self.font = pygame.font.Font("PKMNRSEU.FON", 14)
         self.dialogue_active = False
         self.rest_text = ""
 
