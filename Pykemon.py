@@ -1,17 +1,18 @@
-#standard imports
-import math, time, random
+# Standard imports
+import time
+import random
 import pickle
 from collections import namedtuple
 
-#main imports
+# Main imports
 import maploader
 import npcloader
 import battlescene
-from   keybinding import single_key_action, continuous_key_action
+from keybinding import single_key_action, continuous_key_action
 import pokepy.pokemon as pkm
 from player import Player
 
-#pygame setup
+# Pygame setup
 import pygame
 pygame.init()
 
@@ -26,11 +27,12 @@ screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
 
-#Console
-Event = namedtuple("Event", ["event","data"])
-dummyEvent = Event("SAY",[
+# Console
+Event = namedtuple("Event", ["event", "data"])
+dummyEvent = Event("SAY", [
     "Hello there!\nIt's so very nice to meet you!\nWelcome to the world of Pokémon!"
 ])
+
 
 def fit_and_center_surface(a, b):
     a_rect = a.get_rect()
@@ -40,29 +42,33 @@ def fit_and_center_surface(a, b):
     coordinates = ((b_rect.width - a_rect_scaled.width)//2, (b_rect.height - a_rect_scaled.height)//2)
     b.blit(a_scaled, coordinates)
 
+
 def take_words_until(s, n):
     return " ".join(s.split()[:n])
+
 
 def take_words_from(s, n):
     return " ".join(s.split()[n:])
 
+
 def fit_string_with_width(text, font, width):
     split_at_newlines = text.split('\n')
     s = split_at_newlines[0]
-    s_surf = font.render(s, False, (0,0,0))
+    s_surf = font.render(s, False, (0, 0, 0))
     if s_surf.get_width() < width:
         return s_surf, '\n'.join(split_at_newlines[1:])
     for i in range(-1, -len(s.split()), -1):
         s_surf = font.render(
             take_words_until(s, i),
             False,
-            (0,0,0)
+            (0, 0, 0)
         )
         if s_surf.get_width() < width:
             rest_text = take_words_from(s, i)
             break
     split_at_newlines[0] = rest_text
     return s_surf, '\n'.join(split_at_newlines)
+
 
 class Console:
     def __init__(self, data, pixel_screen):
@@ -72,8 +78,8 @@ class Console:
         self.data = pickle.load(open(data,'rb'))
         self.text_box_textures = pygame.image.load("textures/dialogue box.png").convert_alpha()
         self.current_text_box_texture = pygame.Surface((250, 44), pygame.SRCALPHA)
-        self.current_text_box_texture.blit(self.text_box_textures, (0,0), (1, 1, 250, 44))
-        self.font = pygame.font.SysFont("calibri",14)
+        self.current_text_box_texture.blit(self.text_box_textures, (0, 0), (1, 1, 250, 44))
+        self.font = pygame.font.SysFont("calibri", 14)
         self.dialogue_active = False
         self.rest_text = ""
 
@@ -135,22 +141,25 @@ class Console:
             if eventToExecute.event == 'SAY':
                 self.dialogBox(eventToExecute.data)
             if eventToExecute.event == 'SET':
-                self.data[ eventToExecute.data[0] ] = eventToExecute.data[1]
+                self.data[eventToExecute.data[0]] = eventToExecute.data[1]
                 pickle.dump(self.data, open(self.datapath, 'wb'))
             if eventToExecute.event == 'IF':
                 if self.data[eventToExecute.data[0]]:
-                    self.addEvent[ interpret(eventToExecute.data[1][0]) ]
-                else: self.addEvent[ interpret(eventToExecute.data[1][1]) ]
+                    self.addEvent[self.interpret(eventToExecute.data[1][0])]
+                else:
+                    self.addEvent[self.interpret(eventToExecute.data[1][1])]
 
     def addEvent(self, event):
         if type(event) == list:
             self.queue.extend(event)
-        else: self.queue.append(event)
+        else:
+            self.queue.append(event)
 
     def execute_script(self, scriptPath):
         with open(scriptPath) as file:
             lines = file.readlines()
-        for line in lines: self.addEvent( interpret(line) )
+        for line in lines:
+            self.addEvent(self.interpret(line))
 
     def interpret(self, data):
         commands = data.split(';')
@@ -158,18 +167,20 @@ class Console:
         for command in commands:
             commandType = command.split(':')[0]
             commandData = eval(command.split(':')[1])
-            toReturn.append( Event(commandType, commandData) )
+            toReturn.append(Event(commandType, commandData))
+
 
 console = Console('data/globals.p', pixel_screen)
 
-dex = pkm.dex.Dex() #Pokemon dex data
+# POkemon dex data
+dex = pkm.dex.Dex()
 npcloader = npcloader.NPCLoader(console)
 maploader = maploader.MapLoader()
 
-#Maploader objects
+# Maploader objects
 mapToLoad = 'editmap'
 currentMap = maploader.loadMapObject(mapToLoad)
-#End Maploader objects
+# End Maploader objects
 
 player = Player(currentMap.bounds, npcloader)
 player.pos = currentMap.warps[0]
@@ -178,7 +189,7 @@ base_resolution = (256, 192)
 map_surface = pygame.Surface((256, 192))
 zoom = 1
 
-#Menu vars
+# Menu vars
 menublit = pygame.image.load('textures/menu.png')
 menublit.convert_alpha()
 menuselect = pygame.image.load('textures/menuselect.png')
@@ -187,19 +198,19 @@ menu = False
 menupos = 0
 menuframes = 0
 menudisp = 0
-#End Menu vars
+# End Menu vars
 
-quickstart = True # turn on for quick debugging
+quickstart = True  # turn on for quick debugging
 if not quickstart:
     with open("credits.txt", "r") as file:
         creditscreen = map(lambda line: line.strip(), file.readlines())
 
-    screen.fill((0,0,0))
+    screen.fill((0, 0, 0))
     counter = 0
-    f = pygame.font.SysFont("arial",20)
-    h = f.render('test',False,(255,255,255)).get_height()+3
+    f = pygame.font.SysFont("arial", 20)
+    h = f.render('test', False, (255, 255, 255)).get_height() + 3
     for index, line in enumerate(creditscreen):
-        screen.blit(f.render(line,False,(255,255,255)), (5,h*index))
+        screen.blit(f.render(line, False, (255, 255, 255)), (5, h*index))
     pygame.display.flip()
     time.sleep(2)
 
@@ -207,19 +218,22 @@ npcloader.loadNPC('bob')
 npcloader.loadNPC('will')
 
 currentScene = 'World'
-activeBattle = None #Actual BattleScene object
+activeBattle = None  # Actual BattleScene object
 
-#Options menu vars
+# Options menu vars
 font = pygame.font.SysFont('arial', 30)
-selected = 0; rowindex = 0
-try: options = pickle.load(open('data\options.p','rb'))
-except: options = {}
-options = {'empty':0,'test':1}
+selected = 0
+rowindex = 0
+try:
+    options = pickle.load(open('data\\options.p', 'rb'))
+except:
+    options = {}
+options = {'empty': 0, 'test': 1}
 
 menuitem = 0
 while not done:
     console.execute_events()
-    zoom += 0 # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
+    zoom += 0  # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
     map_surface = pygame.Surface((base_resolution[0]//zoom, base_resolution[1]//zoom))
     pressed_keys = pygame.key.get_pressed()
     for event in pygame.event.get():
@@ -307,20 +321,20 @@ while not done:
                 player.setAnimation(player.animName.replace('run', 'idle'), 4)
 
     # Drawing the frame
-    if currentScene == 'World': #scene outside battle
+    if currentScene == 'World':
         drawx = map_surface.get_width()/2-player.pos[0]-8
         drawy = map_surface.get_height()/2-player.pos[1]
 
-        map_surface.blit(currentMap.ground, (drawx,drawy)) #groundmap
-        map_surface.blit(currentMap.beta, (drawx, drawy)) #betamap
+        map_surface.blit(currentMap.ground, (drawx, drawy))
+        map_surface.blit(currentMap.beta, (drawx, drawy))
 
         flag = player.update(currentMap)
         if flag == 'stopped moving':
-            encounterTile = currentMap.encounters.checkEncounters(player.pos[0]//16,player.pos[1]//16)
+            encounterTile = currentMap.encounters.checkEncounters(player.pos[0]//16, player.pos[1]//16)
             if encounterTile > 0:
                 if random.randint(0, 10) == 0:
                     battle = True
-                    EncounterData = currentMap.encounters.generateEncounter( str(encounterTile) )
+                    EncounterData = currentMap.encounters.generateEncounter(str(encounterTile))
                     foe = pkm.Trainer('Damion')
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
                     foe.party[0].setlevel(EncounterData[1])
@@ -328,40 +342,45 @@ while not done:
                     currentScene = 'Battle'
 
         drawPlayer = True
-        npcloader.update([player.pos[0]//16,1*player.pos[1]//16])
+        npcloader.update([player.pos[0]//16, player.pos[1]//16])
         for npc in npcloader.npcs:
             surface, position = npc.getDrawData()
             if position[1] * 16 + drawy - 13 > map_surface.get_height()/2-13 and drawPlayer:
-                player.draw((map_surface.get_width()/2-10,map_surface.get_height()/2-13), map_surface)
+                player.draw((map_surface.get_width()/2-10, map_surface.get_height()/2-13), map_surface)
                 drawPlayer = False
             position = (position[0] * 16 + drawx - 1, position[1] * 16 + drawy - 13)
             map_surface.blit(surface, position)
-        if drawPlayer: player.draw((map_surface.get_width()/2-10,map_surface.get_height()/2-13), map_surface)
+        if drawPlayer:
+            player.draw((map_surface.get_width()/2-10, map_surface.get_height()/2-13), map_surface)
 
-        map_surface.blit(currentMap.alpha,(drawx, drawy)) #alphamap
-        pixel_screen.blit(map_surface, (0,0))
-        pixel_screen.blit(pygame.transform.scale(menublit,(200,2*184)), (pixel_screen_rect.width+menupos, 0))
+        map_surface.blit(currentMap.alpha, (drawx, drawy))
+        pixel_screen.blit(map_surface, (0, 0))
+        pixel_screen.blit(pygame.transform.scale(menublit, (200, 2*184)), (pixel_screen_rect.width+menupos, 0))
         pixel_screen.blit(menuselect, (pixel_screen_rect.width+menupos, menuitem*70))
 
     elif currentScene == 'Battle':
         activeBattle.update()
-        activeBattle.draw() #scene in battle
+        activeBattle.draw()
 
-    elif currentScene == 'Options': #code is nu compleet shit, maar ik weet al hoe ik normaal ga maken
-        screen.fill((255,255,255))
+    # Code is nu compleet shit, maar ik weet al hoe ik normaal ga maken
+    elif currentScene == 'Options':
+        screen.fill((255, 255, 255))
 
-        if selected == len(rows): labelback = font.render("back",False,(255,0,0))
-        else: labelback = font.render("back",False,(0,0,0))
+        if selected == len(rows):
+            labelback = font.render("back", False, (255, 0, 0))
+        else:
+            labelback = font.render("back", False, (0, 0, 0))
 
-        rows = {1: ['empty','test']}
+        rows = {1: ['empty', 'test']}
 
         for row in rows:
             for label in rows[row]:
                 if options[label]:
-                    screen.blit(font.render(label, False, (255,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1),row*screen_rect.height/(1+len(rows.keys()))))
-                else: screen.blit(font.render(label, False, (0,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1),row*screen_rect.height/(1+len(rows.keys()))))
+                    screen.blit(font.render(label, False, (255, 0, 0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
+                else:
+                    screen.blit(font.render(label, False, (0, 0, 0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
 
-        screen.blit(labelback,(0,screen_rect.height-50))
+        screen.blit(labelback, (0, screen_rect.height-50))
 
     if menuframes:
             menupos -= menudisp*(10-menuframes)
@@ -371,7 +390,7 @@ while not done:
 
     warp = player.checkWarps(currentMap.warps)
     if warp:
-        screen.fill((0,0,0))
+        screen.fill((0, 0, 0))
         warp_map, warp_pos = warp
         currentMap = maploader.loadMapObject(warp_map)
         player.warp(currentMap, npcloader, warp_pos)
