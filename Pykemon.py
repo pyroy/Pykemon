@@ -29,7 +29,7 @@ done = False
 #Console
 Event = namedtuple("Event", ["event","data"])
 dummyEvent = Event("SAY",[
-    "Hello there!"
+    "Hello there!\nIt's so very nice to meet you!\nWelcome to the world of Pokémon!"
 ])
 
 def fit_and_center_surface(a, b):
@@ -46,23 +46,27 @@ def take_words_until(s, n):
 def take_words_from(s, n):
     return " ".join(s.split()[n:])
 
-def fit_string_with_width(s, font, width):
+def fit_string_with_width(text, font, width):
+    split_at_newlines = text.split('\n')
+    print(split_at_newlines)
+    s = split_at_newlines[0]
     s_surf = font.render(s, False, (0,0,0))
     if s_surf.get_width() < width:
-        return s_surf, ""
-    for i in range(-1, -len(s), -1):
+        return s_surf, '\n'.join(split_at_newlines[1:])
+    for i in range(-1, -len(s.split()), -1):
         s_surf = font.render(
-        take_words_until(s, i),
-        False,
-        (0,0,0)
+            take_words_until(s, i),
+            False,
+            (0,0,0)
         )
         if s_surf.get_width() < width:
             rest_text = take_words_from(s, i)
             break
-    return s_surf, rest_text
+    split_at_newlines[0] = rest_text
+    return s_surf, '\n'.join(split_at_newlines)
 
 class Console:
-    def __init__(self, data):
+    def __init__(self, data, pixel_screen):
         self.state = 0
         self.queue = [dummyEvent]
         self.datapath = data
@@ -74,6 +78,19 @@ class Console:
         self.dialogue_active = False
         self.rest_text = ""
 
+        # Positioning of the text box
+        self.pixel_screen = pixel_screen
+        self.pos_rect = pygame.Rect(0, 0, self.current_text_box_texture.get_width(), self.current_text_box_texture.get_height())
+        self.pos_rect.centerx = self.pixel_screen.get_width() / 2
+        self.pos_rect.bottom = self.pixel_screen.get_height() - 1
+
+        # Positioning of the text in the box
+        self.text_rect = self.pos_rect.inflate(-self.pos_rect.width*0.1, -self.pos_rect.height*0.35)
+        self.text_rect.width -= 10
+        self.text_top_rect = self.text_rect.copy()
+        self.text_top_rect.height = self.text_rect.height//2
+        self.text_bottom_rect = self.text_top_rect.copy().move(0, self.text_top_rect.height)
+
     def dialogBox(self, text):
         self.dialogue_active = True
         self.dialogue_text = iter(text)
@@ -81,33 +98,21 @@ class Console:
         print(self.current_dialogue_text)
         print(text, 'ID:'+str(self.state))
 
-    def draw_dialogue(self, screen):
+    def draw_dialogue(self):
         if not self.dialogue_active:
             return
-        # First version of positioning
-        # Should definitely be refined
-        # Positioning should also only be done when the window is resized,
-        # instead of every frame
 
-        # Positioning and blitting of the background
-        pos_rect = pygame.Rect(0, 0, self.current_text_box_texture.get_width(), self.current_text_box_texture.get_height())
-        pos_rect.centerx = screen.get_width() / 2
-        pos_rect.bottom = screen.get_height() - 1
-        screen.blit(self.current_text_box_texture, pos_rect)
+        # Background
+        self.pixel_screen.blit(self.current_text_box_texture, self.pos_rect)
 
-        # Positioning and blitting of the top row of text
-        text_rect = pos_rect.inflate(-pos_rect.width*0.1, -pos_rect.height*0.35)
-        text_rect.width -= 30
-        text_top_rect = text_rect.copy()
-        text_top_rect.height = text_rect.height//2
-        text_top_surf, rest_text = fit_string_with_width(self.current_dialogue_text, self.font, text_top_rect.width)
-        screen.blit(text_top_surf, text_top_rect)
+        # Top row of the text
+        text_top_surf, rest_text = fit_string_with_width(self.current_dialogue_text, self.font, self.text_top_rect.width)
+        self.pixel_screen.blit(text_top_surf, self.text_top_rect)
 
-        # Positioning and blitting of the bottom row of text
+        # Bottom row of the text
         if rest_text:
-            text_bottom_rect = text_top_rect.copy().move(0, text_top_rect.height)
-            text_bottom_surf, self.rest_text = fit_string_with_width(rest_text, self.font, text_bottom_rect.width)
-            screen.blit(text_bottom_surf, text_bottom_rect)
+            text_bottom_surf, self.rest_text = fit_string_with_width(rest_text, self.font, self.text_bottom_rect.width)
+            self.pixel_screen.blit(text_bottom_surf, self.text_bottom_rect)
 
     def dialogue_continue(self):
         if self.rest_text:
@@ -116,7 +121,6 @@ class Console:
         else:
             try:
                 self.current_dialogue_text = next(self.dialogue_text)
-                print(self.current_dialogue_text)
             except StopIteration:
                 self.dialogue_active = False
 
@@ -132,7 +136,7 @@ class Console:
                 self.dialogBox(eventToExecute.data)
             if eventToExecute.event == 'SET':
                 self.data[ eventToExecute.data[0] ] = eventToExecute.data[1]
-                pickle.dump( self.data, open(self.datapath, 'wb') )
+                pickle.dump(self.data, open(self.datapath, 'wb'))
             if eventToExecute.event == 'IF':
                 if self.data[eventToExecute.data[0]]:
                     self.addEvent[ interpret(eventToExecute.data[1][0]) ]
@@ -156,7 +160,7 @@ class Console:
             commandData = eval(command.split(':')[1])
             toReturn.append( Event(commandType, commandData) )
 
-console = Console('data/globals.p')
+console = Console('data/globals.p', pixel_screen)
 
 dex = pkm.dex.Dex() #Pokemon dex data
 npcloader = npcloader.NPCLoader(console)
@@ -363,7 +367,7 @@ while not done:
             menupos -= menudisp*(10-menuframes)
             menuframes -= 1
 
-    console.draw_dialogue(pixel_screen)
+    console.draw_dialogue()
 
     warp = player.checkWarps(currentMap.warps)
     if warp:
