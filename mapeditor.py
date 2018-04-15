@@ -5,6 +5,13 @@ import sys
 from mapeditorgui.pygamesliders import *
 from mapeditorgui.pygamebuttons import *
 
+groundmap    = None
+betamap      = None
+alphamap     = None
+boundmap     = None
+objects      = None
+encountermap = None
+
 
 def draw_map(mapdata, surface):
     for y in range(len(mapdata) - 1):
@@ -448,9 +455,9 @@ while not done:
                              False,
                              (255, 255, 255),
                              (0, 0, 0)
-                ),
+                             ),
                 (0, edit_rect.height-18)
-    )
+                )
 
     # DRAW "editing ..." text
     pygame.draw.line(screen, (0, 255, 0), (edit_rect.width, 0), (edit_rect.width, edit_rect.height), 3)
