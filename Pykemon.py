@@ -48,7 +48,6 @@ def take_words_from(s, n):
 
 def fit_string_with_width(text, font, width):
     split_at_newlines = text.split('\n')
-    print(split_at_newlines)
     s = split_at_newlines[0]
     s_surf = font.render(s, False, (0,0,0))
     if s_surf.get_width() < width:
@@ -85,7 +84,8 @@ class Console:
         self.pos_rect.bottom = self.pixel_screen.get_height() - 1
 
         # Positioning of the text in the box
-        self.text_rect = self.pos_rect.inflate(-self.pos_rect.width*0.1, -self.pos_rect.height*0.35)
+        self.text_rect = self.pos_rect.inflate(-self.pos_rect.width*0.1, -self.pos_rect.height*0.25)
+        self.text_rect.move_ip(0, 2)
         self.text_rect.width -= 10
         self.text_top_rect = self.text_rect.copy()
         self.text_top_rect.height = self.text_rect.height//2
