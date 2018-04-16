@@ -28,7 +28,7 @@ screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
 
-console = Console('data/globals.p', pixel_screen)
+console = Console('data/globals.p', pixel_screen)# see console.py
 
 # Pokemon dex data
 dex = pkm.dex.Dex()
@@ -39,7 +39,7 @@ maploader = maploader.MapLoader()
 mapToLoad = 'editmap'
 currentMap = maploader.loadMapObject(mapToLoad)
 
-player = Player(currentMap.bounds, npcloader)
+player = Player(currentMap.bounds, npcloader) #see player.py
 player.pos = currentMap.warps[0]
 
 base_resolution = (256, 192)
@@ -54,7 +54,7 @@ menuselect.convert_alpha()
 menu = False
 menupos = 0
 menuframes = 0
-menudisp = 0
+menudisp = 0 #integers are booleans right
 
 quickstart = True  # turn on for quick debugging
 if not quickstart:
@@ -70,7 +70,7 @@ if not quickstart:
     pygame.display.flip()
     time.sleep(2)
 
-npcloader.loadNPC('bob')
+npcloader.loadNPC('bob') #placeholders? should be in maploader
 npcloader.loadNPC('will')
 
 currentScene = 'World'
@@ -84,7 +84,7 @@ try:
     options = pickle.load(open('data\\options.p', 'rb'))
 except (FileNotFoundError, EOFError):
     options = {}
-options = {'empty': 0, 'test': 1}
+options = {'empty': 0, 'test': 1} #revamp use lib
 
 menuitem = 0
 while not done:
