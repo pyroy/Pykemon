@@ -2,8 +2,8 @@ import pygame
 import os
 import sys
 
-from mapeditorgui.pygamesliders import *
-from mapeditorgui.pygamebuttons import *
+from mapeditorgui.pygamesliders import Simpleslider
+from mapeditorgui.pygamebuttons import Simplebutton
 
 groundmap    = None
 betamap      = None

@@ -1,8 +1,12 @@
 import pickle, pygame
 from collections import namedtuple
 
-# Console
-Event = namedtuple("Event", ["event", "data"])
+Event = namedtuple("Event", [
+    "event",
+    "data"
+])
+
+# Test event for debugging.
 dummyEvent = Event("SAY", [
     "Hello there!\nIt's so very nice to meet you!\nWelcome to the world of Pokémon!"
 ])
@@ -101,18 +105,21 @@ class Console:
 
     def execute_next_event(self):
         if self.queue:
-            eventToExecute = self.queue.pop(0)
+            event_to_execute = self.queue.pop(0)
             self.state += 1
-            if eventToExecute.event == 'SAY':
-                self.dialogBox(eventToExecute.data)
-            if eventToExecute.event == 'SET':
-                self.data[eventToExecute.data[0]] = eventToExecute.data[1]
+            if event_to_execute.event == 'SAY':
+                self.dialogBox(event_to_execute.data)
+            elif event_to_execute.event == 'CHOOSE':
+                # Open a selection text box with the options from data.
+                pass
+            elif event_to_execute.event == 'SET':
+                self.data[event_to_execute.data[0]] = event_to_execute.data[1]
                 pickle.dump(self.data, open(self.datapath, 'wb'))
-            if eventToExecute.event == 'IF':
-                if self.data[eventToExecute.data[0]]:
-                    self.addEvent[self.interpret(eventToExecute.data[1][0])]
+            elif event_to_execute.event == 'IF':
+                if self.data[event_to_execute.data[0]]:
+                    self.addEvent[self.interpret(event_to_execute.data[1][0])]
                 else:
-                    self.addEvent[self.interpret(eventToExecute.data[1][1])]
+                    self.addEvent[self.interpret(event_to_execute.data[1][1])]
 
     def addEvent(self, command, data):
         event = Event(command, data)

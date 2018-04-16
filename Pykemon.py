@@ -30,10 +30,12 @@ pygame.init()
 # It will be scaled to fit the screen while keeping its aspect ratio
 pixel_screen_rect = pygame.Rect(0, 0, 256, 192)
 pixel_screen = pygame.Surface(pixel_screen_rect.size)
+
+# The screen size will by default be set to twice the size of the pixel screen
 screen_rect = pixel_screen_rect.inflate(pixel_screen_rect.size)
 screen_rect.move_ip(-screen_rect.x, -screen_rect.y)
-
 screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
+
 clock = pygame.time.Clock()
 done = False
 
@@ -56,14 +58,12 @@ map_surface = pygame.Surface((256, 192))
 zoom = 1
 
 # Menu vars
-menublit = pygame.image.load('textures/menu.png')
-menublit.convert_alpha()
-menuselect = pygame.image.load('textures/menuselect.png')
-menuselect.convert_alpha()
+menublit = pygame.image.load('textures/menu.png').convert_alpha()
+menuselect = pygame.image.load('textures/menuselect.png').convert_alpha()
 menu = False
 menupos = 0
 menuframes = 0
-menudisp = 0 # integers are booleans right
+menudisp = 0  # integers are booleans right
 
 quickstart = True  # turn on for quick debugging
 if not quickstart:
@@ -104,12 +104,12 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # exit button
             done = True
-        if event.type == pygame.VIDEORESIZE:  # update screen when resizing
+        elif event.type == pygame.VIDEORESIZE:  # update screen when resizing
             screen_rect.size = event.dict['size']
             screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 
         # Single key actions
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:
             key = event.key
             if currentScene == 'World':
                 if key == pygame.K_z:
@@ -164,7 +164,7 @@ while not done:
                     rowindex = 0
 
             if currentScene == 'Battle':
-                activeBattle.process_single_key_event(key)
+                pass
 
     # Continuous key actions
     if not player.moving and not menu and currentScene == 'World':
