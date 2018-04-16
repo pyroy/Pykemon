@@ -21,19 +21,20 @@ class Background:
         self.time = time
 
     def get(self):
-        dfg = pygame.Surface((256, 146))
-        dfg.blit(self.source, (0, 0), (15, 566, 256, 146))
+        dfg = pygame.Surface((256, 144))
+        dfg.blit(self.source, (0, 0), (15, 566, 256, 144))
         return dfg
 
 
 class Battle:
-    def __init__(self, screen, player, foe):
+    def __init__(self, screen, console, player, foe):
         self.player, self.foe = player, foe
+        self.console = console
         self.screen_surf = screen
         self.screen_rect = screen.get_rect()
 
         self.visuals_rect = self.screen_rect.copy()
-        self.visuals_rect.height = 146
+        self.visuals_rect.height = 144
 
         self.menu_rect = self.screen_rect.copy()
         self.menu_rect.y = self.visuals_rect.height
@@ -75,6 +76,7 @@ class Battle:
                 self.friend_pos -= 6
             else:
                 self.state = 'select'
+                self.console.addEvent('SAY', [f"What will {self.inFieldFriend.custom_name} do?"])
 
     def draw(self):
         self.screen_surf.fill((0,0,0))
@@ -83,4 +85,5 @@ class Battle:
         self.friendSize = self.screen_surf.blit(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'), (self.friend_pos, self.visuals_rect.height-self.friendSize.height))
 
         if self.state == 'select':
-            pygame.draw.rect(self.screen_surf, (255,255,255), self.menu_rect)
+            # pygame.draw.rect(self.screen_surf, (0,0,0), self.menu_rect)
+            pass

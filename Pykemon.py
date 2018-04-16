@@ -87,7 +87,7 @@ class Console:
         self.pixel_screen = pixel_screen
         self.pos_rect = pygame.Rect(0, 0, self.current_text_box_texture.get_width(), self.current_text_box_texture.get_height())
         self.pos_rect.centerx = self.pixel_screen.get_width() / 2
-        self.pos_rect.bottom = self.pixel_screen.get_height() - 1
+        self.pos_rect.bottom = self.pixel_screen.get_height() - 2
 
         # Positioning of the text in the box
         self.text_rect = self.pos_rect.inflate(-self.pos_rect.width*0.1, -self.pos_rect.height*0.25)
@@ -149,7 +149,8 @@ class Console:
                 else:
                     self.addEvent[self.interpret(eventToExecute.data[1][1])]
 
-    def addEvent(self, event):
+    def addEvent(self, command, data):
+        event = Event(command, data)
         if type(event) == list:
             self.queue.extend(event)
         else:
@@ -167,7 +168,7 @@ class Console:
         for command in commands:
             commandType = command.split(':')[0]
             commandData = eval(command.split(':')[1])
-            toReturn.append(Event(commandType, commandData))
+            toReturn.append(commandType, commandData)
 
 
 console = Console('data/globals.p', pixel_screen)
@@ -226,7 +227,7 @@ selected = 0
 rowindex = 0
 try:
     options = pickle.load(open('data\\options.p', 'rb'))
-except:
+except (FileNotFoundError, EOFError):
     options = {}
 options = {'empty': 0, 'test': 1}
 
@@ -267,14 +268,14 @@ while not done:
                 elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
                 elif key == pygame.K_RETURN and menuitem == 0 and menu:
-                    console.addEvent(Event('SAY', "saving! please don't turn off the console!"))
+                    console.addEvent('SAY', "saving! please don't turn off the console!")
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     currentScene = 'Options'
                 elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
                     for sign in currentMap.signs:
                         dir = player.get_direction_coordinates()
                         if player.pos[0]//16 + dir[0] == sign.pos[0] and player.pos[1]//16 + dir[1] == sign.pos[1]:
-                            console.addEvent(Event("SAY", sign.text))
+                            console.addEvent("SAY", sign.text)
                             break
 
             if console.dialogue_active:
@@ -340,7 +341,7 @@ while not done:
                     foe = pkm.Trainer('Damion')
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
                     foe.party[0].setlevel(EncounterData[1])
-                    activeBattle = battlescene.Battle(pixel_screen, player.trainerdata, foe)
+                    activeBattle = battlescene.Battle(pixel_screen, console, player.trainerdata, foe)
                     currentScene = 'Battle'
 
         drawPlayer = True
