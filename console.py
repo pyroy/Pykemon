@@ -7,14 +7,6 @@ dummyEvent = Event("SAY", [
     "Hello there!\nIt's so very nice to meet you!\nWelcome to the world of Pokémon!"
 ])
 
-def fit_and_center_surface(a, b):
-    a_rect = a.get_rect()
-    b_rect = b.get_rect()
-    a_rect_scaled = a_rect.fit(b_rect)
-    a_scaled = pygame.transform.scale(a, a_rect_scaled.size)
-    coordinates = ((b_rect.width - a_rect_scaled.width)//2, (b_rect.height - a_rect_scaled.height)//2)
-    b.blit(a_scaled, coordinates)
-
 
 def take_words_until(s, n):
     return " ".join(s.split()[:n])
@@ -41,6 +33,7 @@ def fit_string_with_width(text, font, width):
             break
     split_at_newlines[0] = rest_text
     return s_surf, '\n'.join(split_at_newlines)
+
 
 class Console:
     def __init__(self, data, pixel_screen):

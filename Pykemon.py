@@ -2,19 +2,28 @@
 import time
 import random
 import pickle
-from collections import namedtuple
 
 # Main imports
 import maploader
 import npcloader
 import battlescene
-from console import *
+from console import Console
 from keybinding import single_key_action, continuous_key_action
 import pokepy.pokemon as pkm
 from player import Player
+import pygame
+
+
+def fit_and_center_surface(a, b):
+    a_rect = a.get_rect()
+    b_rect = b.get_rect()
+    a_rect_scaled = a_rect.fit(b_rect)
+    a_scaled = pygame.transform.scale(a, a_rect_scaled.size)
+    coordinates = ((b_rect.width - a_rect_scaled.width)//2, (b_rect.height - a_rect_scaled.height)//2)
+    b.blit(a_scaled, coordinates)
+
 
 # Pygame setup
-import pygame
 pygame.init()
 
 # The pixel screen is the non-scaled surface on which you should blit
@@ -28,7 +37,7 @@ screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
 
-console = Console('data/globals.p', pixel_screen)# see console.py
+console = Console('data/globals.p', pixel_screen)  # see console.py
 
 # Pokemon dex data
 dex = pkm.dex.Dex()
@@ -39,7 +48,7 @@ maploader = maploader.MapLoader()
 mapToLoad = 'editmap'
 currentMap = maploader.loadMapObject(mapToLoad)
 
-player = Player(currentMap.bounds, npcloader) #see player.py
+player = Player(currentMap.bounds, npcloader)  # see player.py
 player.pos = currentMap.warps[0]
 
 base_resolution = (256, 192)
@@ -54,7 +63,7 @@ menuselect.convert_alpha()
 menu = False
 menupos = 0
 menuframes = 0
-menudisp = 0 #integers are booleans right
+menudisp = 0 # integers are booleans right
 
 quickstart = True  # turn on for quick debugging
 if not quickstart:
@@ -70,7 +79,7 @@ if not quickstart:
     pygame.display.flip()
     time.sleep(2)
 
-npcloader.loadNPC('bob') #placeholders? should be in maploader
+npcloader.loadNPC('bob')  # placeholders? should be in maploader
 npcloader.loadNPC('will')
 
 currentScene = 'World'
@@ -84,7 +93,7 @@ try:
     options = pickle.load(open('data\\options.p', 'rb'))
 except (FileNotFoundError, EOFError):
     options = {}
-options = {'empty': 0, 'test': 1} #revamp use lib
+options = {'empty': 0, 'test': 1}  # revamp use lib
 
 menuitem = 0
 while not done:
@@ -93,9 +102,9 @@ while not done:
     map_surface = pygame.Surface((base_resolution[0]//zoom, base_resolution[1]//zoom))
     pressed_keys = pygame.key.get_pressed()
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: #exit button
+        if event.type == pygame.QUIT:  # exit button
             done = True
-        if event.type == pygame.VIDEORESIZE: #update screen when resizing
+        if event.type == pygame.VIDEORESIZE:  # update screen when resizing
             screen_rect.size = event.dict['size']
             screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 
@@ -240,7 +249,7 @@ while not done:
 
         screen.blit(labelback, (0, screen_rect.height-50))
 
-    if menuframes: #animating the menu in and out animation
+    if menuframes:  # animating the menu in and out animation
             menupos -= menudisp*(10-menuframes)
             menuframes -= 1
 
