@@ -100,7 +100,7 @@ class Console:
         print(self.current_dialogue_text)
         print(text, 'ID:'+str(self.state))
 
-    def draw_dialogue(self):
+    def draw_dialog_box(self):
         if not self.dialogue_active:
             return
 
@@ -171,22 +171,22 @@ class Console:
                 pickle.dump(self.data, open(self.datapath, 'wb'))
             elif e.event == 'IF':
                 if self.data[e.data[0]]:
-                    self.addEvent[self.interpret(e.data[1][0])]
+                    self.add_event[self.interpret(e.data[1][0])]
                 else:
-                    self.addEvent[self.interpret(e.data[1][1])]
+                    self.add_event[self.interpret(e.data[1][1])]
 
-    def addEvent(self, command, data):
+    def add_event(self, command, data):
         event = Event(command, data)
         if type(event) == list:
             self.queue.extend(event)
         else:
             self.queue.append(event)
 
-    def execute_script(self, scriptPath):
-        with open(scriptPath) as file:
+    def execute_script(self, script_path):
+        with open(script_path) as file:
             lines = file.readlines()
         for line in lines:
-            self.addEvent(self.interpret(line))
+            self.add_event(self.interpret(line))
 
     def interpret(self, data):
         commands = data.split(';')
@@ -206,3 +206,6 @@ class Console:
                     self.choose_selection += 1
                 else:
                     self.choose_selection -= 1
+        elif self.dialogue_active:
+            if single_key_action(key, 'Dialogue', 'continue'):
+                self.dialogue_continue()

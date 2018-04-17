@@ -59,8 +59,8 @@ class Battle:
                 self.friend_pos -= 6
             else:
                 self.state = 'select'
-                self.console.addEvent('SAY', [f"What will\n{self.inFieldFriend.custom_name} do?"])
-                self.console.addEvent('CHOOSE', ["FIGHT", "BAG", "POKéMON", "RUN"])
+                self.console.add_event('SAY', [f"What will\n{self.inFieldFriend.custom_name} do?"])
+                self.console.add_event('CHOOSE', ["FIGHT", "BAG", "POKéMON", "RUN"])
 
     def draw(self):
         self.screen_surf.fill((0,0,0))

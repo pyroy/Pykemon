@@ -132,19 +132,16 @@ while not done:
                 elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
                 elif key == pygame.K_RETURN and menuitem == 0 and menu:
-                    console.addEvent('SAY', "saving! please don't turn off the console!")
+                    console.add_event('SAY', "saving! please don't turn off the console!")
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     currentScene = 'Options'
                 elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
                     for sign in currentMap.signs:
                         dir = player.get_direction_coordinates()
                         if player.pos[0]//16 + dir[0] == sign.pos[0] and player.pos[1]//16 + dir[1] == sign.pos[1]:
-                            console.addEvent("SAY", sign.text)
+                            console.add_event("SAY", sign.text)
                             break
 
-            if console.dialogue_active:
-                if single_key_action(key, 'Dialogue', 'continue'):
-                    console.dialogue_continue()
             console.handle_single_key_action(key)
 
             if currentScene == 'Options':
@@ -254,7 +251,7 @@ while not done:
             menupos -= menudisp*(10-menuframes)
             menuframes -= 1
 
-    console.draw_dialogue()
+    console.draw_dialog_box()
     console.draw_choose_box()
 
     warp = player.checkWarps(currentMap.warps)
