@@ -32,7 +32,8 @@ def create_default_config():
             'up': 'up',
             'right': 'right',
             'down': 'down',
-            'left': 'left'
+            'left': 'left',
+            'select': 'return'
         },
         'Dialogue': {
             'continue': 'return'

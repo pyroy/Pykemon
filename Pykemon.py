@@ -58,8 +58,8 @@ map_surface = pygame.Surface((256, 192))
 zoom = 1
 
 # Menu vars
-menublit = pygame.image.load('textures/menu.png').convert_alpha()
-menuselect = pygame.image.load('textures/menuselect.png').convert_alpha()
+menublit = pygame.image.load('textures/menu2.png').convert_alpha()
+menuselect = pygame.image.load('textures/menuselect2.png').convert_alpha()
 menu = False
 menupos = 0
 menuframes = 0
@@ -119,11 +119,11 @@ while not done:
                 elif key == pygame.K_m:
                     if not menuframes:
                         menu = not menu
-                        menuframes = 10
+                        menuframes = 4
                         if menu:
-                            menudisp = 200/45
+                            menudisp = -4
                         else:
-                            menudisp = -200/45
+                            menudisp = 4
                 elif key == pygame.K_BACKSLASH:
                     a = input("load map: ")
                     player.warp(a, [0, 0])
@@ -132,14 +132,14 @@ while not done:
                 elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
                 elif key == pygame.K_RETURN and menuitem == 0 and menu:
-                    console.add_event('SAY', "saving! please don't turn off the console!")
+                    console.say("saving! please don't turn off the console!")
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     currentScene = 'Options'
                 elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
                     for sign in currentMap.signs:
                         dir = player.get_direction_coordinates()
                         if player.pos[0]//16 + dir[0] == sign.pos[0] and player.pos[1]//16 + dir[1] == sign.pos[1]:
-                            console.add_event("SAY", sign.text)
+                            console.say(*sign.text)
                             break
 
             console.handle_single_key_action(key)
@@ -198,7 +198,6 @@ while not done:
             encounterTile = currentMap.encounters.checkEncounters(player.pos[0]//16, player.pos[1]//16)
             if encounterTile > 0:
                 if random.randint(0, 10) == 0:
-                    battle = True
                     EncounterData = currentMap.encounters.generateEncounter(str(encounterTile))
                     foe = pkm.Trainer('Damion')
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
@@ -220,12 +219,14 @@ while not done:
 
         map_surface.blit(currentMap.alpha, (drawx, drawy))
         pixel_screen.blit(map_surface, (0, 0))
-        pixel_screen.blit(pygame.transform.scale(menublit, (200, 2*184)), (pixel_screen_rect.width+menupos, 0))
-        pixel_screen.blit(menuselect, (pixel_screen_rect.width+menupos, menuitem*70))
+        pixel_screen.blit(menublit, (pixel_screen_rect.width+menupos, 0))
+        pixel_screen.blit(menuselect, (pixel_screen_rect.width+menupos, menuitem*14))
 
     elif currentScene == 'Battle':
         activeBattle.update()
         activeBattle.draw()
+        if not activeBattle.active:
+            currentScene = 'World'
 
     # Code is nu compleet shit, maar ik weet al hoe ik normaal ga maken -> i am idiot i must implement library
     elif currentScene == 'Options':
@@ -248,8 +249,9 @@ while not done:
         screen.blit(labelback, (0, screen_rect.height-50))
 
     if menuframes:  # animating the menu in and out animation
-            menupos -= menudisp*(10-menuframes)
-            menuframes -= 1
+        print(menupos)
+        menupos -= menudisp*-menuframes
+        menuframes -= 1
 
     console.draw_dialog_box()
     console.draw_choose_box()

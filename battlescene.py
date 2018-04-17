@@ -27,6 +27,7 @@ class Background:
 
 class Battle:
     def __init__(self, screen, console, player, foe):
+        self.active = True
         self.player, self.foe = player, foe
         self.console = console
         self.screen_surf = screen
@@ -59,8 +60,17 @@ class Battle:
                 self.friend_pos -= 6
             else:
                 self.state = 'select'
-                self.console.add_event('SAY', [f"What will\n{self.inFieldFriend.custom_name} do?"])
-                self.console.add_event('CHOOSE', ["FIGHT", "BAG", "POKéMON", "RUN"])
+                self.console.say(f"What will\n{self.inFieldFriend.custom_name} do?")
+                self.console.choose(["FIGHT", "BAG", "POKéMON", "RUN"], self.main_action_callback)
+
+    def main_action_callback(self, selection):
+        print(f"I'm a {type(self)} and the selection is {selection}")
+        if selection == 'RUN':
+            # @Terts: Should not always work, but I don't know what that depends on
+            self.console.say("Got away safely!", callback=self.close)
+
+    def close(self):
+        self.active = False
 
     def draw(self):
         self.screen_surf.fill((0,0,0))

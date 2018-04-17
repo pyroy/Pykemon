@@ -110,7 +110,7 @@ class Player:
                 self.move('walk', 'south')
             elif self.bounds.at_pos(*pos_div) == 'l':
                 self.move('walk', 'west')
-            else:
+            elif self.moving:
                 self.moving = False
                 return 'stopped moving'
 
