@@ -1,5 +1,6 @@
 import pickle, pygame
 from collections import namedtuple
+from keybinding import single_key_action
 
 Event = namedtuple("Event", [
     "event",
@@ -45,10 +46,12 @@ class Console:
         self.queue = [dummyEvent]
         self.datapath = data
         self.data = pickle.load(open(data, 'rb'))
+        self.font = pygame.font.Font("PKMNRSEU.FON", 14)
+
+        # Text box stuff
         self.text_box_textures = pygame.image.load("textures/dialogue box.png").convert_alpha()
         self.current_text_box_texture = pygame.Surface((250, 44), pygame.SRCALPHA)
         self.current_text_box_texture.blit(self.text_box_textures, (0, 0), (1, 1, 250, 44))
-        self.font = pygame.font.Font("PKMNRSEU.FON", 14)
         self.dialogue_active = False
         self.rest_text = ""
 
@@ -66,7 +69,31 @@ class Console:
         self.text_top_rect.height = self.text_rect.height//2
         self.text_bottom_rect = self.text_top_rect.copy().move(0, self.text_top_rect.height)
 
-    def dialogBox(self, text):
+        # Choose box stuff
+        self.choose_box_texture = pygame.image.load("textures/choose box.png").convert_alpha()
+        self.choose_selector_texture = pygame.image.load("textures/choose selector.png").convert_alpha()
+        self.choose_box_active = False
+
+        self.choose_box_rect = pygame.Rect(0, 0, self.choose_box_texture.get_width(), self.choose_box_texture.get_height())
+        self.choose_box_rect.bottomright = (self.pixel_screen.get_width(), self.pixel_screen.get_height())
+        self.choose_box_rect.move_ip(-1, -1)
+
+        self.choose_text_rect = self.choose_box_rect.inflate(-self.pos_rect.width*0.1, -self.pos_rect.height*0.25)
+        self.choose_text_rect.move_ip(0, 2)
+        self.choose_text_rect.width -= 10
+        self.choose_topleft_rect = self.choose_text_rect.copy()
+        self.choose_topleft_rect.height = self.choose_topleft_rect.height//2
+        self.choose_topleft_rect.width = self.choose_topleft_rect.width//2
+        self.choose_topright_rect = self.choose_topleft_rect.move(self.choose_topleft_rect.width, 0)
+        self.choose_bottomleft_rect = self.choose_topleft_rect.move(0, self.choose_topleft_rect.height)
+        self.choose_bottomright_rect = self.choose_bottomleft_rect.move(self.choose_topleft_rect.width, 0)
+        self.choose_selector_positions = []
+        for rect in [self.choose_topleft_rect, self.choose_topright_rect, self.choose_bottomleft_rect, self.choose_bottomright_rect]:
+            self.choose_selector_positions.append(rect.topleft)
+            rect.width -= 8
+            rect.move_ip(8, 0)
+
+    def open_dialog_box(self, text):
         self.dialogue_active = True
         self.dialogue_text = iter(text)
         self.current_dialogue_text = next(self.dialogue_text)
@@ -99,27 +126,54 @@ class Console:
             except StopIteration:
                 self.dialogue_active = False
 
+    def open_choose_box(self, data):
+        self.choose_box_active = True
+        self.choose_options = data
+        self.choose_selection = 0
+
+    def draw_choose_box(self):
+        if not self.choose_box_active:
+            return
+
+        # Background
+        self.pixel_screen.blit(self.choose_box_texture, self.choose_box_rect)
+
+        # Options
+        choose_topleft_surf     = self.font.render(self.choose_options[0], False, (0,0,0))
+        self.pixel_screen.blit(choose_topleft_surf, self.choose_topleft_rect)
+        if len(self.choose_options) > 1:
+            choose_topright_surf    = self.font.render(self.choose_options[1], False, (0,0,0))
+            self.pixel_screen.blit(choose_topright_surf, self.choose_topright_rect)
+        if len(self.choose_options) > 2:
+            choose_bottomleft_surf  = self.font.render(self.choose_options[2], False, (0,0,0))
+            self.pixel_screen.blit(choose_bottomleft_surf, self.choose_bottomleft_rect)
+        if len(self.choose_options) > 3:
+            choose_bottomright_surf = self.font.render(self.choose_options[3], False, (0,0,0))
+            self.pixel_screen.blit(choose_bottomright_surf, self.choose_bottomright_rect)
+
+        self.pixel_screen.blit(self.choose_selector_texture, self.choose_selector_positions[self.choose_selection])
+
     def execute_events(self):
         while self.queue:
             self.execute_next_event()
 
     def execute_next_event(self):
         if self.queue:
-            event_to_execute = self.queue.pop(0)
+            e = self.queue.pop(0)
             self.state += 1
-            if event_to_execute.event == 'SAY':
-                self.dialogBox(event_to_execute.data)
-            elif event_to_execute.event == 'CHOOSE':
+            if e.event == 'SAY':
+                self.open_dialog_box(e.data)
+            elif e.event == 'CHOOSE':
                 # Open a selection text box with the options from data.
-                pass
-            elif event_to_execute.event == 'SET':
-                self.data[event_to_execute.data[0]] = event_to_execute.data[1]
+                self.open_choose_box(e.data)
+            elif e.event == 'SET':
+                self.data[e.data[0]] = e.data[1]
                 pickle.dump(self.data, open(self.datapath, 'wb'))
-            elif event_to_execute.event == 'IF':
-                if self.data[event_to_execute.data[0]]:
-                    self.addEvent[self.interpret(event_to_execute.data[1][0])]
+            elif e.event == 'IF':
+                if self.data[e.data[0]]:
+                    self.addEvent[self.interpret(e.data[1][0])]
                 else:
-                    self.addEvent[self.interpret(event_to_execute.data[1][1])]
+                    self.addEvent[self.interpret(e.data[1][1])]
 
     def addEvent(self, command, data):
         event = Event(command, data)
@@ -141,3 +195,14 @@ class Console:
             commandType = command.split(':')[0]
             commandData = eval(command.split(':')[1])
             toReturn.append(commandType, commandData)
+
+    def handle_single_key_action(self, key):
+        if self.choose_box_active:
+            if single_key_action(key, 'Menu', 'up') or single_key_action(key, 'Menu', 'down'):
+                self.choose_selection += 2
+                self.choose_selection = self.choose_selection % 4
+            elif single_key_action(key, 'Menu', 'right') or single_key_action(key, 'Menu', 'left'):
+                if self.choose_selection % 2 == 0:
+                    self.choose_selection += 1
+                else:
+                    self.choose_selection -= 1

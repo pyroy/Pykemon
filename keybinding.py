@@ -28,15 +28,12 @@ def create_default_config():
             'menu': 'm',
             'select': 'return',
         },
-        'Battle': {
-            'select up': 'up',
-            'select right': 'right',
-            'select down': 'down',
-            'select left': 'left',
-            'accept': 'enter',
-            'back': 'backspace',
+        'Menu': {
+            'up': 'up',
+            'right': 'right',
+            'down': 'down',
+            'left': 'left'
         },
-        'Menu': {},
         'Dialogue': {
             'continue': 'return'
         }

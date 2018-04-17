@@ -145,6 +145,7 @@ while not done:
             if console.dialogue_active:
                 if single_key_action(key, 'Dialogue', 'continue'):
                     console.dialogue_continue()
+            console.handle_single_key_action(key)
 
             if currentScene == 'Options':
                 if event.key == pygame.K_UP:
@@ -254,6 +255,7 @@ while not done:
             menuframes -= 1
 
     console.draw_dialogue()
+    console.draw_choose_box()
 
     warp = player.checkWarps(currentMap.warps)
     if warp:
