@@ -104,7 +104,7 @@ class StatusBar:
         self.name   = pokemon.custom_name
         self.level  = pokemon.level
         self.status = pokemon.status
-        self.max_hp = pokemon.baseStats['HP']
+        self.max_hp = pokemon.stats['HP']
         self.cur_hp = pokemon.currentStats['HP']
         self.max_xp = pokemon.goalXP
         self.cur_xp = pokemon.XP
@@ -118,6 +118,19 @@ class StatusBar:
             bg_texture_x = 120
         else:
             bg_texture_x = 240
+        hp_prop = self.cur_hp / self.max_hp
+
+        hp_texture = pygame.Surface((round(hp_prop*48), 7))
+        if hp_prop >= 0.5:
+            # Use green texture
+            hp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 85, 48, 7))
+        elif hp_prop > 0.25:
+            # Use yellow texture
+            hp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 78, 48, 7))
+        else:
+            # Use red texture
+            hp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 71, 48, 7))
+
         if self.side == 'friend':
             background = pygame.Surface((120, 41), pygame.SRCALPHA)
             background_rect = background.get_rect()
@@ -126,7 +139,8 @@ class StatusBar:
             nametag = self.font.render(self.name, False, (0,0,0))
             background.blit(nametag, (13, 3))
 
-            return background
+            background.blit(hp_texture, (62, 19))
+
         elif self.side == 'foe':
             background = pygame.Surface((120, 30), pygame.SRCALPHA)
             background_rect = background.get_rect()
@@ -135,6 +149,8 @@ class StatusBar:
             nametag = self.font.render(self.name, False, (0,0,0))
             background.blit(nametag, (2, 3))
 
-            return background
+            background.blit(hp_texture, (50, 19))
+
         else:
             raise ValueError(f"self.side '{self.side}' was not 'friend' or 'foe'.")
+        return background
