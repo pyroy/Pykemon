@@ -1,6 +1,6 @@
 import math
 import pygame
-import pokemon as pkm
+import pokepy.pokemon as pkm
 
 
 class Player:

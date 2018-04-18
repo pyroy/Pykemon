@@ -1,2416 +1,2419 @@
 dexdata = """
 #001
 Bulbasaur
-Grass · Poison 
+Grass · Poison
 #002
 Ivysaur
-Grass · Poison 
+Grass · Poison
 #003
 Venusaur
-Grass · Poison 
+Grass · Poison
 #004
 Charmander
-Fire 
+Fire
 #005
 Charmeleon
-Fire 
+Fire
 #006
 Charizard
-Fire · Flying 
+Fire · Flying
 #007
 Squirtle
-Water 
+Water
 #008
 Wartortle
-Water 
+Water
 #009
 Blastoise
-Water 
+Water
 #010
 Caterpie
-Bug 
+Bug
 #011
 Metapod
-Bug 
+Bug
 #012
 Butterfree
-Bug · Flying 
+Bug · Flying
 #013
 Weedle
-Bug · Poison 
+Bug · Poison
 #014
 Kakuna
-Bug · Poison 
+Bug · Poison
 #015
 Beedrill
-Bug · Poison 
+Bug · Poison
 #016
 Pidgey
-Normal · Flying 
+Normal · Flying
 #017
 Pidgeotto
-Normal · Flying 
+Normal · Flying
 #018
 Pidgeot
-Normal · Flying 
+Normal · Flying
 #019
 Rattata
-Normal 
+Normal
 #020
 Raticate
-Normal 
+Normal
 #021
 Spearow
-Normal · Flying 
+Normal · Flying
 #022
 Fearow
-Normal · Flying 
+Normal · Flying
 #023
 Ekans
-Poison 
+Poison
 #024
 Arbok
-Poison 
+Poison
 #025
 Pikachu
-Electric 
+Electric
 #026
 Raichu
-Electric 
+Electric
 #027
 Sandshrew
-Ground 
+Ground
 #028
 Sandslash
-Ground 
+Ground
 #029
 Nidoran♀
-Poison 
+Poison
 #030
 Nidorina
-Poison 
+Poison
 #031
 Nidoqueen
-Poison · Ground 
+Poison · Ground
 #032
 Nidoran♂
-Poison 
+Poison
 #033
 Nidorino
-Poison 
+Poison
 #034
 Nidoking
-Poison · Ground 
+Poison · Ground
 #035
 Clefairy
-Fairy 
+Fairy
 #036
 Clefable
-Fairy 
+Fairy
 #037
 Vulpix
-Fire 
+Fire
 #038
 Ninetales
-Fire 
+Fire
 #039
 Jigglypuff
-Normal · Fairy 
+Normal · Fairy
 #040
 Wigglytuff
-Normal · Fairy 
+Normal · Fairy
 #041
 Zubat
-Poison · Flying 
+Poison · Flying
 #042
 Golbat
-Poison · Flying 
+Poison · Flying
 #043
 Oddish
-Grass · Poison 
+Grass · Poison
 #044
 Gloom
-Grass · Poison 
+Grass · Poison
 #045
 Vileplume
-Grass · Poison 
+Grass · Poison
 #046
 Paras
-Bug · Grass 
+Bug · Grass
 #047
 Parasect
-Bug · Grass 
+Bug · Grass
 #048
 Venonat
-Bug · Poison 
+Bug · Poison
 #049
 Venomoth
-Bug · Poison 
+Bug · Poison
 #050
 Diglett
-Ground 
+Ground
 #051
 Dugtrio
-Ground 
+Ground
 #052
 Meowth
-Normal 
+Normal
 #053
 Persian
-Normal 
+Normal
 #054
 Psyduck
-Water 
+Water
 #055
 Golduck
-Water 
+Water
 #056
 Mankey
-Fighting 
+Fighting
 #057
 Primeape
-Fighting 
+Fighting
 #058
 Growlithe
-Fire 
+Fire
 #059
 Arcanine
-Fire 
+Fire
 #060
 Poliwag
-Water 
+Water
 #061
 Poliwhirl
-Water 
+Water
 #062
 Poliwrath
-Water · Fighting 
+Water · Fighting
 #063
 Abra
-Psychic 
+Psychic
 #064
 Kadabra
-Psychic 
+Psychic
 #065
 Alakazam
-Psychic 
+Psychic
 #066
 Machop
-Fighting 
+Fighting
 #067
 Machoke
-Fighting 
+Fighting
 #068
 Machamp
-Fighting 
+Fighting
 #069
 Bellsprout
-Grass · Poison 
+Grass · Poison
 #070
 Weepinbell
-Grass · Poison 
+Grass · Poison
 #071
 Victreebel
-Grass · Poison 
+Grass · Poison
 #072
 Tentacool
-Water · Poison 
+Water · Poison
 #073
 Tentacruel
-Water · Poison 
+Water · Poison
 #074
 Geodude
-Rock · Ground 
+Rock · Ground
 #075
 Graveler
-Rock · Ground 
+Rock · Ground
 #076
 Golem
-Rock · Ground 
+Rock · Ground
 #077
 Ponyta
-Fire 
+Fire
 #078
 Rapidash
-Fire 
+Fire
 #079
 Slowpoke
-Water · Psychic 
+Water · Psychic
 #080
 Slowbro
-Water · Psychic 
+Water · Psychic
 #081
 Magnemite
-Electric · Steel 
+Electric · Steel
 #082
 Magneton
-Electric · Steel 
+Electric · Steel
 #083
 Farfetch'd
-Normal · Flying 
+Normal · Flying
 #084
 Doduo
-Normal · Flying 
+Normal · Flying
 #085
 Dodrio
-Normal · Flying 
+Normal · Flying
 #086
 Seel
-Water 
+Water
 #087
 Dewgong
-Water · Ice 
+Water · Ice
 #088
 Grimer
-Poison 
+Poison
 #089
 Muk
-Poison 
+Poison
 #090
 Shellder
-Water 
+Water
 #091
 Cloyster
-Water · Ice 
+Water · Ice
 #092
 Gastly
-Ghost · Poison 
+Ghost · Poison
 #093
 Haunter
-Ghost · Poison 
+Ghost · Poison
 #094
 Gengar
-Ghost · Poison 
+Ghost · Poison
 #095
 Onix
-Rock · Ground 
+Rock · Ground
 #096
 Drowzee
-Psychic 
+Psychic
 #097
 Hypno
-Psychic 
+Psychic
 #098
 Krabby
-Water 
+Water
 #099
 Kingler
-Water 
+Water
 #100
 Voltorb
-Electric 
+Electric
 #101
 Electrode
-Electric 
+Electric
 #102
 Exeggcute
-Grass · Psychic 
+Grass · Psychic
 #103
 Exeggutor
-Grass · Psychic 
+Grass · Psychic
 #104
 Cubone
-Ground 
+Ground
 #105
 Marowak
-Ground 
+Ground
 #106
 Hitmonlee
-Fighting 
+Fighting
 #107
 Hitmonchan
-Fighting 
+Fighting
 #108
 Lickitung
-Normal 
+Normal
 #109
 Koffing
-Poison 
+Poison
 #110
 Weezing
-Poison 
+Poison
 #111
 Rhyhorn
-Ground · Rock 
+Ground · Rock
 #112
 Rhydon
-Ground · Rock 
+Ground · Rock
 #113
 Chansey
-Normal 
+Normal
 #114
 Tangela
-Grass 
+Grass
 #115
 Kangaskhan
-Normal 
+Normal
 #116
 Horsea
-Water 
+Water
 #117
 Seadra
-Water 
+Water
 #118
 Goldeen
-Water 
+Water
 #119
 Seaking
-Water 
+Water
 #120
 Staryu
-Water 
+Water
 #121
 Starmie
-Water · Psychic 
+Water · Psychic
 #122
 Mr. Mime
-Psychic · Fairy 
+Psychic · Fairy
 #123
 Scyther
-Bug · Flying 
+Bug · Flying
 #124
 Jynx
-Ice · Psychic 
+Ice · Psychic
 #125
 Electabuzz
-Electric 
+Electric
 #126
 Magmar
-Fire 
+Fire
 #127
 Pinsir
-Bug 
+Bug
 #128
 Tauros
-Normal 
+Normal
 #129
 Magikarp
-Water 
+Water
 #130
 Gyarados
-Water · Flying 
+Water · Flying
 #131
 Lapras
-Water · Ice 
+Water · Ice
 #132
 Ditto
-Normal 
+Normal
 #133
 Eevee
-Normal 
+Normal
 #134
 Vaporeon
-Water 
+Water
 #135
 Jolteon
-Electric 
+Electric
 #136
 Flareon
-Fire 
+Fire
 #137
 Porygon
-Normal 
+Normal
 #138
 Omanyte
-Rock · Water 
+Rock · Water
 #139
 Omastar
-Rock · Water 
+Rock · Water
 #140
 Kabuto
-Rock · Water 
+Rock · Water
 #141
 Kabutops
-Rock · Water 
+Rock · Water
 #142
 Aerodactyl
-Rock · Flying 
+Rock · Flying
 #143
 Snorlax
-Normal 
+Normal
 #144
 Articuno
-Ice · Flying 
+Ice · Flying
 #145
 Zapdos
-Electric · Flying 
+Electric · Flying
 #146
 Moltres
-Fire · Flying 
+Fire · Flying
 #147
 Dratini
-Dragon 
+Dragon
 #148
 Dragonair
-Dragon 
+Dragon
 #149
 Dragonite
-Dragon · Flying 
+Dragon · Flying
 #150
 Mewtwo
-Psychic 
+Psychic
 #151
 Mew
 Psychic
 #152
 Chikorita
-Grass 
+Grass
 #153
 Bayleef
-Grass 
+Grass
 #154
 Meganium
-Grass 
+Grass
 #155
 Cyndaquil
-Fire 
+Fire
 #156
 Quilava
-Fire 
+Fire
 #157
 Typhlosion
-Fire 
+Fire
 #158
 Totodile
-Water 
+Water
 #159
 Croconaw
-Water 
+Water
 #160
 Feraligatr
-Water 
+Water
 #161
 Sentret
-Normal 
+Normal
 #162
 Furret
-Normal 
+Normal
 #163
 Hoothoot
-Normal · Flying 
+Normal · Flying
 #164
 Noctowl
-Normal · Flying 
+Normal · Flying
 #165
 Ledyba
-Bug · Flying 
+Bug · Flying
 #166
 Ledian
-Bug · Flying 
+Bug · Flying
 #167
 Spinarak
-Bug · Poison 
+Bug · Poison
 #168
 Ariados
-Bug · Poison 
+Bug · Poison
 #169
 Crobat
-Poison · Flying 
+Poison · Flying
 #170
 Chinchou
-Water · Electric 
+Water · Electric
 #171
 Lanturn
-Water · Electric 
+Water · Electric
 #172
 Pichu
-Electric 
+Electric
 #173
 Cleffa
-Fairy 
+Fairy
 #174
 Igglybuff
-Normal · Fairy 
+Normal · Fairy
 #175
 Togepi
-Fairy 
+Fairy
 #176
 Togetic
-Fairy · Flying 
+Fairy · Flying
 #177
 Natu
-Psychic · Flying 
+Psychic · Flying
 #178
 Xatu
-Psychic · Flying 
+Psychic · Flying
 #179
 Mareep
-Electric 
+Electric
 #180
 Flaaffy
-Electric 
+Electric
 #181
 Ampharos
-Electric 
+Electric
 #182
 Bellossom
-Grass 
+Grass
 #183
 Marill
-Water · Fairy 
+Water · Fairy
 #184
 Azumarill
-Water · Fairy 
+Water · Fairy
 #185
 Sudowoodo
-Rock 
+Rock
 #186
 Politoed
-Water 
+Water
 #187
 Hoppip
-Grass · Flying 
+Grass · Flying
 #188
 Skiploom
-Grass · Flying 
+Grass · Flying
 #189
 Jumpluff
-Grass · Flying 
+Grass · Flying
 #190
 Aipom
-Normal 
+Normal
 #191
 Sunkern
-Grass 
+Grass
 #192
 Sunflora
-Grass 
+Grass
 #193
 Yanma
-Bug · Flying 
+Bug · Flying
 #194
 Wooper
-Water · Ground 
+Water · Ground
 #195
 Quagsire
-Water · Ground 
+Water · Ground
 #196
 Espeon
-Psychic 
+Psychic
 #197
 Umbreon
-Dark 
+Dark
 #198
 Murkrow
-Dark · Flying 
+Dark · Flying
 #199
 Slowking
-Water · Psychic 
+Water · Psychic
 #200
 Misdreavus
-Ghost 
+Ghost
 #201
 Unown
-Psychic 
+Psychic
 #202
 Wobbuffet
-Psychic 
+Psychic
 #203
 Girafarig
-Normal · Psychic 
+Normal · Psychic
 #204
 Pineco
-Bug 
+Bug
 #205
 Forretress
-Bug · Steel 
+Bug · Steel
 #206
 Dunsparce
-Normal 
+Normal
 #207
 Gligar
-Ground · Flying 
+Ground · Flying
 #208
 Steelix
-Steel · Ground 
+Steel · Ground
 #209
 Snubbull
-Fairy 
+Fairy
 #210
 Granbull
-Fairy 
+Fairy
 #211
 Qwilfish
-Water · Poison 
+Water · Poison
 #212
 Scizor
-Bug · Steel 
+Bug · Steel
 #213
 Shuckle
-Bug · Rock 
+Bug · Rock
 #214
 Heracross
-Bug · Fighting 
+Bug · Fighting
 #215
 Sneasel
-Dark · Ice 
+Dark · Ice
 #216
 Teddiursa
-Normal 
+Normal
 #217
 Ursaring
-Normal 
+Normal
 #218
 Slugma
-Fire 
+Fire
 #219
 Magcargo
-Fire · Rock 
+Fire · Rock
 #220
 Swinub
-Ice · Ground 
+Ice · Ground
 #221
 Piloswine
-Ice · Ground 
+Ice · Ground
 #222
 Corsola
-Water · Rock 
+Water · Rock
 #223
 Remoraid
-Water 
+Water
 #224
 Octillery
-Water 
+Water
 #225
 Delibird
-Ice · Flying 
+Ice · Flying
 #226
 Mantine
-Water · Flying 
+Water · Flying
 #227
 Skarmory
-Steel · Flying 
+Steel · Flying
 #228
 Houndour
-Dark · Fire 
+Dark · Fire
 #229
 Houndoom
-Dark · Fire 
+Dark · Fire
 #230
 Kingdra
-Water · Dragon 
+Water · Dragon
 #231
 Phanpy
-Ground 
+Ground
 #232
 Donphan
-Ground 
+Ground
 #233
 Porygon2
-Normal 
+Normal
 #234
 Stantler
-Normal 
+Normal
 #235
 Smeargle
-Normal 
+Normal
 #236
 Tyrogue
-Fighting 
+Fighting
 #237
 Hitmontop
-Fighting 
+Fighting
 #238
 Smoochum
-Ice · Psychic 
+Ice · Psychic
 #239
 Elekid
-Electric 
+Electric
 #240
 Magby
-Fire 
+Fire
 #241
 Miltank
-Normal 
+Normal
 #242
 Blissey
-Normal 
+Normal
 #243
 Raikou
-Electric 
+Electric
 #244
 Entei
-Fire 
+Fire
 #245
 Suicune
-Water 
+Water
 #246
 Larvitar
-Rock · Ground 
+Rock · Ground
 #247
 Pupitar
-Rock · Ground 
+Rock · Ground
 #248
 Tyranitar
-Rock · Dark 
+Rock · Dark
 #249
 Lugia
-Psychic · Flying 
+Psychic · Flying
 #250
 Ho-oh
-Fire · Flying 
+Fire · Flying
 #251
 Celebi
 Psychic · Grass
 #252
 Treecko
-Grass 
+Grass
 #253
 Grovyle
-Grass 
+Grass
 #254
 Sceptile
-Grass 
+Grass
 #255
 Torchic
-Fire 
+Fire
 #256
 Combusken
-Fire · Fighting 
+Fire · Fighting
 #257
 Blaziken
-Fire · Fighting 
+Fire · Fighting
 #258
 Mudkip
-Water 
+Water
 #259
 Marshtomp
-Water · Ground 
+Water · Ground
 #260
 Swampert
-Water · Ground 
+Water · Ground
 #261
 Poochyena
-Dark 
+Dark
 #262
 Mightyena
-Dark 
+Dark
 #263
 Zigzagoon
-Normal 
+Normal
 #264
 Linoone
-Normal 
+Normal
 #265
 Wurmple
-Bug 
+Bug
 #266
 Silcoon
-Bug 
+Bug
 #267
 Beautifly
-Bug · Flying 
+Bug · Flying
 #268
 Cascoon
-Bug 
+Bug
 #269
 Dustox
-Bug · Poison 
+Bug · Poison
 #270
 Lotad
-Water · Grass 
+Water · Grass
 #271
 Lombre
-Water · Grass 
+Water · Grass
 #272
 Ludicolo
-Water · Grass 
+Water · Grass
 #273
 Seedot
-Grass 
+Grass
 #274
 Nuzleaf
-Grass · Dark 
+Grass · Dark
 #275
 Shiftry
-Grass · Dark 
+Grass · Dark
 #276
 Taillow
-Normal · Flying 
+Normal · Flying
 #277
 Swellow
-Normal · Flying 
+Normal · Flying
 #278
 Wingull
-Water · Flying 
+Water · Flying
 #279
 Pelipper
-Water · Flying 
+Water · Flying
 #280
 Ralts
-Psychic · Fairy 
+Psychic · Fairy
 #281
 Kirlia
-Psychic · Fairy 
+Psychic · Fairy
 #282
 Gardevoir
-Psychic · Fairy 
+Psychic · Fairy
 #283
 Surskit
-Bug · Water 
+Bug · Water
 #284
 Masquerain
-Bug · Flying 
+Bug · Flying
 #285
 Shroomish
-Grass 
+Grass
 #286
 Breloom
-Grass · Fighting 
+Grass · Fighting
 #287
 Slakoth
-Normal 
+Normal
 #288
 Vigoroth
-Normal 
+Normal
 #289
 Slaking
-Normal 
+Normal
 #290
 Nincada
-Bug · Ground 
+Bug · Ground
 #291
 Ninjask
-Bug · Flying 
+Bug · Flying
 #292
 Shedinja
-Bug · Ghost 
+Bug · Ghost
 #293
 Whismur
-Normal 
+Normal
 #294
 Loudred
-Normal 
+Normal
 #295
 Exploud
-Normal 
+Normal
 #296
 Makuhita
-Fighting 
+Fighting
 #297
 Hariyama
-Fighting 
+Fighting
 #298
 Azurill
-Normal · Fairy 
+Normal · Fairy
 #299
 Nosepass
-Rock 
+Rock
 #300
 Skitty
-Normal 
+Normal
 #301
 Delcatty
-Normal 
+Normal
 #302
 Sableye
-Dark · Ghost 
+Dark · Ghost
 #303
 Mawile
-Steel · Fairy 
+Steel · Fairy
 #304
 Aron
-Steel · Rock 
+Steel · Rock
 #305
 Lairon
-Steel · Rock 
+Steel · Rock
 #306
 Aggron
-Steel · Rock 
+Steel · Rock
 #307
 Meditite
-Fighting · Psychic 
+Fighting · Psychic
 #308
 Medicham
-Fighting · Psychic 
+Fighting · Psychic
 #309
 Electrike
-Electric 
+Electric
 #310
 Manectric
-Electric 
+Electric
 #311
 Plusle
-Electric 
+Electric
 #312
 Minun
-Electric 
+Electric
 #313
 Volbeat
-Bug 
+Bug
 #314
 Illumise
-Bug 
+Bug
 #315
 Roselia
-Grass · Poison 
+Grass · Poison
 #316
 Gulpin
-Poison 
+Poison
 #317
 Swalot
-Poison 
+Poison
 #318
 Carvanha
-Water · Dark 
+Water · Dark
 #319
 Sharpedo
-Water · Dark 
+Water · Dark
 #320
 Wailmer
-Water 
+Water
 #321
 Wailord
-Water 
+Water
 #322
 Numel
-Fire · Ground 
+Fire · Ground
 #323
 Camerupt
-Fire · Ground 
+Fire · Ground
 #324
 Torkoal
-Fire 
+Fire
 #325
 Spoink
-Psychic 
+Psychic
 #326
 Grumpig
-Psychic 
+Psychic
 #327
 Spinda
-Normal 
+Normal
 #328
 Trapinch
-Ground 
+Ground
 #329
 Vibrava
-Ground · Dragon 
+Ground · Dragon
 #330
 Flygon
-Ground · Dragon 
+Ground · Dragon
 #331
 Cacnea
-Grass 
+Grass
 #332
 Cacturne
-Grass · Dark 
+Grass · Dark
 #333
 Swablu
-Normal · Flying 
+Normal · Flying
 #334
 Altaria
-Dragon · Flying 
+Dragon · Flying
 #335
 Zangoose
-Normal 
+Normal
 #336
 Seviper
-Poison 
+Poison
 #337
 Lunatone
-Rock · Psychic 
+Rock · Psychic
 #338
 Solrock
-Rock · Psychic 
+Rock · Psychic
 #339
 Barboach
-Water · Ground 
+Water · Ground
 #340
 Whiscash
-Water · Ground 
+Water · Ground
 #341
 Corphish
-Water 
+Water
 #342
 Crawdaunt
-Water · Dark 
+Water · Dark
 #343
 Baltoy
-Ground · Psychic 
+Ground · Psychic
 #344
 Claydol
-Ground · Psychic 
+Ground · Psychic
 #345
 Lileep
-Rock · Grass 
+Rock · Grass
 #346
 Cradily
-Rock · Grass 
+Rock · Grass
 #347
 Anorith
-Rock · Bug 
+Rock · Bug
 #348
 Armaldo
-Rock · Bug 
+Rock · Bug
 #349
 Feebas
-Water 
+Water
 #350
 Milotic
-Water 
+Water
 #351
 Castform
-Normal 
+Normal
 #352
 Kecleon
-Normal 
+Normal
 #353
 Shuppet
-Ghost 
+Ghost
 #354
 Banette
-Ghost 
+Ghost
 #355
 Duskull
-Ghost 
+Ghost
 #356
 Dusclops
-Ghost 
+Ghost
 #357
 Tropius
-Grass · Flying 
+Grass · Flying
 #358
 Chimecho
-Psychic 
+Psychic
 #359
 Absol
-Dark 
+Dark
 #360
 Wynaut
-Psychic 
+Psychic
 #361
 Snorunt
-Ice 
+Ice
 #362
 Glalie
-Ice 
+Ice
 #363
 Spheal
-Ice · Water 
+Ice · Water
 #364
 Sealeo
-Ice · Water 
+Ice · Water
 #365
 Walrein
-Ice · Water 
+Ice · Water
 #366
 Clamperl
-Water 
+Water
 #367
 Huntail
-Water 
+Water
 #368
 Gorebyss
-Water 
+Water
 #369
 Relicanth
-Water · Rock 
+Water · Rock
 #370
 Luvdisc
-Water 
+Water
 #371
 Bagon
-Dragon 
+Dragon
 #372
 Shelgon
-Dragon 
+Dragon
 #373
 Salamence
-Dragon · Flying 
+Dragon · Flying
 #374
 Beldum
-Steel · Psychic 
+Steel · Psychic
 #375
 Metang
-Steel · Psychic 
+Steel · Psychic
 #376
 Metagross
-Steel · Psychic 
+Steel · Psychic
 #377
 Regirock
-Rock 
+Rock
 #378
 Regice
-Ice 
+Ice
 #379
 Registeel
-Steel 
+Steel
 #380
 Latias
-Dragon · Psychic 
+Dragon · Psychic
 #381
 Latios
-Dragon · Psychic 
+Dragon · Psychic
 #382
 Kyogre
-Water 
+Water
 #383
 Groudon
-Ground 
+Ground
 #384
 Rayquaza
-Dragon · Flying 
+Dragon · Flying
 #385
 Jirachi
-Steel · Psychic 
+Steel · Psychic
 #386
 Deoxys
 Psychic
 #387
 Turtwig
-Grass 
+Grass
 #388
 Grotle
-Grass 
+Grass
 #389
 Torterra
-Grass · Ground 
+Grass · Ground
 #390
 Chimchar
-Fire 
+Fire
 #391
 Monferno
-Fire · Fighting 
+Fire · Fighting
 #392
 Infernape
-Fire · Fighting 
+Fire · Fighting
 #393
 Piplup
-Water 
+Water
 #394
 Prinplup
-Water 
+Water
 #395
 Empoleon
-Water · Steel 
+Water · Steel
 #396
 Starly
-Normal · Flying 
+Normal · Flying
 #397
 Staravia
-Normal · Flying 
+Normal · Flying
 #398
 Staraptor
-Normal · Flying 
+Normal · Flying
 #399
 Bidoof
-Normal 
+Normal
 #400
 Bibarel
-Normal · Water 
+Normal · Water
 #401
 Kricketot
-Bug 
+Bug
 #402
 Kricketune
-Bug 
+Bug
 #403
 Shinx
-Electric 
+Electric
 #404
 Luxio
-Electric 
+Electric
 #405
 Luxray
-Electric 
+Electric
 #406
 Budew
-Grass · Poison 
+Grass · Poison
 #407
 Roserade
-Grass · Poison 
+Grass · Poison
 #408
 Cranidos
-Rock 
+Rock
 #409
 Rampardos
-Rock 
+Rock
 #410
 Shieldon
-Rock · Steel 
+Rock · Steel
 #411
 Bastiodon
-Rock · Steel 
+Rock · Steel
 #412
 Burmy
-Bug 
+Bug
 #413
 Wormadam
-Bug · Grass 
+Bug · Grass
 #414
 Mothim
-Bug · Flying 
+Bug · Flying
 #415
 Combee
-Bug · Flying 
+Bug · Flying
 #416
 Vespiquen
-Bug · Flying 
+Bug · Flying
 #417
 Pachirisu
-Electric 
+Electric
 #418
 Buizel
-Water 
+Water
 #419
 Floatzel
-Water 
+Water
 #420
 Cherubi
-Grass 
+Grass
 #421
 Cherrim
-Grass 
+Grass
 #422
 Shellos
-Water 
+Water
 #423
 Gastrodon
-Water · Ground 
+Water · Ground
 #424
 Ambipom
-Normal 
+Normal
 #425
 Drifloon
-Ghost · Flying 
+Ghost · Flying
 #426
 Drifblim
-Ghost · Flying 
+Ghost · Flying
 #427
 Buneary
-Normal 
+Normal
 #428
 Lopunny
-Normal 
+Normal
 #429
 Mismagius
-Ghost 
+Ghost
 #430
 Honchkrow
-Dark · Flying 
+Dark · Flying
 #431
 Glameow
-Normal 
+Normal
 #432
 Purugly
-Normal 
+Normal
 #433
 Chingling
-Psychic 
+Psychic
 #434
 Stunky
-Poison · Dark 
+Poison · Dark
 #435
 Skuntank
-Poison · Dark 
+Poison · Dark
 #436
 Bronzor
-Steel · Psychic 
+Steel · Psychic
 #437
 Bronzong
-Steel · Psychic 
+Steel · Psychic
 #438
 Bonsly
-Rock 
+Rock
 #439
 Mime Jr.
-Psychic · Fairy 
+Psychic · Fairy
 #440
 Happiny
-Normal 
+Normal
 #441
 Chatot
-Normal · Flying 
+Normal · Flying
 #442
 Spiritomb
-Ghost · Dark 
+Ghost · Dark
 #443
 Gible
-Dragon · Ground 
+Dragon · Ground
 #444
 Gabite
-Dragon · Ground 
+Dragon · Ground
 #445
 Garchomp
-Dragon · Ground 
+Dragon · Ground
 #446
 Munchlax
-Normal 
+Normal
 #447
 Riolu
-Fighting 
+Fighting
 #448
 Lucario
-Fighting · Steel 
+Fighting · Steel
 #449
 Hippopotas
-Ground 
+Ground
 #450
 Hippowdon
-Ground 
+Ground
 #451
 Skorupi
-Poison · Bug 
+Poison · Bug
 #452
 Drapion
-Poison · Dark 
+Poison · Dark
 #453
 Croagunk
-Poison · Fighting 
+Poison · Fighting
 #454
 Toxicroak
-Poison · Fighting 
+Poison · Fighting
 #455
 Carnivine
-Grass 
+Grass
 #456
 Finneon
-Water 
+Water
 #457
 Lumineon
-Water 
+Water
 #458
 Mantyke
-Water · Flying 
+Water · Flying
 #459
 Snover
-Grass · Ice 
+Grass · Ice
 #460
 Abomasnow
-Grass · Ice 
+Grass · Ice
 #461
 Weavile
-Dark · Ice 
+Dark · Ice
 #462
 Magnezone
-Electric · Steel 
+Electric · Steel
 #463
 Lickilicky
-Normal 
+Normal
 #464
 Rhyperior
-Ground · Rock 
+Ground · Rock
 #465
 Tangrowth
-Grass 
+Grass
 #466
 Electivire
-Electric 
+Electric
 #467
 Magmortar
-Fire 
+Fire
 #468
 Togekiss
-Fairy · Flying 
+Fairy · Flying
 #469
 Yanmega
-Bug · Flying 
+Bug · Flying
 #470
 Leafeon
-Grass 
+Grass
 #471
 Glaceon
-Ice 
+Ice
 #472
 Gliscor
-Ground · Flying 
+Ground · Flying
 #473
 Mamoswine
-Ice · Ground 
+Ice · Ground
 #474
 Porygon-Z
-Normal 
+Normal
 #475
 Gallade
-Psychic · Fighting 
+Psychic · Fighting
 #476
 Probopass
-Rock · Steel 
+Rock · Steel
 #477
 Dusknoir
-Ghost 
+Ghost
 #478
 Froslass
-Ice · Ghost 
+Ice · Ghost
 #479
 Rotom
-Electric · Ghost 
+Electric · Ghost
 #480
 Uxie
-Psychic 
+Psychic
 #481
 Mesprit
-Psychic 
+Psychic
 #482
 Azelf
-Psychic 
+Psychic
 #483
 Dialga
-Steel · Dragon 
+Steel · Dragon
 #484
 Palkia
-Water · Dragon 
+Water · Dragon
 #485
 Heatran
-Fire · Steel 
+Fire · Steel
 #486
 Regigigas
-Normal 
+Normal
 #487
 Giratina
-Ghost · Dragon 
+Ghost · Dragon
 #488
 Cresselia
-Psychic 
+Psychic
 #489
 Phione
-Water 
+Water
 #490
 Manaphy
-Water 
+Water
 #491
 Darkrai
-Dark 
+Dark
 #492
 Shaymin
-Grass 
+Grass
 #493
 Arceus
 Normal
 #494
 Victini
-Psychic · Fire 
+Psychic · Fire
 #495
 Snivy
-Grass 
+Grass
 #496
 Servine
-Grass 
+Grass
 #497
 Serperior
-Grass 
+Grass
 #498
 Tepig
-Fire 
+Fire
 #499
 Pignite
-Fire · Fighting 
+Fire · Fighting
 #500
 Emboar
-Fire · Fighting 
+Fire · Fighting
 #501
 Oshawott
-Water 
+Water
 #502
 Dewott
-Water 
+Water
 #503
 Samurott
-Water 
+Water
 #504
 Patrat
-Normal 
+Normal
 #505
 Watchog
-Normal 
+Normal
 #506
 Lillipup
-Normal 
+Normal
 #507
 Herdier
-Normal 
+Normal
 #508
 Stoutland
-Normal 
+Normal
 #509
 Purrloin
-Dark 
+Dark
 #510
 Liepard
-Dark 
+Dark
 #511
 Pansage
-Grass 
+Grass
 #512
 Simisage
-Grass 
+Grass
 #513
 Pansear
-Fire 
+Fire
 #514
 Simisear
-Fire 
+Fire
 #515
 Panpour
-Water 
+Water
 #516
 Simipour
-Water 
+Water
 #517
 Munna
-Psychic 
+Psychic
 #518
 Musharna
-Psychic 
+Psychic
 #519
 Pidove
-Normal · Flying 
+Normal · Flying
 #520
 Tranquill
-Normal · Flying 
+Normal · Flying
 #521
 Unfezant
-Normal · Flying 
+Normal · Flying
 #522
 Blitzle
-Electric 
+Electric
 #523
 Zebstrika
-Electric 
+Electric
 #524
 Roggenrola
-Rock 
+Rock
 #525
 Boldore
-Rock 
+Rock
 #526
 Gigalith
-Rock 
+Rock
 #527
 Woobat
-Psychic · Flying 
+Psychic · Flying
 #528
 Swoobat
-Psychic · Flying 
+Psychic · Flying
 #529
 Drilbur
-Ground 
+Ground
 #530
 Excadrill
-Ground · Steel 
+Ground · Steel
 #531
 Audino
-Normal 
+Normal
 #532
 Timburr
-Fighting 
+Fighting
 #533
 Gurdurr
-Fighting 
+Fighting
 #534
 Conkeldurr
-Fighting 
+Fighting
 #535
 Tympole
-Water 
+Water
 #536
 Palpitoad
-Water · Ground 
+Water · Ground
 #537
 Seismitoad
-Water · Ground 
+Water · Ground
 #538
 Throh
-Fighting 
+Fighting
 #539
 Sawk
-Fighting 
+Fighting
 #540
 Sewaddle
-Bug · Grass 
+Bug · Grass
 #541
 Swadloon
-Bug · Grass 
+Bug · Grass
 #542
 Leavanny
-Bug · Grass 
+Bug · Grass
 #543
 Venipede
-Bug · Poison 
+Bug · Poison
 #544
 Whirlipede
-Bug · Poison 
+Bug · Poison
 #545
 Scolipede
-Bug · Poison 
+Bug · Poison
 #546
 Cottonee
-Grass · Fairy 
+Grass · Fairy
 #547
 Whimsicott
-Grass · Fairy 
+Grass · Fairy
 #548
 Petilil
-Grass 
+Grass
 #549
 Lilligant
-Grass 
+Grass
 #550
 Basculin
-Water 
+Water
 #551
 Sandile
-Ground · Dark 
+Ground · Dark
 #552
 Krokorok
-Ground · Dark 
+Ground · Dark
 #553
 Krookodile
-Ground · Dark 
+Ground · Dark
 #554
 Darumaka
-Fire 
+Fire
 #555
 Darmanitan
-Fire 
+Fire
 #556
 Maractus
-Grass 
+Grass
 #557
 Dwebble
-Bug · Rock 
+Bug · Rock
 #558
 Crustle
-Bug · Rock 
+Bug · Rock
 #559
 Scraggy
-Dark · Fighting 
+Dark · Fighting
 #560
 Scrafty
-Dark · Fighting 
+Dark · Fighting
 #561
 Sigilyph
-Psychic · Flying 
+Psychic · Flying
 #562
 Yamask
-Ghost 
+Ghost
 #563
 Cofagrigus
-Ghost 
+Ghost
 #564
 Tirtouga
-Water · Rock 
+Water · Rock
 #565
 Carracosta
-Water · Rock 
+Water · Rock
 #566
 Archen
-Rock · Flying 
+Rock · Flying
 #567
 Archeops
-Rock · Flying 
+Rock · Flying
 #568
 Trubbish
-Poison 
+Poison
 #569
 Garbodor
-Poison 
+Poison
 #570
 Zorua
-Dark 
+Dark
 #571
 Zoroark
-Dark 
+Dark
 #572
 Minccino
-Normal 
+Normal
 #573
 Cinccino
-Normal 
+Normal
 #574
 Gothita
-Psychic 
+Psychic
 #575
 Gothorita
-Psychic 
+Psychic
 #576
 Gothitelle
-Psychic 
+Psychic
 #577
 Solosis
-Psychic 
+Psychic
 #578
 Duosion
-Psychic 
+Psychic
 #579
 Reuniclus
-Psychic 
+Psychic
 #580
 Ducklett
-Water · Flying 
+Water · Flying
 #581
 Swanna
-Water · Flying 
+Water · Flying
 #582
 Vanillite
-Ice 
+Ice
 #583
 Vanillish
-Ice 
+Ice
 #584
 Vanilluxe
-Ice 
+Ice
 #585
 Deerling
-Normal · Grass 
+Normal · Grass
 #586
 Sawsbuck
-Normal · Grass 
+Normal · Grass
 #587
 Emolga
-Electric · Flying 
+Electric · Flying
 #588
 Karrablast
-Bug 
+Bug
 #589
 Escavalier
-Bug · Steel 
+Bug · Steel
 #590
 Foongus
-Grass · Poison 
+Grass · Poison
 #591
 Amoonguss
-Grass · Poison 
+Grass · Poison
 #592
 Frillish
-Water · Ghost 
+Water · Ghost
 #593
 Jellicent
-Water · Ghost 
+Water · Ghost
 #594
 Alomomola
-Water 
+Water
 #595
 Joltik
-Bug · Electric 
+Bug · Electric
 #596
 Galvantula
-Bug · Electric 
+Bug · Electric
 #597
 Ferroseed
-Grass · Steel 
+Grass · Steel
 #598
 Ferrothorn
-Grass · Steel 
+Grass · Steel
 #599
 Klink
-Steel 
+Steel
 #600
 Klang
-Steel 
+Steel
 #601
 Klinklang
-Steel 
+Steel
 #602
 Tynamo
-Electric 
+Electric
 #603
 Eelektrik
-Electric 
+Electric
 #604
 Eelektross
-Electric 
+Electric
 #605
 Elgyem
-Psychic 
+Psychic
 #606
 Beheeyem
-Psychic 
+Psychic
 #607
 Litwick
-Ghost · Fire 
+Ghost · Fire
 #608
 Lampent
-Ghost · Fire 
+Ghost · Fire
 #609
 Chandelure
-Ghost · Fire 
+Ghost · Fire
 #610
 Axew
-Dragon 
+Dragon
 #611
 Fraxure
-Dragon 
+Dragon
 #612
 Haxorus
-Dragon 
+Dragon
 #613
 Cubchoo
-Ice 
+Ice
 #614
 Beartic
-Ice 
+Ice
 #615
 Cryogonal
-Ice 
+Ice
 #616
 Shelmet
-Bug 
+Bug
 #617
 Accelgor
-Bug 
+Bug
 #618
 Stunfisk
-Ground · Electric 
+Ground · Electric
 #619
 Mienfoo
-Fighting 
+Fighting
 #620
 Mienshao
-Fighting 
+Fighting
 #621
 Druddigon
-Dragon 
+Dragon
 #622
 Golett
-Ground · Ghost 
+Ground · Ghost
 #623
 Golurk
-Ground · Ghost 
+Ground · Ghost
 #624
 Pawniard
-Dark · Steel 
+Dark · Steel
 #625
 Bisharp
-Dark · Steel 
+Dark · Steel
 #626
 Bouffalant
-Normal 
+Normal
 #627
 Rufflet
-Normal · Flying 
+Normal · Flying
 #628
 Braviary
-Normal · Flying 
+Normal · Flying
 #629
 Vullaby
-Dark · Flying 
+Dark · Flying
 #630
 Mandibuzz
-Dark · Flying 
+Dark · Flying
 #631
 Heatmor
-Fire 
+Fire
 #632
 Durant
-Bug · Steel 
+Bug · Steel
 #633
 Deino
-Dark · Dragon 
+Dark · Dragon
 #634
 Zweilous
-Dark · Dragon 
+Dark · Dragon
 #635
 Hydreigon
-Dark · Dragon 
+Dark · Dragon
 #636
 Larvesta
-Bug · Fire 
+Bug · Fire
 #637
 Volcarona
-Bug · Fire 
+Bug · Fire
 #638
 Cobalion
-Steel · Fighting 
+Steel · Fighting
 #639
 Terrakion
-Rock · Fighting 
+Rock · Fighting
 #640
 Virizion
-Grass · Fighting 
+Grass · Fighting
 #641
 Tornadus
-Flying 
+Flying
 #642
 Thundurus
-Electric · Flying 
+Electric · Flying
 #643
 Reshiram
-Dragon · Fire 
+Dragon · Fire
 #644
 Zekrom
-Dragon · Electric 
+Dragon · Electric
 #645
 Landorus
-Ground · Flying 
+Ground · Flying
 #646
 Kyurem
-Dragon · Ice 
+Dragon · Ice
 #647
 Keldeo
-Water · Fighting 
+Water · Fighting
 #648
 Meloetta
-Normal · Psychic 
+Normal · Psychic
 #649
 Genesect
 Bug · Steel
 #650
 Chespin
-Grass 
+Grass
 #651
 Quilladin
-Grass 
+Grass
 #652
 Chesnaught
-Grass · Fighting 
+Grass · Fighting
 #653
 Fennekin
-Fire 
+Fire
 #654
 Braixen
-Fire 
+Fire
 #655
 Delphox
-Fire · Psychic 
+Fire · Psychic
 #656
 Froakie
-Water 
+Water
 #657
 Frogadier
-Water 
+Water
 #658
 Greninja
-Water · Dark 
+Water · Dark
 #659
 Bunnelby
-Normal 
+Normal
 #660
 Diggersby
-Normal · Ground 
+Normal · Ground
 #661
 Fletchling
-Normal · Flying 
+Normal · Flying
 #662
 Fletchinder
-Fire · Flying 
+Fire · Flying
 #663
 Talonflame
-Fire · Flying 
+Fire · Flying
 #664
 Scatterbug
-Bug 
+Bug
 #665
 Spewpa
-Bug 
+Bug
 #666
 Vivillon
-Bug · Flying 
+Bug · Flying
 #667
 Litleo
-Fire · Normal 
+Fire · Normal
 #668
 Pyroar
-Fire · Normal 
+Fire · Normal
 #669
 Flabébé
-Fairy 
+Fairy
 #670
 Floette
-Fairy 
+Fairy
 #671
 Florges
-Fairy 
+Fairy
 #672
 Skiddo
-Grass 
+Grass
 #673
 Gogoat
-Grass 
+Grass
 #674
 Pancham
-Fighting 
+Fighting
 #675
 Pangoro
-Fighting · Dark 
+Fighting · Dark
 #676
 Furfrou
-Normal 
+Normal
 #677
 Espurr
-Psychic 
+Psychic
 #678
 Meowstic
-Psychic 
+Psychic
 #679
 Honedge
-Steel · Ghost 
+Steel · Ghost
 #680
 Doublade
-Steel · Ghost 
+Steel · Ghost
 #681
 Aegislash
-Steel · Ghost 
+Steel · Ghost
 #682
 Spritzee
-Fairy 
+Fairy
 #683
 Aromatisse
-Fairy 
+Fairy
 #684
 Swirlix
-Fairy 
+Fairy
 #685
 Slurpuff
-Fairy 
+Fairy
 #686
 Inkay
-Dark · Psychic 
+Dark · Psychic
 #687
 Malamar
-Dark · Psychic 
+Dark · Psychic
 #688
 Binacle
-Rock · Water 
+Rock · Water
 #689
 Barbaracle
-Rock · Water 
+Rock · Water
 #690
 Skrelp
-Poison · Water 
+Poison · Water
 #691
 Dragalge
-Poison · Dragon 
+Poison · Dragon
 #692
 Clauncher
-Water 
+Water
 #693
 Clawitzer
-Water 
+Water
 #694
 Helioptile
-Electric · Normal 
+Electric · Normal
 #695
 Heliolisk
-Electric · Normal 
+Electric · Normal
 #696
 Tyrunt
-Rock · Dragon 
+Rock · Dragon
 #697
 Tyrantrum
-Rock · Dragon 
+Rock · Dragon
 #698
 Amaura
-Rock · Ice 
+Rock · Ice
 #699
 Aurorus
-Rock · Ice 
+Rock · Ice
 #700
 Sylveon
-Fairy 
+Fairy
 #701
 Hawlucha
-Fighting · Flying 
+Fighting · Flying
 #702
 Dedenne
-Electric · Fairy 
+Electric · Fairy
 #703
 Carbink
-Rock · Fairy 
+Rock · Fairy
 #704
 Goomy
-Dragon 
+Dragon
 #705
 Sliggoo
-Dragon 
+Dragon
 #706
 Goodra
-Dragon 
+Dragon
 #707
 Klefki
-Steel · Fairy 
+Steel · Fairy
 #708
 Phantump
-Ghost · Grass 
+Ghost · Grass
 #709
 Trevenant
-Ghost · Grass 
+Ghost · Grass
 #710
 Pumpkaboo
-Ghost · Grass 
+Ghost · Grass
 #711
 Gourgeist
-Ghost · Grass 
+Ghost · Grass
 #712
 Bergmite
-Ice 
+Ice
 #713
 Avalugg
-Ice 
+Ice
 #714
 Noibat
-Flying · Dragon 
+Flying · Dragon
 #715
 Noivern
-Flying · Dragon 
+Flying · Dragon
 #716
 Xerneas
-Fairy 
+Fairy
 #717
 Yveltal
-Dark · Flying 
+Dark · Flying
 #718
 Zygarde
-Dragon · Ground 
+Dragon · Ground
 #719
 Diancie
-Rock · Fairy 
+Rock · Fairy
 #720
 Hoopa
-Psychic · Ghost 
+Psychic · Ghost
 #721
 Volcanion
 Fire · Water
 #722
 Rowlet
-Grass · Flying 
+Grass · Flying
 #723
 Dartrix
-Grass · Flying 
+Grass · Flying
 #724
 Decidueye
-Grass · Ghost 
+Grass · Ghost
 #725
 Litten
-Fire 
+Fire
 #726
 Torracat
-Fire 
+Fire
 #727
 Incineroar
-Fire · Dark 
+Fire · Dark
 #728
 Popplio
-Water 
+Water
 #729
 Brionne
-Water 
+Water
 #730
 Primarina
-Water · Fairy 
+Water · Fairy
 #731
 Pikipek
-Normal · Flying 
+Normal · Flying
 #732
 Trumbeak
-Normal · Flying 
+Normal · Flying
 #733
 Toucannon
-Normal · Flying 
+Normal · Flying
 #734
 Yungoos
-Normal 
+Normal
 #735
 Gumshoos
-Normal 
+Normal
 #736
 Grubbin
-Bug 
+Bug
 #737
 Charjabug
-Bug · Electric 
+Bug · Electric
 #738
 Vikavolt
-Bug · Electric 
+Bug · Electric
 #739
 Crabrawler
-Fighting 
+Fighting
 #740
 Crabominable
-Fighting · Ice 
+Fighting · Ice
 #741
 Oricorio
-Fire · Flying 
+Fire · Flying
 #742
 Cutiefly
-Bug · Fairy 
+Bug · Fairy
 #743
 Ribombee
-Bug · Fairy 
+Bug · Fairy
 #744
 Rockruff
-Rock 
+Rock
 #745
 Lycanroc
-Rock 
+Rock
 #746
 Wishiwashi
-Water 
+Water
 #747
 Mareanie
-Poison · Water 
+Poison · Water
 #748
 Toxapex
-Poison · Water 
+Poison · Water
 #749
 Mudbray
-Ground 
+Ground
 #750
 Mudsdale
-Ground 
+Ground
 #751
 Dewpider
-Water · Bug 
+Water · Bug
 #752
 Araquanid
-Water · Bug 
+Water · Bug
 #753
 Fomantis
-Grass 
+Grass
 #754
 Lurantis
-Grass 
+Grass
 #755
 Morelull
-Grass · Fairy 
+Grass · Fairy
 #756
 Shiinotic
-Grass · Fairy 
+Grass · Fairy
 #757
 Salandit
-Poison · Fire 
+Poison · Fire
 #758
 Salazzle
-Poison · Fire 
+Poison · Fire
 #759
 Stufful
-Normal · Fighting 
+Normal · Fighting
 #760
 Bewear
-Normal · Fighting 
+Normal · Fighting
 #761
 Bounsweet
-Grass 
+Grass
 #762
 Steenee
-Grass 
+Grass
 #763
 Tsareena
-Grass 
+Grass
 #764
 Comfey
-Fairy 
+Fairy
 #765
 Oranguru
-Normal · Psychic 
+Normal · Psychic
 #766
 Passimian
-Fighting 
+Fighting
 #767
 Wimpod
-Bug · Water 
+Bug · Water
 #768
 Golisopod
-Bug · Water 
+Bug · Water
 #769
 Sandygast
-Ghost · Ground 
+Ghost · Ground
 #770
 Palossand
-Ghost · Ground 
+Ghost · Ground
 #771
 Pyukumuku
-Water 
+Water
 #772
 Type: Null
-Normal 
+Normal
 #773
 Silvally
-Normal 
+Normal
 #774
 Minior
-Rock · Flying 
+Rock · Flying
 #775
 Komala
-Normal 
+Normal
 #776
 Turtonator
-Fire · Dragon 
+Fire · Dragon
 #777
 Togedemaru
-Electric · Steel 
+Electric · Steel
 #778
 Mimikyu
-Ghost · Fairy 
+Ghost · Fairy
 #779
 Bruxish
-Water · Psychic 
+Water · Psychic
 #780
 Drampa
-Normal · Dragon 
+Normal · Dragon
 #781
 Dhelmise
-Ghost · Grass 
+Ghost · Grass
 #782
 Jangmo-o
-Dragon 
+Dragon
 #783
 Hakamo-o
-Dragon · Fighting 
+Dragon · Fighting
 #784
 Kommo-o
-Dragon · Fighting 
+Dragon · Fighting
 #785
 Tapu Koko
-Electric · Fairy 
+Electric · Fairy
 #786
 Tapu Lele
-Psychic · Fairy 
+Psychic · Fairy
 #787
 Tapu Bulu
-Grass · Fairy 
+Grass · Fairy
 #788
 Tapu Fini
-Water · Fairy 
+Water · Fairy
 #789
 Cosmog
-Psychic 
+Psychic
 #790
 Cosmoem
-Psychic 
+Psychic
 #791
 Solgaleo
-Psychic · Steel 
+Psychic · Steel
 #792
 Lunala
-Psychic · Ghost 
+Psychic · Ghost
 #793
 Nihilego
-Rock · Poison 
+Rock · Poison
 #794
 Buzzwole
-Bug · Fighting 
+Bug · Fighting
 #795
 Pheromosa
-Bug · Fighting 
+Bug · Fighting
 #796
 Xurkitree
-Electric 
+Electric
 #797
 Celesteela
-Steel · Flying 
+Steel · Flying
 #798
 Kartana
-Grass · Steel 
+Grass · Steel
 #799
 Guzzlord
-Dark · Dragon 
+Dark · Dragon
 #800
 Necrozma
-Psychic 
+Psychic
 #801
 Magearna
-Steel · Fairy 
+Steel · Fairy
 #802
 Marshadow
 Fighting · Ghost
 """.split('\n')
 
+
 class Dex:
     def __init__(self):
         self.data = dexdata
+
     def getIndex(self, name):
         return int(self.data[self.data.index(name)-1][1:])
+
     def getName(self, index):
-        return self.data[self.data.index( '#' + '0' * (3 - len(str(index))) + str(index) )+1]
+        return self.data[self.data.index('#' + '0'*(3-len(str(index))) + str(index)) + 1]

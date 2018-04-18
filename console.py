@@ -14,7 +14,7 @@ ChooseEvent = namedtuple("ChooseEvent", [
 
 # Test event for debugging.
 dummyEvent = SayEvent(
-    ["Hello there!\nIt's so very nice to meet you!\nWelcome to the world of Pokémon!"],
+    ["Hello there!\nIt's so very nice to meet you!\nWelcome to the world of POKéMON!\n0123456789"],
     None
 )
 

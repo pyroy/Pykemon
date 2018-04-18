@@ -25,7 +25,7 @@ class Background:
         return dfg
 
 
-class Battle:
+class BattleScene:
     def __init__(self, screen, console, player, foe):
         self.active = True
         self.player, self.foe = player, foe
@@ -43,6 +43,8 @@ class Battle:
 
         self.inFieldFriend = self.player.party[0]
         self.inFieldFoe = self.foe.party[0]
+        self.status_bar_friend = StatusBar("friend", self.inFieldFriend)
+        self.status_bar_foe    = StatusBar("foe", self.inFieldFoe)
 
         # State will be either one of: "intro", "select", "animation"
         self.state = 'intro'
@@ -77,3 +79,62 @@ class Battle:
         self.screen_surf.blit(self.bg.get(), (0, 0))
         self.screen_surf.blit(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'), (self.foe_pos, 10))
         self.friendSize = self.screen_surf.blit(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'), (self.friend_pos, self.visuals_rect.height-self.friendSize.height))
+
+        status_bar_surf_friend = self.status_bar_friend.get_surface()
+        status_bar_rect_friend = status_bar_surf_friend.get_rect()
+        status_bar_rect_friend.right = self.visuals_rect.width
+        status_bar_rect_friend.bottom = self.visuals_rect.height
+        status_bar_rect_friend.move_ip(0, -6)
+
+        status_bar_surf_foe = self.status_bar_foe.get_surface()
+        status_bar_rect_foe = status_bar_surf_foe.get_rect()
+        status_bar_rect_foe.move_ip(0, 20)
+
+        self.screen_surf.blit(status_bar_surf_friend, status_bar_rect_friend)
+        self.screen_surf.blit(status_bar_surf_foe, status_bar_rect_foe)
+
+
+class StatusBar:
+    def __init__(self, side, pokemon):
+        self.side = side
+        self.new_pokemon(pokemon)
+        self.font = pygame.font.Font("PKMNRSEU.FON", 14)
+
+    def new_pokemon(self, pokemon):
+        self.name   = pokemon.custom_name
+        self.level  = pokemon.level
+        self.status = pokemon.status
+        self.max_hp = pokemon.baseStats['HP']
+        self.cur_hp = pokemon.currentStats['HP']
+        self.max_xp = pokemon.goalXP
+        self.cur_xp = pokemon.XP
+        self.gender = None
+
+    def get_surface(self):
+        self.textures = pygame.image.load("textures/hpbars.png").convert_alpha()
+        if self.gender == 'male':
+            bg_texture_x = 0
+        elif self.gender == 'female':
+            bg_texture_x = 120
+        else:
+            bg_texture_x = 240
+        if self.side == 'friend':
+            background = pygame.Surface((120, 41), pygame.SRCALPHA)
+            background_rect = background.get_rect()
+            background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 30))
+
+            nametag = self.font.render(self.name, False, (0,0,0))
+            background.blit(nametag, (13, 3))
+
+            return background
+        elif self.side == 'foe':
+            background = pygame.Surface((120, 30), pygame.SRCALPHA)
+            background_rect = background.get_rect()
+            background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 0))
+
+            nametag = self.font.render(self.name, False, (0,0,0))
+            background.blit(nametag, (2, 3))
+
+            return background
+        else:
+            raise ValueError(f"self.side '{self.side}' was not 'friend' or 'foe'.")

@@ -6,7 +6,7 @@ import pickle
 # Main imports
 import maploader
 import npcloader
-import battlescene
+from battlescene import BattleScene
 from console import Console
 from keybinding import single_key_action, continuous_key_action
 import pokepy.pokemon as pkm
@@ -202,7 +202,7 @@ while not done:
                     foe = pkm.Trainer('Damion')
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
                     foe.party[0].setlevel(EncounterData[1])
-                    activeBattle = battlescene.Battle(pixel_screen, console, player.trainerdata, foe)
+                    activeBattle = BattleScene(pixel_screen, console, player.trainerdata, foe)
                     currentScene = 'Battle'
 
         drawPlayer = True
