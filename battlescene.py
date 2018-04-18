@@ -1,13 +1,15 @@
 from math import ceil
+import random
 import pokepy.pokemon as pkm
 import pygame
 
 dex = pkm.dex.Dex()
 
+hp_bar_textures = None
+
 
 def render_number(num):
     assert type(num) is int, f"The type of num should be int, it is {num}"
-    textures = pygame.image.load("textures\\hpbars.png")
     digit_height = 7
     digit_x_pos = [0, 9, 17, 26, 35, 44, 53, 62, 71, 80, 89]
     digit_width = [digit_x_pos[i]-digit_x_pos[i-1] for i in range(1, len(digit_x_pos))]
@@ -17,7 +19,7 @@ def render_number(num):
     current_pos = 0
     for digit in text:
         surf.blit(
-            textures,
+            hp_bar_textures,
             (current_pos, 0),
             pygame.Rect(digit_x_pos[int(digit)], 110, digit_width[int(digit)], digit_height)
         )
@@ -48,6 +50,8 @@ class Background:
 
 class BattleScene:
     def __init__(self, screen, console, player, foe):
+        global hp_bar_textures
+        hp_bar_textures = pygame.image.load("textures\\hpbars.png").convert_alpha()
         self.active = True
         self.player, self.foe = player, foe
         self.console = console
@@ -103,8 +107,7 @@ class BattleScene:
 
         status_bar_surf_friend = self.status_bar_friend.get_surface()
         status_bar_rect_friend = status_bar_surf_friend.get_rect()
-        status_bar_rect_friend.right = self.visuals_rect.width
-        status_bar_rect_friend.bottom = self.visuals_rect.height
+        status_bar_rect_friend.bottomright = self.visuals_rect.size
         status_bar_rect_friend.move_ip(0, -6)
 
         status_bar_surf_foe = self.status_bar_foe.get_surface()
@@ -133,7 +136,7 @@ class StatusBar:
         self.gender = None
 
     def get_surface(self):
-        self.textures = pygame.image.load("textures/hpbars.png").convert_alpha()
+        self.textures = hp_bar_textures
         if self.gender == 'male':
             bg_texture_x = 0
         elif self.gender == 'female':
@@ -176,8 +179,12 @@ class StatusBar:
             max_hp_tag = render_number(self.max_hp)
             background.blit(max_hp_tag, (94, 28))
 
-
             background.blit(hp_texture, (62, 19))
+
+            xp_prop = self.cur_xp / self.max_xp
+            xp_texture = pygame.Surface((xp_prop*90, 3), pygame.SRCALPHA)
+            xp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 92, xp_prop*90, 3))
+            background.blit(xp_texture, (29, 38))
 
         elif self.side == 'foe':
             background = pygame.Surface((120, 30), pygame.SRCALPHA)

@@ -3,6 +3,10 @@ import time
 import random
 import pickle
 
+# Pygame setup
+import pygame
+pygame.init()
+
 # Main imports
 import maploader
 import npcloader
@@ -11,7 +15,6 @@ from console import Console
 from keybinding import single_key_action, continuous_key_action
 import pokepy.pokemon as pkm
 from player import Player
-import pygame
 
 
 def fit_and_center_surface(a, b):
@@ -23,8 +26,6 @@ def fit_and_center_surface(a, b):
     b.blit(a_scaled, coordinates)
 
 
-# Pygame setup
-pygame.init()
 
 # The pixel screen is the non-scaled surface on which you should blit
 # It will be scaled to fit the screen while keeping its aspect ratio
