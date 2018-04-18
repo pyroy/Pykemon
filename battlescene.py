@@ -1,7 +1,28 @@
+from math import ceil
 import pokepy.pokemon as pkm
 import pygame
 
 dex = pkm.dex.Dex()
+
+
+def render_number(num):
+    assert type(num) is int, f"The type of num should be int, it is {num}"
+    textures = pygame.image.load("textures\\hpbars.png")
+    digit_height = 7
+    digit_x_pos = [0, 9, 17, 26, 35, 44, 53, 62, 71, 80, 89]
+    digit_width = [digit_x_pos[i]-digit_x_pos[i-1] for i in range(1, len(digit_x_pos))]
+    text = str(num)
+    total_width = sum(digit_width[int(x)] for x in text)
+    surf = pygame.Surface((total_width, digit_height), pygame.SRCALPHA)
+    current_pos = 0
+    for digit in text:
+        surf.blit(
+            textures,
+            (current_pos, 0),
+            pygame.Rect(digit_x_pos[int(digit)], 110, digit_width[int(digit)], digit_height)
+        )
+        current_pos += digit_width[int(digit)]
+    return surf
 
 
 def getSprite(name, state):
@@ -98,7 +119,8 @@ class StatusBar:
     def __init__(self, side, pokemon):
         self.side = side
         self.new_pokemon(pokemon)
-        self.font = pygame.font.Font("PKMNRSEU.FON", 14)
+        self.namefont = pygame.font.Font("PKMNRSEU.FON", 14)
+        self.hpfont   = pygame.font.Font("PKMNRSEU.FON", 10)
 
     def new_pokemon(self, pokemon):
         self.name   = pokemon.custom_name
@@ -120,24 +142,40 @@ class StatusBar:
             bg_texture_x = 240
         hp_prop = self.cur_hp / self.max_hp
 
-        hp_texture = pygame.Surface((round(hp_prop*48), 7))
+        # We use ceil because because we want to still show a pixel if the health
+        # is reduced to something that would cause the hp bar to disappear if
+        # we rounded normally.
+        hp_texture = pygame.Surface((ceil(hp_prop*48), 7))
         if hp_prop >= 0.5:
             # Use green texture
-            hp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 85, 48, 7))
+            hp_texture_rect = pygame.Rect(0, 85, 48, 7)
         elif hp_prop > 0.25:
             # Use yellow texture
-            hp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 78, 48, 7))
+            hp_texture_rect = pygame.Rect(0, 78, 48, 7)
         else:
             # Use red texture
-            hp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 71, 48, 7))
+            hp_texture_rect = pygame.Rect(0, 71, 48, 7)
+        hp_texture.blit(self.textures, (0, 0), hp_texture_rect)
 
         if self.side == 'friend':
             background = pygame.Surface((120, 41), pygame.SRCALPHA)
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 30))
 
-            nametag = self.font.render(self.name, False, (0,0,0))
+            nametag = self.namefont.render(self.name, False, (0,0,0))
             background.blit(nametag, (13, 3))
+
+            level_tag = render_number(self.level)
+            background.blit(level_tag, (94, 8))
+
+            current_hp_tag = render_number(self.cur_hp)
+            current_hp_tag_rect = current_hp_tag.get_rect()
+            current_hp_tag_rect.topright = (87, 28)
+            background.blit(current_hp_tag, current_hp_tag_rect)
+
+            max_hp_tag = render_number(self.max_hp)
+            background.blit(max_hp_tag, (94, 28))
+
 
             background.blit(hp_texture, (62, 19))
 
@@ -146,8 +184,11 @@ class StatusBar:
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 0))
 
-            nametag = self.font.render(self.name, False, (0,0,0))
+            nametag = self.namefont.render(self.name, False, (0,0,0))
             background.blit(nametag, (2, 3))
+
+            level_tag = render_number(self.level)
+            background.blit(level_tag, (82, 8))
 
             background.blit(hp_texture, (50, 19))
 
