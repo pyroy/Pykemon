@@ -15,8 +15,11 @@ for file in files:
         emptyLine = True
         for x in range(fw):
             if fileSurface.get_at((x,fh-1-y))[3] < 10:
-                emptyLine = False; breakLine = y; break
-        if not emptyLine: break;
+                emptyLine = False
+                breakLine = y
+                break
+        if not emptyLine:
+            break
     newSurface = pygame.Surface((fw,fh-breakLine), pygame.SRCALPHA, 32)
     newSurface.blit(fileSurface, (0,0), (0,0,fw,fh-breakLine))
     pygame.image.save(newSurface, mypath+file)

@@ -1,6 +1,7 @@
 import pickle, pygame
 from collections import namedtuple
 from keybinding import single_key_action
+from visual_core import get_texture
 
 SayEvent = namedtuple("SayEvent", [
     "text",
@@ -55,7 +56,7 @@ class Console:
         self.font = pygame.font.Font("PKMNRSEU.FON", 14)
 
         # Text box stuff
-        self.text_box_textures = pygame.image.load("textures/dialogue box.png").convert_alpha()
+        self.text_box_textures = get_texture("dialogue box")
         self.current_text_box_texture = pygame.Surface((250, 44), pygame.SRCALPHA)
         self.current_text_box_texture.blit(self.text_box_textures, (0, 0), (1, 1, 250, 44))
         self.dialogue_active = False
@@ -76,8 +77,8 @@ class Console:
         self.text_bottom_rect = self.text_top_rect.copy().move(0, self.text_top_rect.height)
 
         # Choose box stuff
-        self.choose_box_texture = pygame.image.load("textures/choose box.png").convert_alpha()
-        self.choose_selector_texture = pygame.image.load("textures/choose selector.png").convert_alpha()
+        self.choose_box_texture = get_texture("choose box")
+        self.choose_selector_texture = get_texture("choose selector")
         self.choose_box_active = False
 
         self.choose_box_rect = pygame.Rect(0, 0, self.choose_box_texture.get_width(), self.choose_box_texture.get_height())

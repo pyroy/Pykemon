@@ -1,12 +1,13 @@
 import math
 import pygame
 import pokepy.pokemon as pkm
+from visual_core import get_texture
 
 
 class Player:
     def __init__(self, bounds, npc):
         self.pos = (0, 0)
-        self.texturemap = pygame.image.load("textures/player-kaori.png").convert_alpha()
+        self.texturemap = get_texture("player-kaori")
         # @SPEED: We could 'map' these directly into the coordinates above for a slight speed improvement
         self.textures = {
             'downidle'  : (0,   0),

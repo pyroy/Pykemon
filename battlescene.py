@@ -2,43 +2,26 @@ from math import ceil
 import random
 import pokepy.pokemon as pkm
 import pygame
+from visual_core import get_texture, crop_whitespace, render_number
 
 dex = pkm.dex.Dex()
 
 hp_bar_textures = None
-
-
-def render_number(num):
-    assert type(num) is int, f"The type of num should be int, it is {num}"
-    digit_height = 7
-    digit_x_pos = [0, 9, 17, 26, 35, 44, 53, 62, 71, 80, 89]
-    digit_width = [digit_x_pos[i]-digit_x_pos[i-1] for i in range(1, len(digit_x_pos))]
-    text = str(num)
-    total_width = sum(digit_width[int(x)] for x in text)
-    surf = pygame.Surface((total_width, digit_height), pygame.SRCALPHA)
-    current_pos = 0
-    for digit in text:
-        surf.blit(
-            hp_bar_textures,
-            (current_pos, 0),
-            pygame.Rect(digit_x_pos[int(digit)], 110, digit_width[int(digit)], digit_height)
-        )
-        current_pos += digit_width[int(digit)]
-    return surf
+base_textures   = None
 
 
 def getSprite(name, state):
     if state == 'front':
-        return pygame.image.load(f'textures/main-sprites/diamond-pearl/{dex.getIndex(name)}.png')
+        return get_texture(f'main-sprites\\diamond-pearl\\{dex.getIndex(name)}')
     elif state == 'back':
-        return pygame.image.load(f'textures/main-sprites/diamond-pearl/back/{dex.getIndex(name)}.png')
+        return get_texture(f'main-sprites\\diamond-pearl\\back\\{dex.getIndex(name)}')
     else:
         raise ValueError("Invalid state argument.")
 
 
 class Background:
     def __init__(self, time='Day', place='Forest'):
-        self.source = pygame.image.load('textures/20102.png').convert_alpha()
+        self.source = get_texture("20102")
         self.times = None
         self.time = time
 
@@ -50,8 +33,10 @@ class Background:
 
 class BattleScene:
     def __init__(self, screen, console, player, foe):
-        global hp_bar_textures
-        hp_bar_textures = pygame.image.load("textures\\hpbars.png").convert_alpha()
+        global hp_bar_textures, base_textures
+        hp_bar_textures = get_texture("hpbars")
+        base_textures   = get_texture("battlebases")
+        self.base_selection = 2
         self.active = True
         self.player, self.foe = player, foe
         self.console = console
@@ -74,7 +59,7 @@ class BattleScene:
         # State will be either one of: "intro", "select", "animation"
         self.state = 'intro'
         self.intro_frame = 0
-        self.foe_pos = -70
+        self.foe_pos = -50
         self.friend_pos = self.screen_rect.width
         self.bg = Background()
         self.friendSize = pygame.Rect(0, 0, 80, 80)
@@ -93,7 +78,7 @@ class BattleScene:
     def main_action_callback(self, selection):
         print(f"I'm a {type(self)} and the selection is {selection}")
         if selection == 'RUN':
-            # @Terts: Should not always work, but I don't know what that depends on
+            # @Terts: Should not always work, but I don't know what that depends on...
             self.console.say("Got away safely!", callback=self.close)
 
     def close(self):
@@ -102,8 +87,15 @@ class BattleScene:
     def draw(self):
         self.screen_surf.fill((0,0,0))
         self.screen_surf.blit(self.bg.get(), (0, 0))
-        self.screen_surf.blit(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'), (self.foe_pos, 10))
-        self.friendSize = self.screen_surf.blit(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'), (self.friend_pos, self.visuals_rect.height-self.friendSize.height))
+        self.screen_surf.blit(base_textures, (self.foe_pos-64, 56), pygame.Rect(257, 64*self.base_selection, 128, 64))
+        self.screen_surf.blit(base_textures, (self.friend_pos-64, self.visuals_rect.height-32), pygame.Rect(0, 32*self.base_selection, 256, 32))
+        friend_sprite, friend_rect = crop_whitespace(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'))  # @SPEED: Calling this each frame is probably ridiculously slow
+        foe_sprite, foe_rect = crop_whitespace(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'))       # @SPEED: Calling this each frame is probably ridiculously slow
+        foe_rect = foe_sprite.get_rect()
+        foe_rect.midbottom = (self.foe_pos, 90)
+        self.screen_surf.blit(foe_sprite, foe_rect)
+        self.friendSize = self.screen_surf.blit(friend_sprite, (self.friend_pos, self.visuals_rect.height-self.friendSize.height))
+
 
         status_bar_surf_friend = self.status_bar_friend.get_surface()
         status_bar_rect_friend = status_bar_surf_friend.get_rect()
@@ -123,7 +115,6 @@ class StatusBar:
         self.side = side
         self.new_pokemon(pokemon)
         self.namefont = pygame.font.Font("PKMNRSEU.FON", 14)
-        self.hpfont   = pygame.font.Font("PKMNRSEU.FON", 10)
 
     def new_pokemon(self, pokemon):
         self.name   = pokemon.custom_name
@@ -136,7 +127,7 @@ class StatusBar:
         self.gender = None
 
     def get_surface(self):
-        self.textures = hp_bar_textures
+        self.textures = get_texture("hpbars")
         if self.gender == 'male':
             bg_texture_x = 0
         elif self.gender == 'female':
@@ -198,7 +189,6 @@ class StatusBar:
             background.blit(level_tag, (82, 8))
 
             background.blit(hp_texture, (50, 19))
-
         else:
             raise ValueError(f"self.side '{self.side}' was not 'friend' or 'foe'.")
         return background

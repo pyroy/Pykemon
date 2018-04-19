@@ -13,6 +13,7 @@ import npcloader
 from battlescene import BattleScene
 from console import Console
 from keybinding import single_key_action, continuous_key_action
+from visual_core import get_texture
 import pokepy.pokemon as pkm
 from player import Player
 
@@ -59,8 +60,8 @@ map_surface = pygame.Surface((256, 192))
 zoom = 1
 
 # Menu vars
-menublit = pygame.image.load('textures/menu2.png').convert_alpha()
-menuselect = pygame.image.load('textures/menuselect2.png').convert_alpha()
+menublit = get_texture('menu2')
+menuselect = get_texture('menuselect2')
 menu = False
 menupos = 0
 menuframes = 0
