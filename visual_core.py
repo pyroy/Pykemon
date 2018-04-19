@@ -7,6 +7,7 @@ import pygame
 # and functions as a cache. With this technique, textures are not loaded multiple
 # times, but are also not all loaded at startup, making startup faster.
 loaded_textures = {}
+standard_font = None
 
 
 def get_texture(name: str):
@@ -26,8 +27,18 @@ def crop_whitespace(surf: pygame.Surface):
     return new_surf, surf.get_rect()
 
 
+def render_text(text: str):
+    """Returns a surface containing the rendered text with standard settings
+    and the standard pokémon font."""
+    global standard_font
+    if not standard_font:
+        # The font does not scale; the size is therefore arbitrary
+        standard_font = pygame.font.Font("PKMNRSEU.FON", 1)
+    return standard_font.render(text, False, (0,0,0))
+
+
 def render_number(num: int):
-    assert type(num) is int, f"The type of num should be int, it is {num}"
+    assert type(num) is int, f"The type of num should be int, its value is '{num}'."
     digit_height = 7
     digit_x_pos = [0, 9, 17, 26, 35, 44, 53, 62, 71, 80, 89]
     digit_width = [digit_x_pos[i]-digit_x_pos[i-1] for i in range(1, len(digit_x_pos))]

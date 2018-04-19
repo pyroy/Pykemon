@@ -1,5 +1,4 @@
 import math
-import pygame
 import pokepy.pokemon as pkm
 from visual_core import get_texture
 
@@ -8,7 +7,7 @@ class Player:
     def __init__(self, bounds, npc):
         self.pos = (0, 0)
         self.texturemap = get_texture("player-kaori")
-        # @SPEED: We could 'map' these directly into the coordinates above for a slight speed improvement
+        # @SPEED: We could 'map' the keys directly into the coordinates above for a slight speed improvement
         self.textures = {
             'downidle'  : (0,   0),
             'down1'     : (20,  0),

@@ -152,7 +152,7 @@ class MapLoader:
         signs = []
         for line in lines[1:]:
             p = line.split(';')
-            # @TODO: Add more types of objects
+            # TODO: Add more types of objects
             if p[0].lower() == 'sign':
                 signs.append(Sign(tuple(eval(p[1])), eval(p[2])))
         return signs

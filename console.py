@@ -1,7 +1,7 @@
 import pickle, pygame
 from collections import namedtuple
 from keybinding import single_key_action
-from visual_core import get_texture
+from visual_core import get_texture, render_text
 
 SayEvent = namedtuple("SayEvent", [
     "text",
@@ -28,18 +28,14 @@ def take_words_from(s, n):
     return " ".join(s.split()[n:])
 
 
-def fit_string_with_width(text, font, width):
+def fit_string_with_width(text, width):
     split_at_newlines = text.split('\n')
     s = split_at_newlines[0]
-    s_surf = font.render(s, False, (0,0,0))
+    s_surf = render_text(s)
     if s_surf.get_width() < width:
         return s_surf, '\n'.join(split_at_newlines[1:])
     for i in range(-1, -len(s.split()), -1):
-        s_surf = font.render(
-            take_words_until(s, i),
-            False,
-            (0,0,0)
-        )
+        s_surf = render_text(take_words_until(s, i))
         if s_surf.get_width() < width:
             rest_text = take_words_from(s, i)
             break
@@ -53,7 +49,6 @@ class Console:
         self.queue = [dummyEvent]
         self.datapath = data
         self.data = pickle.load(open(data, 'rb'))
-        self.font = pygame.font.Font("PKMNRSEU.FON", 14)
 
         # Text box stuff
         self.text_box_textures = get_texture("dialogue box")
@@ -115,12 +110,12 @@ class Console:
         self.pixel_screen.blit(self.current_text_box_texture, self.pos_rect)
 
         # Top row of the text
-        text_top_surf, rest_text = fit_string_with_width(self.current_dialogue_text, self.font, self.text_top_rect.width)
+        text_top_surf, rest_text = fit_string_with_width(self.current_dialogue_text, self.text_top_rect.width)
         self.pixel_screen.blit(text_top_surf, self.text_top_rect)
 
         # Bottom row of the text
         if rest_text:
-            text_bottom_surf, self.rest_text = fit_string_with_width(rest_text, self.font, self.text_bottom_rect.width)
+            text_bottom_surf, self.rest_text = fit_string_with_width(rest_text, self.text_bottom_rect.width)
             self.pixel_screen.blit(text_bottom_surf, self.text_bottom_rect)
 
     def dialogue_continue(self):
@@ -149,16 +144,16 @@ class Console:
         self.pixel_screen.blit(self.choose_box_texture, self.choose_box_rect)
 
         # Options
-        choose_topleft_surf     = self.font.render(self.choose_options[0], False, (0,0,0))
+        choose_topleft_surf = render_text(self.choose_options[0])
         self.pixel_screen.blit(choose_topleft_surf, self.choose_topleft_rect)
         if len(self.choose_options) > 1:
-            choose_topright_surf    = self.font.render(self.choose_options[1], False, (0,0,0))
+            choose_topright_surf = render_text(self.choose_options[1])
             self.pixel_screen.blit(choose_topright_surf, self.choose_topright_rect)
         if len(self.choose_options) > 2:
-            choose_bottomleft_surf  = self.font.render(self.choose_options[2], False, (0,0,0))
+            choose_bottomleft_surf = render_text(self.choose_options[2])
             self.pixel_screen.blit(choose_bottomleft_surf, self.choose_bottomleft_rect)
         if len(self.choose_options) > 3:
-            choose_bottomright_surf = self.font.render(self.choose_options[3], False, (0,0,0))
+            choose_bottomright_surf = render_text(self.choose_options[3])
             self.pixel_screen.blit(choose_bottomright_surf, self.choose_bottomright_rect)
 
         self.pixel_screen.blit(self.choose_selector_texture, self.choose_selector_positions[self.choose_selection])

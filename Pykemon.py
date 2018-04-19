@@ -27,7 +27,6 @@ def fit_and_center_surface(a, b):
     b.blit(a_scaled, coordinates)
 
 
-
 # The pixel screen is the non-scaled surface on which you should blit
 # It will be scaled to fit the screen while keeping its aspect ratio
 pixel_screen_rect = pygame.Rect(0, 0, 256, 192)
@@ -56,7 +55,7 @@ player = Player(currentMap.bounds, npcloader)  # see player.py
 player.pos = currentMap.warps[0]
 
 base_resolution = (256, 192)
-map_surface = pygame.Surface((256, 192))
+map_surface = pygame.Surface(base_resolution)
 zoom = 1
 
 # Menu vars
@@ -114,10 +113,13 @@ while not done:
         elif event.type == pygame.KEYDOWN:
             key = event.key
             if currentScene == 'World':
+                # TODO: Zooming is all fucked up now.... (zooms with topleft as anchor ans some other weirdness)
                 if key == pygame.K_z:
                     zoom *= 1.1
                 elif key == pygame.K_x:
                     zoom /= 1.1
+                elif key == pygame.K_c:
+                    zoom = 1
                 elif key == pygame.K_m:
                     if not menuframes:
                         menu = not menu

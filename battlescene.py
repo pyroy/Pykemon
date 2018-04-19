@@ -1,8 +1,7 @@
 from math import ceil
-import random
 import pokepy.pokemon as pkm
 import pygame
-from visual_core import get_texture, crop_whitespace, render_number
+from visual_core import get_texture, crop_whitespace, render_number, render_text
 
 dex = pkm.dex.Dex()
 
@@ -89,8 +88,11 @@ class BattleScene:
         self.screen_surf.blit(self.bg.get(), (0, 0))
         self.screen_surf.blit(base_textures, (self.foe_pos-64, 56), pygame.Rect(257, 64*self.base_selection, 128, 64))
         self.screen_surf.blit(base_textures, (self.friend_pos-64, self.visuals_rect.height-32), pygame.Rect(0, 32*self.base_selection, 256, 32))
-        friend_sprite, friend_rect = crop_whitespace(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'))  # @SPEED: Calling this each frame is probably ridiculously slow
-        foe_sprite, foe_rect = crop_whitespace(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'))       # @SPEED: Calling this each frame is probably ridiculously slow
+
+        # @SPEED: Calling this each frame is probably ridiculously slow
+        # Update: its probably better now that its cached, still not perfect, though.
+        friend_sprite, friend_rect = crop_whitespace(getSprite(self.inFieldFriend.display_name.capitalize(), 'back'))
+        foe_sprite, foe_rect = crop_whitespace(getSprite(self.inFieldFoe.display_name.capitalize(), 'front'))
         foe_rect = foe_sprite.get_rect()
         foe_rect.midbottom = (self.foe_pos, 90)
         self.screen_surf.blit(foe_sprite, foe_rect)
@@ -114,7 +116,6 @@ class StatusBar:
     def __init__(self, side, pokemon):
         self.side = side
         self.new_pokemon(pokemon)
-        self.namefont = pygame.font.Font("PKMNRSEU.FON", 14)
 
     def new_pokemon(self, pokemon):
         self.name   = pokemon.custom_name
@@ -156,7 +157,7 @@ class StatusBar:
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 30))
 
-            nametag = self.namefont.render(self.name, False, (0,0,0))
+            nametag = render_text(self.name)
             background.blit(nametag, (13, 3))
 
             level_tag = render_number(self.level)
@@ -182,7 +183,7 @@ class StatusBar:
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 0))
 
-            nametag = self.namefont.render(self.name, False, (0,0,0))
+            nametag = render_text(self.name, False, (0,0,0))
             background.blit(nametag, (2, 3))
 
             level_tag = render_number(self.level)
