@@ -98,7 +98,6 @@ class BattleScene:
         self.screen_surf.blit(foe_sprite, foe_rect)
         self.friendSize = self.screen_surf.blit(friend_sprite, (self.friend_pos, self.visuals_rect.height-self.friendSize.height))
 
-
         status_bar_surf_friend = self.status_bar_friend.get_surface()
         status_bar_rect_friend = status_bar_surf_friend.get_rect()
         status_bar_rect_friend.bottomright = self.visuals_rect.size
@@ -183,7 +182,7 @@ class StatusBar:
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 0))
 
-            nametag = render_text(self.name, False, (0,0,0))
+            nametag = render_text(self.name)
             background.blit(nametag, (2, 3))
 
             level_tag = render_number(self.level)

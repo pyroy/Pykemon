@@ -11,7 +11,6 @@
 #\---------------------------------/#
 #####################################
 
-import sys, os
 import pickle, random
 import pokepy.m_db as m_db
 import pokepy.dex as dex
@@ -278,25 +277,25 @@ class Battle:
 
     def showplayer1stats(self, foe=False):
         if foe:
-            print(self.pok1.display_name + ' HP: {}/{}'.format(int(self.pok1.currentStats['HP']), self.pok1.HP))
+            print(f"{self.pok1.display_name} HP: {self.pok1.currentStats['HP']}/{self.pok1.HP}")
         else:
-            print("Active pokemon: "+self.pok1.display_name)
-            print("LVL: "+str(self.pok1.level))
-            print("HP: {}/{}".format(int(self.pok1.currentStats['HP']), self.pok1.HP))
+            print(f"Active pokemon: {self.pok1.display_name}")
+            print(f"LVL: {self.pok1.level}")
+            print(f"HP: {self.pok1.currentStats['HP']}/{self.pok1.HP}")
             print("Moves:")
             for move in self.pok1.moveset.get_moves():
-                print('{}> {}'.format(self.pok1.moveset.get_moves().index(move), move))
+                print(f"{self.pok1.moveset.get_moves().index(move)}> {move}")
 
     def showplayer2stats(self, foe=False):
         if foe:
-            print(self.pok2.display_name + ' HP: {}/{}'.format(int(self.pok2.currentStats['HP']), self.pok2.currentStats['HP']))
+            print(f"{self.pok2.display_name} HP: {self.pok2.currentStats['HP']}/{self.pok2.currentStats['HP']}")
         else:
             print(f"Active pokemon: {self.pok2.display_name}")
             print(f"LVL: {self.pok2.level}")
             print(f"HP: {self.pok2.currentStats['HP']}/{self.pok2.HP}")
             print("Moves:")
             for move in self.pok2.moveset.get_moves():
-                print('{}> {}'.format(self.pok2.moveset.get_moves().index(move), move))
+                print(f"{self.pok2.moveset.get_moves().index(move)}> {move}")
 
     def get_afterbattledata(self):
         for pokemon in self.player1.party+self.player2.party:

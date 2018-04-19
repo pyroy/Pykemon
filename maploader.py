@@ -3,8 +3,9 @@ from collections import namedtuple
 
 import pygame
 
+
 class Bounds:
-    def __init__(self,b):
+    def __init__(self, b):
         self.bounds = b
 
     def at_pos(self, x, y):
@@ -25,6 +26,7 @@ class Bounds:
             else:
                 return True
 
+
 class ChanceList:
     def __init__(self, items, chances):
         self.items, self.chances = items, chances
@@ -41,14 +43,15 @@ class ChanceList:
         for index, value in enumerate(self.accumulatedChances):
             if self.pick <= value:
                 return self.items[index]
-        raise Error("Well, this is awkward, this was not supposed to happen.")
+        raise ValueError("Well, this is awkward, this was not supposed to happen.")
+
 
 class Encounters:
     def __init__(self, e):
-        self.map =          e[:[i[1] for i in e].index(';') ]
-        self.definitions =  e[ [i[1] for i in e].index(';'):]
+        self.map         = e[:[i[1] for i in e].index(';') ]
+        self.definitions = e[ [i[1] for i in e].index(';'):]
 
-        self.encounters = { }
+        self.encounters = {}
 
         for encounterType in self.definitions:
             # Pokemon syntax:    {pokemon name}({list of levels},{list of chances})
@@ -66,13 +69,13 @@ class Encounters:
                     eval(chances)
                 )
 
-    def checkEncounters(self,x,y):
-        return int(self.map[y][x]) #no need for extra bound check since player is always in bounds.
+    def checkEncounters(self, x, y):
+        return int(self.map[y][x])  # no need for extra bound check since player is always in bounds.
 
-    def generateEncounter(self, encountertype): #is actually an int in a string but since we're passing from a text file I'm keeping it a string. This way we can bind it to letters as well.
+    def generateEncounter(self, encountertype):  # is actually an int in a string but since we're passing from a text file I'm keeping it a string. This way we can bind it to letters as well.
         pokemon = self.encounters[encountertype].choose()
         level = pokemon[1].choose()
-        return pokemon[0], level #name, level
+        return pokemon[0], level  # name, level
 
     def getPokemonData(self, data):
         name, level_data = data.split('(')
@@ -95,6 +98,7 @@ Map = namedtuple("Map", [
     "encounters"
 ])
 
+
 class MapLoader:
     def __init__(self):
         self.tileset = pygame.image.load("textures/tileset-blackvolution.png")
@@ -113,7 +117,7 @@ class MapLoader:
     def loadDrawMap(self, mapname, layer, transparent=False):
         with open(f"maps/{mapname}/{layer}.txt") as file:
             lines = file.readlines()
-        drawmap = pygame.Surface((int(lines[0].split(".")[0]),int(lines[0].split(".")[1])))
+        drawmap = pygame.Surface((int(lines[0].split(".")[0]), int(lines[0].split(".")[1])))
         if transparent:
             drawmap.fill((255,0,255))
             drawmap.set_colorkey((255,0,255))
@@ -121,11 +125,11 @@ class MapLoader:
         else:
             drawmap.fill((255,255,255))
 
-        for y,row in enumerate(lines[1:]):
-            for x,tile in enumerate(row.split(".")):
+        for y, row in enumerate(lines[1:]):
+            for x, tile in enumerate(row.split(".")):
                 locx = int(tile.split(",")[0])
                 locy = int(tile.split(",")[1])
-                drawmap.blit(self.tileset,(x*16,y*16),(locx*16,locy*16,16,16))
+                drawmap.blit(self.tileset, (x*16, y*16), (locx*16, locy*16, 16, 16))
 
         return drawmap
 
@@ -139,11 +143,11 @@ class MapLoader:
         with open(f"maps/{mapname}/objects.txt") as file:
             lines = file.readlines()
         sPos = eval(lines[0].split(';')[1])
-        warps = [[sPos[0]*16,sPos[1]*16]]
+        warps = [[sPos[0]*16, sPos[1]*16]]
         for line in lines[1:]:
             p = line.split(';')
             if p[0].lower() == 'warp':
-                warps.append([[eval(p[1])[0]*16,eval(p[1])[1]*16],str(p[2]),[eval(p[3])[0]*16,eval(p[3])[1]*16]])
+                warps.append([[eval(p[1])[0]*16, eval(p[1])[1]*16], str(p[2]), [eval(p[3])[0]*16, eval(p[3])[1]*16]])
         return warps
 
     def getSigns(self, mapname):
