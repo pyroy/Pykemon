@@ -1,5 +1,5 @@
 Bob;0
-[166,166];
+[1,1];
 Freq;[0,0];[1,0];[2,0];[3,0];
 DIALOG
 0:SAY,"I'm Bob!";SAY,"This is the opening line.";SAY,"Have fun playing Pythemon!";GIVEITEM,pokeball,1;STATE,Bob,1;

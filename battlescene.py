@@ -138,7 +138,7 @@ class StatusBar:
 
         # We use ceil because because we want to still show a pixel if the health
         # is reduced to something that would cause the hp bar to disappear if
-        # we rounded normally.
+        # we rounded down.
         hp_texture = pygame.Surface((ceil(hp_prop*48), 7))
         if hp_prop >= 0.5:
             # Use green texture

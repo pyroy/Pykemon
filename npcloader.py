@@ -29,6 +29,7 @@ class NPC(MovingObject):
             'left1'     : (0,   33),
             'left2'     : (0,   96),
         }
+        self.textures = {key: (tex[0]+sprite[0]*96, tex[1]+sprite[1]*128) for (key, tex) in self.textures.items()}
         self.animations = {
             'idle_north': ['upidle'],
             'idle_east' : ['rightidle'],
@@ -88,16 +89,15 @@ class NPCLoader:
         with open(self.path + file + '.txt') as npcfile:
             self.npcdata = npcfile.readlines()
         self.npcs.append(
-            NPC(self.console,
-                self.npcdata[0].split(';')[0],
-                int(self.npcdata[0].split(';')[1]),
-                self.npcdata[1].split(';')[0],
-                [Pos(eval(pos)) for pos in self.npcdata[2].split(';')[1:-1]],
-                [n.split(':') for n in self.npcdata[4:]],
-                self
+            NPC(console=self.console,
+                name=self.npcdata[0].split(';')[0],
+                state=int(self.npcdata[0].split(';')[1]),
+                sprite=eval(self.npcdata[1].strip(';\n')),
+                pathdata=[Pos(eval(pos)) for pos in self.npcdata[2].split(';')[1:-1]],
+                dialogdata=[n.split(':') for n in self.npcdata[4:]],
+                npcloader=self
             )
         )
-        return len(self.npcs)-10
 
     def update(self, ppos):
         self.updates = (self.updates + 1) % 30

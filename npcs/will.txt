@@ -1,5 +1,5 @@
 Will;0
-[166,166];
+[10,1];
 Freq;[5,2];[5,3];[6,3];[6,2];[7,2];
 DIALOG
 0:SAY,"I'm Will!";SAY,"This is the opening line.";SAY,"Have fun playing Pythemon!";GIVEITEM,pokeball,1;STATE,Will,1;

@@ -162,18 +162,18 @@ pointerpos = [0, 0]
 
 # Textures
 tileset     = pygame.image.load("textures/tileset-blackvolution.png").convert_alpha()
-good        = pygame.image.load("textures/good.png" ).convert_alpha()
-bad         = pygame.image.load("textures/bad.png"  ).convert_alpha()
-ledge_up    = pygame.image.load("textures/up.png"   ).convert_alpha()
-ledge_right = pygame.image.load("textures/right.png").convert_alpha()
-ledge_down  = pygame.image.load("textures/down.png" ).convert_alpha()
-ledge_left  = pygame.image.load("textures/left.png" ).convert_alpha()
-warp        = pygame.image.load("textures/warp.png" ).convert_alpha()
+good        = pygame.image.load("textures/editor/good.png" ).convert_alpha()
+bad         = pygame.image.load("textures/editor/bad.png"  ).convert_alpha()
+ledge_up    = pygame.image.load("textures/editor/up.png"   ).convert_alpha()
+ledge_right = pygame.image.load("textures/editor/right.png").convert_alpha()
+ledge_down  = pygame.image.load("textures/editor/down.png" ).convert_alpha()
+ledge_left  = pygame.image.load("textures/editor/left.png" ).convert_alpha()
+warp        = pygame.image.load("textures/editor/warp.png" ).convert_alpha()
 player      = pygame.image.load("textures/player-kaori.png").convert_alpha()
 
 # Pokeball sprites
 encounterSprites = {}
-src = pygame.image.load("textures/pokeballs.png").convert_alpha()
+src = pygame.image.load("textures/editor/pokeballs.png").convert_alpha()
 for i in range(25):
     blankSlate = pygame.Surface((64, 64), pygame.SRCALPHA)
     blankSlate.blit(src, (0, 0), ((i%5)*64, (i//5)*64, 64, 64))
@@ -451,13 +451,9 @@ while not done:
         screen.blit(font.render("WIP", True, (255, 255, 255)), (740, 300))
         addEncounterButton.draw(screen)
 
-    screen.blit(font2.render("1 - ground, 2 - alpha, 3 - beta, 4 - bounds, 5 - objects, 6 - encounters, z/x - zoom, c - reset camera, ctrl+s - save map",
-                             False,
-                             (255, 255, 255),
-                             (0, 0, 0)
-                             ),
-                (0, edit_rect.height-18)
-                )
+    shortcut_text = "1 - ground, 2 - alpha, 3 - beta, 4 - bounds, 5 - objects, 6 - encounters, z/x - zoom, c - reset camera, ctrl+s - save map"
+    screen.blit(font2.render(shortcut_text, False, (255, 255, 255), (0, 0, 0)),
+                (0, edit_rect.height-18))
 
     # DRAW "editing ..." text
     pygame.draw.line(screen, (0, 255, 0), (edit_rect.width, 0), (edit_rect.width, edit_rect.height), 3)
