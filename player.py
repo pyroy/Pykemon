@@ -1,38 +1,39 @@
-import math
 import pokepy.pokemon as pkm
 from visual_core import get_texture
+from keybinding import continuous_key_action
+from moving_object import MovingObject
+from pos import Pos
 
 
-class Player:
-    def __init__(self, bounds, npc):
-        self.pos = (0, 0)
+class Player(MovingObject):
+    def __init__(self, currentMap, npc):
+        self.pos = Pos(0, 0)
         self.texturemap = get_texture("player-kaori")
-        # @SPEED: We could 'map' the keys directly into the coordinates above for a slight speed improvement
         self.textures = {
             'downidle'  : (0,   0),
-            'down1'     : (20,  0),
-            'down2'     : (40,  0),
-            'upidle'    : (0,   25),
-            'up1'       : (20,  25),
-            'up2'       : (40,  25),
-            'rightidle' : (0,   50),
-            'right1'    : (20,  50),
-            'right2'    : (40,  50),
-            'leftidle'  : (0,   75),
-            'left1'     : (20,  75),
-            'left2'     : (40,  75),
-            'run_down1' : (60,  0),
-            'run_down2' : (80,  0),
-            'run_down3' : (100, 0),
-            'run_up1'   : (60,  25),
-            'run_up2'   : (80,  25),
-            'run_up3'   : (100, 25),
-            'run_right1': (60,  50),
-            'run_right2': (80,  50),
-            'run_right3': (100, 50),
-            'run_left1' : (60,  75),
-            'run_left2' : (80,  75),
-            'run_left3' : (100, 75),
+            'down1'     : (32,  0),
+            'down2'     : (64,  0),
+            'upidle'    : (0,   32),
+            'up1'       : (32,  32),
+            'up2'       : (64,  32),
+            'rightidle' : (0,   64),
+            'right1'    : (32,  64),
+            'right2'    : (64,  64),
+            'leftidle'  : (0,   96),
+            'left1'     : (32,  96),
+            'left2'     : (64,  96),
+            'run_down1' : (96,  0),
+            'run_down2' : (128, 0),
+            'run_down3' : (160, 0),
+            'run_up1'   : (96,  32),
+            'run_up2'   : (128, 32),
+            'run_up3'   : (160, 32),
+            'run_right1': (96,  64),
+            'run_right2': (128, 64),
+            'run_right3': (160, 64),
+            'run_left1' : (96,  96),
+            'run_left2' : (128, 96),
+            'run_left3' : (160, 96),
         }
         self.animations = {
             'idle_north': ['upidle'],
@@ -50,98 +51,44 @@ class Player:
         }
         self.currentStance = 'downidle'
         self.setAnimation('idle_south', 1)
-        self.displacement = (0, 0)
+        self.displacement = Pos(0, 0)
         self.remainingDuration = 0
-        self.bounds = bounds
+        self.currentMap = currentMap
         self.npcloader = npc
         self.trainerdata = pkm.Trainer('Player')
         self.trainerdata.party.append(pkm.Pokemon('Starmie'))
         self.moving = False
         self.direction = 'south'
 
-    def get_direction_coordinates(self):
-        if self.direction == 'north':
-            return (0, -1)
-        elif self.direction == 'east':
-            return (1, 0)
-        elif self.direction == 'south':
-            return (0, 1)
-        elif self.direction == 'west':
-            return (-1, 0)
-        else:
-            raise ValueError(f"Direction {self.direction} is invalid.")
-
-    def draw(self, pos, surface):
-        global battle, activeBattle
-        surface.blit(self.texturemap, pos, self.textures[self.currentStance] + (20, 25))
-
-    def update(self, currentMap):
-        flag = self.updatePosition(currentMap)
-        self.updateAnimation()
-        return flag
-
-    def move(self, type, dir):
-        if type == 'run':
-            move_length = 4
-        elif type == 'walk':
-            move_length = 8
-        else:
-            raise ValueError(f"Invalid move type '{type}''")
-
-        self.direction = dir.lower()
-        move_dir = self.get_direction_coordinates()
-
-        self.setMovement(move_length, move_dir)
-        if not self.animName == f'{type}_{dir}':
-            self.setAnimation(f'{type}_{dir}', 8)
-
-    def updatePosition(self, currentMap):
-        if self.remainingDuration:
-            self.pos[0] += self.displacement[0]
-            self.pos[1] += self.displacement[1]
-            self.remainingDuration -= 1
-        else:
-            pos_div = (self.pos[0]//16, self.pos[1]//16)
-            if self.bounds.at_pos(*pos_div) == 'u':
-                self.move('walk', 'north')
-            elif self.bounds.at_pos(*pos_div) == 'r':
-                self.move('walk', 'east')
-            elif self.bounds.at_pos(*pos_div) == 'd':
-                self.move('walk', 'south')
-            elif self.bounds.at_pos(*pos_div) == 'l':
-                self.move('walk', 'west')
-            elif self.moving:
-                self.moving = False
-                return 'stopped moving'
-
-    def updateAnimation(self):
-        if len(self.anim) > 1:
-            self.framesSinceStartAnim = (self.framesSinceStartAnim + 1) % (len(self.anim) * self.animDelay)
-            self.currentStance = self.anim[math.floor(self.framesSinceStartAnim/self.animDelay)]
-        else:
-            self.currentStance = self.anim[0]
-
-    def setAnimation(self, animName, delay):
-        self.animName = animName
-        self.anim = self.animations[animName]
-        self.animDelay = delay
-        self.framesSinceStartAnim = 0
-
-    def setMovement(self, duration, dir):
-        new_x = self.pos[0]//16 + dir[0]
-        new_y = self.pos[1]//16 + dir[1]
-        if self.bounds.checkBounds(new_x, new_y, dir):
-            if self.npcloader.checkBounds([new_x, new_y]):
-                self.remainingDuration = duration
-                self.displacement = (dir[0] * 16 // duration, dir[1] * 16 // duration)
-                self.moving = True
-
     def warp(self, new_map, npc, pos):
-        self.bounds = new_map.bounds
+        self.currentMap = new_map
         self.npcloader = npc
-        self.pos = new_map.warps[0]
+        self.pos = Pos(new_map.warps[0])
 
     def checkWarps(self, warps):
         for warp in warps[1:]:
             if self.pos == warp[0]:
                 return (warp[1], warp[2])
+
+    def handle_continuous_key_action(self, pressed_keys):
+        if self.moving:
+            return
+
+        if continuous_key_action(pressed_keys, 'World', 'run'):
+            move_type = 'run'
+        else:
+            move_type = 'walk'
+
+        if continuous_key_action(pressed_keys, 'World', 'north'):
+            self.move(move_type, 'north')
+        elif continuous_key_action(pressed_keys, 'World', 'east'):
+            self.move(move_type, 'east')
+        elif continuous_key_action(pressed_keys, 'World', 'south'):
+            self.move(move_type, 'south')
+        elif continuous_key_action(pressed_keys, 'World', 'west'):
+            self.move(move_type, 'west')
+        else:
+            if self.anim_name.startswith('walk'):
+                self.setAnimation('idle', 4)
+            elif self.anim_name.startswith('run'):
+                self.setAnimation('idle', 4)

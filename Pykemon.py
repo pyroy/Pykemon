@@ -12,10 +12,11 @@ import maploader
 import npcloader
 from battlescene import BattleScene
 from console import Console
-from keybinding import single_key_action, continuous_key_action
+from keybinding import single_key_action
 from visual_core import get_texture
 import pokepy.pokemon as pkm
 from player import Player
+from pos import Pos
 
 
 def fit_and_center_surface(a, b):
@@ -29,10 +30,11 @@ def fit_and_center_surface(a, b):
 
 # The pixel screen is the non-scaled surface on which you should blit
 # It will be scaled to fit the screen while keeping its aspect ratio
+# Resulting in black bars on the sides.
 pixel_screen_rect = pygame.Rect(0, 0, 256, 192)
 pixel_screen = pygame.Surface(pixel_screen_rect.size)
 
-# The screen size will by default be set to twice the size of the pixel screen
+# The screen size will default to to twice the size of the pixel screen
 screen_rect = pixel_screen_rect.inflate(pixel_screen_rect.size)
 screen_rect.move_ip(-screen_rect.x, -screen_rect.y)
 screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
@@ -40,19 +42,19 @@ screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
 
-console = Console('data/globals.p', pixel_screen)  # see console.py
+console = Console('data/globals.p', pixel_screen)
+
+# Maploader objects
+mapToLoad = 'editmap'
+maploader = maploader.MapLoader()
+currentMap = maploader.loadMapObject(mapToLoad)
 
 # Pokemon dex data
 dex = pkm.dex.Dex()
 npcloader = npcloader.NPCLoader(console)
-maploader = maploader.MapLoader()
 
-# Maploader objects
-mapToLoad = 'editmap'
-currentMap = maploader.loadMapObject(mapToLoad)
-
-player = Player(currentMap.bounds, npcloader)  # see player.py
-player.pos = currentMap.warps[0]
+player = Player(currentMap, npcloader)
+player.pos = Pos(currentMap.warps[0])
 
 base_resolution = (256, 192)
 map_surface = pygame.Surface(base_resolution)
@@ -64,9 +66,9 @@ menuselect = get_texture('menuselect2')
 menu = False
 menupos = 0
 menuframes = 0
-menudisp = 0  # integers are booleans right
+menudisp = 0
 
-quickstart = True  # turn on for quick debugging
+quickstart = True  # set to true for quick(er) debugging
 if not quickstart:
     with open("credits.txt", "r") as file:
         creditscreen = map(lambda line: line.strip(), file.readlines())
@@ -82,8 +84,9 @@ if not quickstart:
 
 npcloader.loadNPC('bob')  # placeholders? should be in maploader
 npcloader.loadNPC('will')
+npcloader.new_map(currentMap)
 
-currentScene = 'World'
+current_scene = 'World'
 activeBattle = None  # Actual BattleScene object
 
 # Options menu vars
@@ -94,7 +97,7 @@ try:
     options = pickle.load(open('data\\options.p', 'rb'))
 except (FileNotFoundError, EOFError):
     options = {}
-options = {'empty': 0, 'test': 1}  # revamp use lib
+options = {'empty': 0, 'test': 1}  # revamp use config lib
 
 menuitem = 0
 while not done:
@@ -112,8 +115,9 @@ while not done:
         # Single key actions
         elif event.type == pygame.KEYDOWN:
             key = event.key
-            if currentScene == 'World':
+            if current_scene == 'World':
                 # TODO: Zooming is all fucked up now.... (zooms with topleft as anchor ans some other weirdness)
+                # Question: Should we even allow zoom?
                 if key == pygame.K_z:
                     zoom *= 1.1
                 elif key == pygame.K_x:
@@ -136,19 +140,19 @@ while not done:
                 elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
                 elif key == pygame.K_RETURN and menuitem == 0 and menu:
-                    console.say("saving! please don't turn off the console!")
+                    console.say("Saving! Please don't turn off the console!")
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
-                    currentScene = 'Options'
+                    current_scene = 'Options'
                 elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
                     for sign in currentMap.signs:
-                        dir = player.get_direction_coordinates()
-                        if player.pos[0]//16 + dir[0] == sign.pos[0] and player.pos[1]//16 + dir[1] == sign.pos[1]:
+                        dir = player.direction_vector
+                        if (player.pos//16 + dir) == sign.pos:
                             console.say(*sign.text)
                             break
 
             console.handle_single_key_action(key)
 
-            if currentScene == 'Options':
+            if current_scene == 'Options':
                 if event.key == pygame.K_UP:
                     selected = max(0, selected - 1)
                     print(selected)
@@ -161,43 +165,26 @@ while not done:
                     rowindex = min(len(rows[row])-1, rowindex + 1)
                 elif event.key == pygame.K_RETURN and selected == len(rows):
                     pickle.dump(options, open('options.p', 'wb'))
-                    currentScene = 'World'
+                    current_scene = 'World'
                     selected = 0
                     rowindex = 0
 
-            if currentScene == 'Battle':
+            if current_scene == 'Battle':
                 pass
 
     # Continuous key actions
-    if not player.moving and not menu and currentScene == 'World':
-        if continuous_key_action(pressed_keys, 'World', 'run'):
-            move_type = 'run'
-        else:
-            move_type = 'walk'
-
-        if continuous_key_action(pressed_keys, 'World', 'north'):
-            player.move(move_type, 'north')
-        elif continuous_key_action(pressed_keys, 'World', 'east'):
-            player.move(move_type, 'east')
-        elif continuous_key_action(pressed_keys, 'World', 'south'):
-            player.move(move_type, 'south')
-        elif continuous_key_action(pressed_keys, 'World', 'west'):
-            player.move(move_type, 'west')
-        else:
-            if player.animName.startswith('walk'):
-                player.setAnimation(player.animName.replace('walk', 'idle'), 4)
-            elif player.animName.startswith('run'):
-                player.setAnimation(player.animName.replace('run', 'idle'), 4)
+    if not menu and current_scene == 'World':
+        player.handle_continuous_key_action(pressed_keys)
 
     # Drawing the frame
-    if currentScene == 'World':
+    if current_scene == 'World':
         drawx = map_surface.get_width()/2-player.pos[0]-8
         drawy = map_surface.get_height()/2-player.pos[1]
 
         map_surface.blit(currentMap.ground, (drawx, drawy))
         map_surface.blit(currentMap.beta, (drawx, drawy))
 
-        flag = player.update(currentMap)
+        flag = player.update()
         if flag == 'stopped moving':
             encounterTile = currentMap.encounters.checkEncounters(player.pos[0]//16, player.pos[1]//16)
             if encounterTile > 0:
@@ -207,33 +194,31 @@ while not done:
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
                     foe.party[0].setlevel(EncounterData[1])
                     activeBattle = BattleScene(pixel_screen, console, player.trainerdata, foe)
-                    currentScene = 'Battle'
+                    current_scene = 'Battle'
 
         drawPlayer = True
-        npcloader.update([player.pos[0]//16, player.pos[1]//16])
+        npcloader.update(player.pos//16)
         for npc in npcloader.npcs:
-            surface, position = npc.getDrawData()
-            if position[1] * 16 + drawy - 13 > map_surface.get_height()/2-13 and drawPlayer:
-                player.draw((map_surface.get_width()/2-10, map_surface.get_height()/2-13), map_surface)
+            if npc.pos[1] + drawy > map_surface.get_height()/2 and drawPlayer:
+                player.draw((map_surface.get_width()//2-16, map_surface.get_height()//2-16), map_surface)
                 drawPlayer = False
-            position = (position[0] * 16 + drawx - 1, position[1] * 16 + drawy - 13)
-            map_surface.blit(surface, position)
+            npc.draw((npc.pos[0] + drawx - 8, npc.pos[1] + drawy - 16), map_surface)
         if drawPlayer:
-            player.draw((map_surface.get_width()/2-10, map_surface.get_height()/2-13), map_surface)
+            player.draw((map_surface.get_width()//2-16, map_surface.get_height()//2-16), map_surface)
 
         map_surface.blit(currentMap.alpha, (drawx, drawy))
         pixel_screen.blit(map_surface, (0, 0))
         pixel_screen.blit(menublit, (pixel_screen_rect.width+menupos, 0))
         pixel_screen.blit(menuselect, (pixel_screen_rect.width+menupos, menuitem*14))
 
-    elif currentScene == 'Battle':
+    elif current_scene == 'Battle':
         activeBattle.update()
         activeBattle.draw()
         if not activeBattle.active:
-            currentScene = 'World'
+            current_scene = 'World'
 
     # Code is nu compleet shit, maar ik weet al hoe ik normaal ga maken -> i am idiot i must implement library
-    elif currentScene == 'Options':
+    elif current_scene == 'Options':
         screen.fill((255,255,255))
 
         if selected == len(rows):
@@ -266,6 +251,7 @@ while not done:
         warp_map, warp_pos = warp
         currentMap = maploader.loadMapObject(warp_map)
         player.warp(currentMap, npcloader, warp_pos)
+        npcloader.new_map(currentMap)
 
     fit_and_center_surface(pixel_screen, screen)
 
