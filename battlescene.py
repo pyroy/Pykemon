@@ -79,6 +79,17 @@ class BattleScene:
         if selection == 'RUN':
             # @Terts: Should not always work, but I don't know what that depends on...
             self.console.say("Got away safely!", callback=self.close)
+        elif selection == 'FIGHT':
+            self.console.choose(self.inFieldFriend.moveset.get_moves(), callback=self.fight_callback)
+        elif selection == 'BAG':
+            raise NotImplementedError("Too soon, bro.")
+        elif selection == 'POKéMON':
+            raise NotImplementedError("Too soon, bro.")
+        else:
+            raise ValueError(f"Selection {selection} is not valid as main action.")
+
+    def fight_callback(self, selection):
+        print(f"YOU SELECTED {selection.upper()}! FIGHT!")
 
     def close(self):
         self.active = False

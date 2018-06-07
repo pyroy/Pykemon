@@ -89,7 +89,7 @@ class MovingObject:
         dir = Pos(dir)
         new_x = self.pos[0]//16 + dir[0]
         new_y = self.pos[1]//16 + dir[1]
-        if self.currentMap.bounds.checkBounds(new_x, new_y, dir) and self.npcloader.checkBounds(Pos(new_x, new_y)):
+        if self.currentMap.bounds.checkBounds(new_x, new_y, dir) and self.npcmanager.checkBounds(Pos(new_x, new_y)):
             self.remainingDuration = duration
             self.displacement = dir * 16 // duration
             self.moving = True

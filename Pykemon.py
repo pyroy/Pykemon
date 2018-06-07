@@ -9,7 +9,7 @@ pygame.init()
 
 # Main imports
 import maploader
-import npcloader
+import npc
 from battlescene import BattleScene
 from console import Console
 from keybinding import single_key_action
@@ -47,13 +47,15 @@ console = Console('data/globals.p', pixel_screen)
 # Maploader objects
 mapToLoad = 'editmap'
 maploader = maploader.MapLoader()
+npcmanager = npc.NPCManager(console)
 currentMap = maploader.loadMapObject(mapToLoad)
+npcmanager.set_npcs(currentMap)
 
 # Pokemon dex data
 dex = pkm.dex.Dex()
-npcloader = npcloader.NPCLoader(console)
 
-player = Player(currentMap, npcloader)
+
+player = Player(currentMap, npcmanager)
 player.pos = Pos(currentMap.warps[0])
 
 base_resolution = (256, 192)
@@ -81,10 +83,6 @@ if not quickstart:
         screen.blit(f.render(line, False, (255,255,255)), (5, h*index))
     pygame.display.flip()
     time.sleep(2)
-
-npcloader.loadNPC('bob')  # placeholders? should be in maploader
-npcloader.loadNPC('will')
-npcloader.new_map(currentMap)
 
 current_scene = 'World'
 activeBattle = None  # Actual BattleScene object
@@ -197,12 +195,12 @@ while not done:
                     current_scene = 'Battle'
 
         drawPlayer = True
-        npcloader.update(player.pos//16)
-        for npc in npcloader.npcs:
+        npcmanager.update(player.pos//16)
+        for npc in npcmanager.npcs:
             if npc.pos[1] + drawy > map_surface.get_height()/2 and drawPlayer:
                 player.draw((map_surface.get_width()//2-16, map_surface.get_height()//2-16), map_surface)
                 drawPlayer = False
-            npc.draw((npc.pos[0] + drawx - 8, npc.pos[1] + drawy - 16), map_surface)
+            npc.draw((npc.pos[0] + drawx - 4, npc.pos[1] + drawy - 16), map_surface)
         if drawPlayer:
             player.draw((map_surface.get_width()//2-16, map_surface.get_height()//2-16), map_surface)
 
@@ -250,8 +248,8 @@ while not done:
         screen.fill((0,0,0))
         warp_map, warp_pos = warp
         currentMap = maploader.loadMapObject(warp_map)
-        player.warp(currentMap, npcloader, warp_pos)
-        npcloader.new_map(currentMap)
+        player.warp(currentMap, npcmanager, warp_pos)
+        npcmanager.new_map(currentMap)
 
     fit_and_center_surface(pixel_screen, screen)
 

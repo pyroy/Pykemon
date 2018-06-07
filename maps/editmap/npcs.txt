@@ -1,0 +1,38 @@
+## DEPRECATED
+
+
+# Syntax:
+# Name (string)
+# Role (string)
+# Path
+# @TRIGGER
+# COMMAND: DATA
+# ...
+# @TRIGGER
+# ...
+# ----------
+#
+# Available triggers
+# @INTERACT: optional boolean expression
+# - @LINEOFSIGHT
+# - @POSITION[x,y]
+
+# Available commands
+# SAY: "text1", "text2", ..
+# - GIVEITEM: item, amount
+# - GIVEPOKE: Pokemon
+# - TAKEITEM: item, amount
+# - TAKEPOKE: Pokemon
+# - BATTLE
+# - GIVEMONEY: amount
+# - TAKEMONEY: amount
+# - MOVETO: x, y
+# - SETVAR: varname, value
+
+Oak
+Professor
+(4,5);(5,5);(5,6);(4,6)
+
+@INTERACT
+SAY: "You got your first Pokémon already?", "WHO GAVE IT TO YOU?"
+SAY: "I suppose you don't want a regular starter then."

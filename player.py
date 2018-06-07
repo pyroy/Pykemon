@@ -6,7 +6,7 @@ from pos import Pos
 
 
 class Player(MovingObject):
-    def __init__(self, currentMap, npc):
+    def __init__(self, currentMap, npcmanager):
         self.pos = Pos(0, 0)
         self.texturemap = get_texture("player-kaori")
         self.textures = {
@@ -54,15 +54,15 @@ class Player(MovingObject):
         self.displacement = Pos(0, 0)
         self.remainingDuration = 0
         self.currentMap = currentMap
-        self.npcloader = npc
+        self.npcmanager = npcmanager
         self.trainerdata = pkm.Trainer('Player')
         self.trainerdata.party.append(pkm.Pokemon('Starmie'))
         self.moving = False
         self.direction = 'south'
 
-    def warp(self, new_map, npc, pos):
+    def warp(self, new_map, npcmanager, pos):
         self.currentMap = new_map
-        self.npcloader = npc
+        self.npcmanager = npcmanager
         self.pos = Pos(new_map.warps[0])
 
     def checkWarps(self, warps):

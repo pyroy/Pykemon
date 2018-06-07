@@ -1,17 +1,19 @@
 import pickle, pygame
-from collections import namedtuple
+import asyncio
 from keybinding import single_key_action
 from visual_core import get_texture, render_text
 
-SayEvent = namedtuple("SayEvent", [
-    "text",
-    "callback"
-])
 
-ChooseEvent = namedtuple("ChooseEvent", [
-    "options",
-    "callback"
-])
+class SayEvent:
+    def __init__(self, text, callback):
+        self.text = text
+        self.callback = callback
+
+
+class ChooseEvent:
+    def __init__(self, options, callback):
+        self.options = options
+        self.callback = callback
 
 # Test event for debugging.
 dummyEvent = SayEvent(
@@ -47,6 +49,7 @@ class Console:
     def __init__(self, data, pixel_screen):
         self.state = 0
         self.queue = [dummyEvent]
+        self.future_queue = []
         self.datapath = data
         self.data = pickle.load(open(data, 'rb'))
 
@@ -130,6 +133,7 @@ class Console:
                     self.text_callback()
                 self.dialogue_active = False
 
+
     def open_choose_box(self, options, callback):
         self.choose_box_active = True
         self.choose_options = options
@@ -165,13 +169,14 @@ class Console:
     def execute_next_event(self):
         if self.queue:
             e = self.queue.pop(0)
-            self.state += 1
             if type(e) is SayEvent:
                 self.open_dialog_box(e.text)
                 self.text_callback = e.callback
+                self.last_id = id
             elif type(e) is ChooseEvent:
                 # Open a selection text box with the options from data.
                 self.open_choose_box(e.options, e.callback)
+                self.last_id = id
             elif e.event == 'SET':
                 self.data[e.data[0]] = e.data[1]
                 pickle.dump(self.data, open(self.datapath, 'wb'))
@@ -181,14 +186,19 @@ class Console:
                 else:
                     self.add_event[self.interpret(e.data[1][1])]
 
-    def add_event(self, *event):
-        self.queue.extend(event)
+    def add_event(self, event):
+        self.state += 1
+        event.id = self.state
+        self.queue.append(event)
+        fut = asyncio.Future()
+        self.future_queue.append(fut)
+        return fut
 
     def say(self, *text, callback=None):
-        self.add_event(SayEvent(text, callback))
+        return self.add_event(SayEvent(text, callback))
 
     def choose(self, options, callback):
-        self.add_event(ChooseEvent(options, callback))
+        return self.add_event(ChooseEvent(options, callback))
 
     def execute_script(self, script_path):
         with open(script_path) as file:

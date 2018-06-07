@@ -1,4 +1,6 @@
 import random
+import importlib
+import inspect
 from collections import namedtuple
 
 import pygame
@@ -95,7 +97,8 @@ Map = namedtuple("Map", [
     "bounds",
     "warps",
     "signs",
-    "encounters"
+    "encounters",
+    "npcs"
 ])
 
 
@@ -112,6 +115,7 @@ class MapLoader:
             self.getWarpPoints(mapname),
             self.getSigns     (mapname),
             self.getEncounters(mapname),
+            self.getNPCs      (mapname),
         )
 
     def loadDrawMap(self, mapname, layer, transparent=False):
@@ -166,3 +170,10 @@ class MapLoader:
             lines = file.readlines()
         lines = list(map(lambda line: line.strip(), lines))
         return Encounters(lines)
+
+    def getNPCs(self, mapname):
+        npc_spec = importlib.util.spec_from_file_location("npcs", "\\".join(__file__.split("\\")[:-1]) + f"\\maps\\{mapname}\\npcs.py")
+        npc_module = importlib.util.module_from_spec(npc_spec)
+        npc_spec.loader.exec_module(npc_module)
+        npcs = [c[1]() for c in inspect.getmembers(npc_module, inspect.isclass)]
+        return npcs

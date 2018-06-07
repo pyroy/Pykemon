@@ -23,7 +23,7 @@ For people who want to customize their game and/or want to create extra or diffe
 
 For Python developers with the source: (lol)
 8. The pokepy module and the magic it contains (created by Pyroy great guy please credit him thanks)
-9. main.py and its best friends maploader.py and npcloader.py
+9. main.py and its best friends maploader.py and npc.py
 10. What the heck is battlescene.py and why is it so majestically programmed?
 
 For adding custom pokemon or editing items or editing ingame stats and values of pokemon,
