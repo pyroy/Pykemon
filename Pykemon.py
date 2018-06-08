@@ -99,7 +99,6 @@ options = {'empty': 0, 'test': 1}  # revamp use config lib
 
 menuitem = 0
 while not done:
-    console.execute_events()
     zoom += 0  # @Terts: WHAT?!?!?! # @Roy dit laten we erin als cultureel erfgoed.
     map_surface = pygame.Surface((base_resolution[0]//zoom, base_resolution[1]//zoom))
     pressed_keys = pygame.key.get_pressed()
@@ -141,12 +140,20 @@ while not done:
                     console.say("Saving! Please don't turn off the console!")
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     current_scene = 'Options'
-                elif single_key_action(key, 'World', 'select') and not console.dialogue_active and not player.moving:
+                elif single_key_action(key, 'World', 'select') and not any([console.dialogue.active, console.choice.active, player.moving]):
+                    pos_to_check = player.pos//16 + player.direction_vector
                     for sign in currentMap.signs:
-                        dir = player.direction_vector
-                        if (player.pos//16 + dir) == sign.pos:
+                        if pos_to_check == sign.pos:
                             console.say(*sign.text)
                             break
+                    for npc in npcmanager.npcs:
+                        if pos_to_check == npc.pos//16:
+                            if npc.interact:
+                                generator = npc.interact()
+                                func = next(generator)
+                                func(generator)
+                            break
+
 
             console.handle_single_key_action(key)
 
@@ -174,6 +181,8 @@ while not done:
     if not menu and current_scene == 'World':
         player.handle_continuous_key_action(pressed_keys)
 
+    console.execute_events()
+
     # Drawing the frame
     if current_scene == 'World':
         drawx = map_surface.get_width()/2-player.pos[0]-8
@@ -200,7 +209,7 @@ while not done:
             if npc.pos[1] + drawy > map_surface.get_height()/2 and drawPlayer:
                 player.draw((map_surface.get_width()//2-16, map_surface.get_height()//2-16), map_surface)
                 drawPlayer = False
-            npc.draw((npc.pos[0] + drawx - 4, npc.pos[1] + drawy - 16), map_surface)
+            npc.draw((npc.pos[0] + drawx - 9, npc.pos[1] + drawy - 16), map_surface)
         if drawPlayer:
             player.draw((map_surface.get_width()//2-16, map_surface.get_height()//2-16), map_surface)
 
@@ -240,8 +249,7 @@ while not done:
         menupos -= menudisp*-menuframes
         menuframes -= 1
 
-    console.draw_dialog_box()
-    console.draw_choose_box()
+    console.draw()
 
     warp = player.checkWarps(currentMap.warps)
     if warp:

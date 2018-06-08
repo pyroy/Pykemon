@@ -5,11 +5,11 @@ from pos import Pos
 
 
 class NPC(MovingObject):
-    def __init__(self, console, name, role, sprite, path, npcmanager):
+    def setup(self, console, npcmanager):
         self.console = console
-        self.name = name
-        self.path = path
         self.npcmanager = npcmanager
+        self.vars = {}
+        self.path = [Pos(p) for p in self.path]
         self.abspos = self.path[0]
         self.pos = self.path[0]*16
         self.texturemap = get_texture("npcs\\npcsheet")
@@ -27,7 +27,7 @@ class NPC(MovingObject):
             'left1'     : (0,   32),
             'left2'     : (0,   96),
         }
-        self.textures = {key: (tex[0]+sprite[0]*96, tex[1]+sprite[1]*128) for (key, tex) in self.textures.items()}
+        self.textures = {key: (tex[0]+self.sprite[0]*96, tex[1]+self.sprite[1]*128) for (key, tex) in self.textures.items()}
         self.animations = {
             'idle_north': ['upidle'],
             'idle_east' : ['rightidle'],
@@ -71,6 +71,12 @@ class NPC(MovingObject):
                 self.move('walk', direction)
                 if self.moving:
                     self.abspos += offset
+    
+    def say(self, text):
+        return lambda generator: self.console.say(text, callback=generator)
+    
+    def choice(self, key, options):
+        return lambda generator: self.console.choose(options, var_dict=self.vars, var_key=key, callback=generator)
 
 class NPCManager:
     def __init__(self, console):
@@ -80,21 +86,15 @@ class NPCManager:
 
     def set_npcs(self, currentMap):
         self.npcs.clear()
-        for npc in currentMap.npcs:
-            npc_obj = NPC(
-                console = self.console,
-                name = npc.name,
-                role = npc.role,
-                sprite = npc.sprite,
-                path = [Pos(elem) for elem in npc.path],
-                npcmanager = self
-            )
+        for npc_class in currentMap.npcs:
+            npc = npc_class()
+            npc.setup(self.console, self)
             if hasattr(npc, "interact"):
-                npc_obj.interact = npc.interact
+                npc.interact = npc.interact
             else:
-                npc_obj.interact = None
-            npc_obj.currentMap = currentMap
-            self.npcs.append(npc_obj)
+                npc.interact = None
+            npc.currentMap = currentMap
+            self.npcs.append(npc)
 
     def update(self, ppos):
         self.updates = (self.updates + 1) % 30
@@ -103,7 +103,6 @@ class NPCManager:
                 npc.new_movement(ppos)
         for npc in self.npcs:
             npc.update()
-        pass
 
     def new_map(self, map):
         for npc in self.npcs:

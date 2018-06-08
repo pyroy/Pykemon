@@ -2,6 +2,7 @@ import random
 import importlib
 import inspect
 from collections import namedtuple
+import npc
 
 import pygame
 
@@ -175,5 +176,6 @@ class MapLoader:
         npc_spec = importlib.util.spec_from_file_location("npcs", "\\".join(__file__.split("\\")[:-1]) + f"\\maps\\{mapname}\\npcs.py")
         npc_module = importlib.util.module_from_spec(npc_spec)
         npc_spec.loader.exec_module(npc_module)
-        npcs = [c[1]() for c in inspect.getmembers(npc_module, inspect.isclass)]
+        classes = inspect.getmembers(npc_module, inspect.isclass)
+        npcs = list(filter(lambda c: issubclass(c, npc.NPC) and c is not npc.NPC, (c[1] for c in classes)))
         return npcs
