@@ -178,7 +178,7 @@ while not done:
                 pass
 
     # Continuous key actions
-    if not menu and current_scene == 'World':
+    if not menu and current_scene == 'World' and not console.dialogue.active and not console.choice.active:
         player.handle_continuous_key_action(pressed_keys)
 
     console.execute_events()
