@@ -43,6 +43,7 @@ class NPC(MovingObject):
         self.displacement = (0, 0)
         self.remainingDuration = 0
         self.moving = False
+        self.talking = False
 
     def update(self):
         # print(self.abspos, self.pos//16, self.abspos == self.pos//16)
@@ -51,6 +52,9 @@ class NPC(MovingObject):
             self.setAnimation('idle', 8)
 
     def new_movement(self, ppos):
+        if self.talking:
+            return
+        
         tile_pos = self.pos // 16
         if random.random() < 0.5:  # walking
             if random.random() < 0.5:  # back on path
@@ -72,6 +76,14 @@ class NPC(MovingObject):
                 if self.moving:
                     self.abspos += offset
     
+    def interact_wrapper(self, func):
+        def new_interact(player_pos):
+            self.turn((player_pos - self.pos)//16)
+            self.talking = True
+            yield from func()
+            self.talking = False
+        return new_interact
+    
     def say(self, text):
         return lambda generator: self.console.say(text, callback=generator)
     
@@ -90,7 +102,7 @@ class NPCManager:
             npc = npc_class()
             npc.setup(self.console, self)
             if hasattr(npc, "interact"):
-                npc.interact = npc.interact
+                npc.interact = npc.interact_wrapper(npc.interact)
             else:
                 npc.interact = None
             npc.currentMap = currentMap

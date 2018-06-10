@@ -149,11 +149,10 @@ while not done:
                     for npc in npcmanager.npcs:
                         if pos_to_check == npc.pos//16:
                             if npc.interact:
-                                generator = npc.interact()
+                                generator = npc.interact(player.pos)
                                 func = next(generator)
                                 func(generator)
                             break
-
 
             console.handle_single_key_action(key)
 

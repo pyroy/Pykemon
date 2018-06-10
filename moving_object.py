@@ -93,6 +93,11 @@ class MovingObject:
             self.remainingDuration = duration
             self.displacement = dir * 16 // duration
             self.moving = True
+    
+    def turn(self, direction):
+        if type(direction) is not str:
+            direction = coordinates_to_direction(direction)
+        self.setAnimation(f'idle_{direction}', 4)
 
     @property
     def direction_vector(self):

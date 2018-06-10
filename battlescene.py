@@ -72,10 +72,9 @@ class BattleScene:
             else:
                 self.state = 'select'
                 self.console.say(f"What will\n{self.inFieldFriend.custom_name} do?")
-                self.console.choose(["FIGHT", "BAG", "POKéMON", "RUN"], self.main_action_callback)
+                self.console.choose(["FIGHT", "BAG", "POKéMON", "RUN"], callback=self.main_action_callback)
 
     def main_action_callback(self, selection):
-        print(f"I'm a {type(self)} and the selection is {selection}")
         if selection == 'RUN':
             # @Terts: Should not always work, but I don't know what that depends on...
             self.console.say("Got away safely!", callback=self.close)

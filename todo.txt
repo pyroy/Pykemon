@@ -16,11 +16,11 @@ MAIN GAME
 	NPC loading in maps
  	Ledges
  	Running
+	NPC Sprites
 
   TODO:
   Text animation in dialogue
 	Console functionality 50%
-	NPC Sprites
 	Object-Console support
   Ledge jump animations
 
