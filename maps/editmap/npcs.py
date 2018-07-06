@@ -36,7 +36,7 @@ class Quizmaster(NPC):
 
     def interact(self):
         yield self.say("Stop!")
-        yield self.say("Who approacheth the bridge of death, must answer me these questions three, 'ere the other side he see.")
+        yield self.say("Who approaches the bridge of death, must answer me these questions three, 'ere the other side he see.")
         
         self.correct = 0
         yield self.say("What is your name?")

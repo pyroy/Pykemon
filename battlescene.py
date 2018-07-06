@@ -2,6 +2,7 @@ from math import ceil
 import pokepy.pokemon as pkm
 import pygame
 from visual_core import get_texture, crop_whitespace, render_number, render_text
+import events
 
 dex = pkm.dex.Dex()
 
@@ -71,24 +72,31 @@ class BattleScene:
                 self.friend_pos -= 6
             else:
                 self.state = 'select'
-                self.console.say(f"What will\n{self.inFieldFriend.custom_name} do?")
-                self.console.choose(["FIGHT", "BAG", "POKéMON", "RUN"], callback=self.main_action_callback)
-
-    def main_action_callback(self, selection):
-        if selection == 'RUN':
-            # @Terts: Should not always work, but I don't know what that depends on...
-            self.console.say("Got away safely!", callback=self.close)
-        elif selection == 'FIGHT':
-            self.console.choose(self.inFieldFriend.moveset.get_moves(), callback=self.fight_callback)
-        elif selection == 'BAG':
-            raise NotImplementedError("Too soon, bro.")
-        elif selection == 'POKéMON':
-            raise NotImplementedError("Too soon, bro.")
-        else:
-            raise ValueError(f"Selection {selection} is not valid as main action.")
-
-    def fight_callback(self, selection):
-        print(f"YOU SELECTED {selection.upper()}! FIGHT!")
+                self.console.add_generator(self.main_action_menu())
+    
+    def main_action_menu(self):
+        yield events.menu(
+            FIGHT = self.fight_menu,
+            BAG = NotImplementedError,
+            POKéMON = NotImplementedError,
+            RUN = self.run
+        )
+    
+    def fight_menu(self):
+        def fight_action(f):
+            def inner():
+                return f(self.inFieldFriend, self.inFieldFoe)
+            return inner
+        movenames = self.inFieldFriend.moveset.get_movenames()
+        movefuncs = map(lambda x: self.inFieldFriend.moveset.moves[x][0].func, movenames)
+        results = map(lambda f: fight_action(f), movefuncs)
+        options = dict(zip(movenames, results))
+        yield events.menu(**options)
+    
+    def run(self):
+        print('We got here!')
+        yield events.say('Got away safely!')
+        self.close()
 
     def close(self):
         self.active = False
@@ -127,6 +135,7 @@ class StatusBar:
         self.new_pokemon(pokemon)
 
     def new_pokemon(self, pokemon):
+        self.pokemon = pokemon
         self.name   = pokemon.custom_name
         self.level  = pokemon.level
         self.status = pokemon.status
@@ -144,7 +153,7 @@ class StatusBar:
             bg_texture_x = 120
         else:
             bg_texture_x = 240
-        hp_prop = self.cur_hp / self.max_hp
+        hp_prop = self.pokemon.currentStats['HP'] / self.pokemon.stats['HP']
 
         # We use ceil because because we want to still show a pixel if the health
         # is reduced to something that would cause the hp bar to disappear if
@@ -166,23 +175,23 @@ class StatusBar:
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 30))
 
-            nametag = render_text(self.name)
+            nametag = render_text(self.pokemon.custom_name)
             background.blit(nametag, (13, 3))
 
-            level_tag = render_number(self.level)
+            level_tag = render_number(self.pokemon.level)
             background.blit(level_tag, (94, 8))
 
-            current_hp_tag = render_number(self.cur_hp)
+            current_hp_tag = render_number(self.pokemon.currentStats['HP'])
             current_hp_tag_rect = current_hp_tag.get_rect()
             current_hp_tag_rect.topright = (87, 28)
             background.blit(current_hp_tag, current_hp_tag_rect)
 
-            max_hp_tag = render_number(self.max_hp)
+            max_hp_tag = render_number(self.pokemon.stats['HP'])
             background.blit(max_hp_tag, (94, 28))
 
             background.blit(hp_texture, (62, 19))
 
-            xp_prop = self.cur_xp / self.max_xp
+            xp_prop = self.pokemon.XP / self.pokemon.goalXP
             xp_texture = pygame.Surface((xp_prop*90, 3), pygame.SRCALPHA)
             xp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 92, xp_prop*90, 3))
             background.blit(xp_texture, (29, 38))
@@ -192,10 +201,10 @@ class StatusBar:
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 0))
 
-            nametag = render_text(self.name)
+            nametag = render_text(self.pokemon.custom_name)
             background.blit(nametag, (2, 3))
 
-            level_tag = render_number(self.level)
+            level_tag = render_number(self.pokemon.level)
             background.blit(level_tag, (82, 8))
 
             background.blit(hp_texture, (50, 19))

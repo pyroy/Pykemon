@@ -2,6 +2,7 @@ import random
 from visual_core import get_texture
 from moving_object import MovingObject, coordinates_to_direction
 from pos import Pos
+from events import SayEvent, ChooseEvent
 
 
 class NPC(MovingObject):
@@ -84,11 +85,11 @@ class NPC(MovingObject):
             self.talking = False
         return new_interact
     
-    def say(self, text):
-        return lambda generator: self.console.say(text, callback=generator)
+    def say(self, *text):
+        return lambda generator: SayEvent(text, callback=generator)
     
     def choice(self, key, options):
-        return lambda generator: self.console.choose(options, var_dict=self.vars, var_key=key, callback=generator)
+        return lambda generator: ChooseEvent(options, var_dict=self.vars, var_key=key, callback=generator)
 
 class NPCManager:
     def __init__(self, console):

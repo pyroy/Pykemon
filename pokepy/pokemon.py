@@ -74,28 +74,31 @@ class PID:
     def __int__(self):
         return self.n
 
-
 # Moveset class to store for each pokemon which moves it has, moves are stored in m_db.py and you can edit them yourself!
 class Moveset:
     def __init__(self, friend):
-        self.moves = []
+        self.moves = {}
         self.friend = friend
 
-    def usemove(self, id, foe):
-        EventQueue.addEvent('usemove', self.friend, id, foe)
-        self.moves[id][1](self.friend, foe)  # usemove uses Moveset.moveset index, NOT the name of the move!
-
     def addmove(self, movename):
-        self.moves.append([movename, m_db.DB.DATA[movename]])
+        move = m_db.DB.DATA[movename]
+        self.moves[movename] = (move, move.pp)
 
-    def deletemove(self, id):
-        self.moves.remove(self.moveset[id])
+    def deletemove(self, movename):
+        del self.moves[movename]
 
-    def replacemove(self, id, movename):
-        self.moves[id] = [movename, m_db.DB.DATA[movename]]
-
+    def replacemove(self, old_movename, new_movename):
+        self.deletemove(old_movename)
+        self.addmove(new_movename)
+    
+    def __get__(self, movename):
+        return self.moves[movename]
+    
     def get_moves(self):
-        return [i[0] for i in self.moves]
+        return [i[0] for i in self.moves.values()]
+    
+    def get_movenames(self):
+        return list(self.moves.keys())
 
 
 class Trainer:
@@ -137,9 +140,9 @@ class Pokemon:
         self.goalXP = xpfunc(1)
         self.moveset = Moveset(self)
         self.moveset.addmove('Tackle')
-        self.moveset.addmove('Stand Guard')
-        self.moveset.addmove('Stat Sacrifice')
-        self.moveset.addmove('Struggle')
+        #self.moveset.addmove('Stand Guard')
+        #self.moveset.addmove('Stat Sacrifice')
+        #self.moveset.addmove('Struggle')
         self.calcstats()
         self.returnstats(True)
 
@@ -173,13 +176,14 @@ class Pokemon:
             self.levelup()
             self.goalXP = xpfunc(self.level)  # If given a lot of xp, multiple levels may be gained
 
-    def dealdamage(self, pokemon, amount, movedata):
+    def dealdamage(self, pokemon, movedata):
         """Attacks a foe, movedata is passed by a Moveset.usemove() function."""
-        mod = getmodifier(movedata[1], pokemon.types)
-        if movedata[0] == 'physical':
-            damage = (((2*self.level/5+2)*amount*self.currentStats['ATK']/pokemon.currentStats['DEF'])/50+2)*mod
-        if movedata[0] == 'special':
-            damage = (((2*self.level/5+2)*amount*self.currentStats['SPATK']/pokemon.currentStats['SPDEF'])/50+2)*mod
+        mod = getmodifier(movedata['type'].lower(), pokemon.types)
+        if movedata['category'].lower() == 'physical':
+            damage = (((2*self.level/5+2)*movedata['power']*self.currentStats['ATK']/pokemon.currentStats['DEF'])/50+2)*mod
+        if movedata['category'].lower() == 'special':
+            damage = (((2*self.level/5+2)*movedata['power']*self.currentStats['SPATK']/pokemon.currentStats['SPDEF'])/50+2)*mod
+        print(f"HP: {pokemon.currentStats['HP']}, Damage: {damage}")
         pokemon.takedamage(damage)
         if mod == 0:
             return [0, damage]

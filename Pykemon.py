@@ -151,7 +151,8 @@ while not done:
                             if npc.interact:
                                 generator = npc.interact(player.pos)
                                 func = next(generator)
-                                func(generator)
+                                print(func(generator).text)
+                                console.add_event(func(generator))
                             break
 
             console.handle_single_key_action(key)

@@ -2,21 +2,8 @@ import pickle, pygame
 import asyncio
 from keybinding import single_key_action
 from visual_core import get_texture, render_text
+from events import SayEvent, ChooseEvent, DamageEvent
 import typing
-
-
-class SayEvent:
-    def __init__(self, text, callback):
-        self.text = text
-        self.callback = callback
-
-
-class ChooseEvent:
-    def __init__(self, options, callback=None, var_dict=None, var_key=None):
-        self.options = options
-        self.callback = callback
-        self.var_dict = var_dict
-        self.var_key = var_key
 
 # Test event for debugging.
 dummyEvent = SayEvent(
@@ -196,15 +183,27 @@ class Console:
                 if self.text_callback:
                     self.text_callback()
                 self.dialogue_active = False
+    
+    def activate_callback(self, callback, data=None):
+        if callable(callback):
+            callback = callback(self.choice.options[self.choice.selection])
+        if isinstance(callback, typing.Generator):
+            try:
+                func = next(callback)
+                self.add_event(func(callback))
+            except StopIteration:
+                pass
 
     def execute_events(self):
-        # Generator objects must be retained and will be stored in the rest_queue
         for e in self.queue:
             if type(e) is SayEvent:
                 self.dialogue.open(e.text, e.callback)
             elif type(e) is ChooseEvent:
-                # Open a selection text box with the options from data.
+                # Open the selection text box with the options from data.
                 self.choice.open(e.options, e.var_dict, e.var_key, e.callback)
+            elif type(e) is DamageEvent:
+                e.attacking.dealdamage(e.defending, e.move)
+                self.activate_callback(e.callback)
             elif e.event == 'SET':
                 self.data[e.data[0]] = e.data[1]
                 pickle.dump(self.data, open(self.datapath, 'wb'))
@@ -213,6 +212,8 @@ class Console:
                     self.add_event[self.interpret(e.data[1][0])]
                 else:
                     self.add_event[self.interpret(e.data[1][1])]
+            else:
+                raise ValueError(f'Event {e} is not recognized!')
         self.queue.clear()
     
     def draw(self):
@@ -223,6 +224,10 @@ class Console:
         self.state += 1
         event.id = self.state
         self.queue.append(event)
+
+    def add_generator(self, generator):
+        func = next(generator)
+        self.add_event(func(generator))
 
     def say(self, *text, callback=None):
         return self.add_event(SayEvent(text, callback))
@@ -255,23 +260,9 @@ class Console:
                     self.choice.selection -= 1
             elif single_key_action(key, 'Menu', 'select'):
                 callback = self.choice.close()
-                if callable(callback):
-                    callback(self.choice.options[self.choice.selection])
-                elif isinstance(callback, typing.Generator):
-                    try:
-                        func = next(callback)
-                        func(callback)
-                    except StopIteration:
-                        pass
+                self.activate_callback(callback, data=self.choice.options[self.choice.selection])
         elif self.dialogue.active:
             if single_key_action(key, 'Dialogue', 'continue'):
                 callback = self.dialogue.next()
-                if callable(callback):
-                    callback()
-                elif isinstance(callback, typing.Generator):
-                    try:
-                        func = next(callback)
-                        func(callback)
-                    except StopIteration:
-                        pass
+                self.activate_callback(callback)
 
