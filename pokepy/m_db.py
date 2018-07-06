@@ -26,13 +26,7 @@ class DATABASE:
     def define_move(self,name, category, type, pp, power, accuracy):
         # All this information does need to be defined here to correctly display information in the menus
         def inner(func):
-            self.DATA[name] = Move(name, category, type, pp, power, accuracy, self.attack_func(name, func))
-        return inner
-    
-    def attack_func(self, name, func):
-        def inner(friend, foe):
-            yield events.say(f'{friend.custom_name} used {name}!')
-            yield from func(friend, foe)
+            self.DATA[name] = Move(name, category, type, pp, power, accuracy, func)
         return inner
 
 DB = DATABASE()

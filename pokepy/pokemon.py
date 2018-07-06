@@ -91,7 +91,7 @@ class Moveset:
         self.deletemove(old_movename)
         self.addmove(new_movename)
     
-    def __get__(self, movename):
+    def __getitem__(self, movename):
         return self.moves[movename]
     
     def get_moves(self):
@@ -145,6 +145,10 @@ class Pokemon:
         #self.moveset.addmove('Struggle')
         self.calcstats()
         self.returnstats(True)
+    
+    @property
+    def fainted(self):
+        return self.currentStats['HP'] == 0
 
     def calcstats(self):  # Recalculates each max stat based on level, IV en EV
         self.stats = {}
@@ -200,6 +204,8 @@ class Pokemon:
 
     def takedamage(self, amount):
         self.currentStats['HP'] -= round(amount)
+        if self.currentStats['HP'] < 0:
+            self.currentStats['HP'] = 0
 
     def raisestat(self, stat, amount):
         self.currentStats[stat] *= amount

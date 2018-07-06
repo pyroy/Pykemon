@@ -1,4 +1,5 @@
 from math import ceil
+import random
 import pokepy.pokemon as pkm
 import pygame
 from visual_core import get_texture, crop_whitespace, render_number, render_text
@@ -72,31 +73,64 @@ class BattleScene:
                 self.friend_pos -= 6
             else:
                 self.state = 'select'
-                self.console.add_generator(self.main_action_menu())
+                self.console.add_generator(self.battle_actions())
     
-    def main_action_menu(self):
-        yield events.menu(
-            FIGHT = self.fight_menu,
-            BAG = NotImplementedError,
-            POKéMON = NotImplementedError,
-            RUN = self.run
+    def battle_actions(self):
+        while True:
+            yield from self.player_action_menu()
+            if not self.active:
+                return
+            
+            # The speed of the Pokémon will determine who goes first
+            if self.inFieldFriend.currentStats['SPD'] >= self.inFieldFoe.currentStats['SPD']:
+                yield from self.friend_action()
+                if self.inFieldFriend.fainted or self.inFieldFoe.fainted:
+                    break
+                yield from self.foe_action()
+                if self.inFieldFriend.fainted or self.inFieldFoe.fainted:
+                    break
+            else:
+                yield from self.foe_action()
+                if self.inFieldFriend.fainted or self.inFieldFoe.fainted:
+                    break
+                yield from self.friend_action()
+                if self.inFieldFriend.fainted or self.inFieldFoe.fainted:
+                    break
+        
+        # The player won
+        if self.inFieldFoe.fainted:
+            yield events.say(f'{self.inFieldFoe.custom_name} fainted!')
+        # The opponent won
+        else:
+            yield events.say(f'{self.inFieldFriend.custom_name} fainted!')
+        self.active = False
+
+
+    
+    def player_action_menu(self):
+        v = {}
+        yield events.choose(
+            ['FIGHT', 'BAG', 'POKéMON', 'RUN'],
+            v, 'main'
         )
+        if v['main'] == 'FIGHT':
+            yield events.choose(
+                self.inFieldFriend.moveset.get_movenames(),
+                v, 'attack'
+            )
+            self.friend_attack = v['attack']
+        elif v['main'] == 'RUN':
+            yield events.say('Got away safely!')
+            self.close()
     
-    def fight_menu(self):
-        def fight_action(f):
-            def inner():
-                return f(self.inFieldFriend, self.inFieldFoe)
-            return inner
-        movenames = self.inFieldFriend.moveset.get_movenames()
-        movefuncs = map(lambda x: self.inFieldFriend.moveset.moves[x][0].func, movenames)
-        results = map(lambda f: fight_action(f), movefuncs)
-        options = dict(zip(movenames, results))
-        yield events.menu(**options)
+    def friend_action(self):
+        yield events.say(f'{self.inFieldFriend.custom_name} used {self.friend_attack}!')
+        yield from self.inFieldFriend.moveset[self.friend_attack][0].func(self.inFieldFriend, self.inFieldFoe)
     
-    def run(self):
-        print('We got here!')
-        yield events.say('Got away safely!')
-        self.close()
+    def foe_action(self):
+        self.foe_attack = random.choice(list(self.inFieldFoe.moveset.moves.keys()))
+        yield events.say(f'{self.inFieldFoe.custom_name} used {self.foe_attack}!')
+        yield from self.inFieldFoe.moveset[self.foe_attack][0].func(self.inFieldFoe, self.inFieldFriend)
 
     def close(self):
         self.active = False
