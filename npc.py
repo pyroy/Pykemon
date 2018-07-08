@@ -6,8 +6,7 @@ from events import SayEvent, ChooseEvent
 
 
 class NPC(MovingObject):
-    def setup(self, console, npcmanager):
-        self.console = console
+    def setup(self, npcmanager):
         self.npcmanager = npcmanager
         self.vars = {}
         self.path = [Pos(p) for p in self.path]
@@ -84,24 +83,17 @@ class NPC(MovingObject):
             yield from func()
             self.talking = False
         return new_interact
-    
-    def say(self, *text):
-        return lambda generator: SayEvent(text, callback=generator)
-    
-    def choice(self, key, options):
-        return lambda generator: ChooseEvent(options, var_dict=self.vars, var_key=key, callback=generator)
 
 class NPCManager:
-    def __init__(self, console):
+    def __init__(self):
         self.npcs = []
         self.updates = 0
-        self.console = console
 
     def set_npcs(self, currentMap):
         self.npcs.clear()
         for npc_class in currentMap.npcs:
             npc = npc_class()
-            npc.setup(self.console, self)
+            npc.setup(self)
             if hasattr(npc, "interact"):
                 npc.interact = npc.interact_wrapper(npc.interact)
             else:

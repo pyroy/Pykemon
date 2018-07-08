@@ -8,10 +8,11 @@ import pygame
 pygame.init()
 
 # Main imports
+import eventqueue
 import maploader
 import npc
 from battlescene import BattleScene
-from console import Console
+from console import Dialogue, Choice
 from keybinding import single_key_action
 from visual_core import get_texture
 import pokepy.pokemon as pkm
@@ -42,12 +43,10 @@ screen = pygame.display.set_mode(screen_rect.size, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
 
-console = Console('data/globals.p', pixel_screen)
-
 # Maploader objects
 mapToLoad = 'editmap'
 maploader = maploader.MapLoader()
-npcmanager = npc.NPCManager(console)
+npcmanager = npc.NPCManager()
 currentMap = maploader.loadMapObject(mapToLoad)
 npcmanager.set_npcs(currentMap)
 
@@ -87,15 +86,13 @@ if not quickstart:
 current_scene = 'World'
 activeBattle = None  # BattleScene object
 
-# Options menu vars
-font = pygame.font.SysFont('arial', 30)
-selected = 0
-rowindex = 0
-try:
-    options = pickle.load(open('data\\options.p', 'rb'))
-except (FileNotFoundError, EOFError):
-    options = {}
-options = {'empty': 0, 'test': 1}  # revamp use config lib
+dialogue = Dialogue(pixel_screen)
+choice = Choice(pixel_screen)
+
+scenes = {
+    'dialogue': dialogue,
+    'choice': choice
+}
 
 menuitem = 0
 while not done:
@@ -137,14 +134,14 @@ while not done:
                 elif key == pygame.K_DOWN and menu:
                     menuitem = min(4, menuitem + 1)
                 elif key == pygame.K_RETURN and menuitem == 0 and menu:
-                    console.say("Saving! Please don't turn off the console!")
+                    dialogue.open("Saving! Please don't turn off the console!")
                 elif key == pygame.K_RETURN and menuitem == 1 and menu:
                     current_scene = 'Options'
-                elif single_key_action(key, 'World', 'select') and not any([console.dialogue.active, console.choice.active, player.moving]):
+                elif single_key_action(key, 'World', 'select') and not (dialogue.active or choice.active or player.moving):
                     pos_to_check = player.pos//16 + player.direction_vector
                     for sign in currentMap.signs:
                         if pos_to_check == sign.pos:
-                            console.say(*sign.text)
+                            dialogue.open(*sign.text)
                             break
                     for npc in npcmanager.npcs:
                         if pos_to_check == npc.pos//16:
@@ -152,10 +149,13 @@ while not done:
                                 generator = npc.interact(player.pos)
                                 func = next(generator)
                                 print(func(generator).text)
-                                console.add_events(func(generator))
+                                eventqueue.add_events(func(generator))
                             break
 
-            console.handle_single_key_action(key)
+            c = dialogue.handle_single_key_action(key)
+            eventqueue.activate_callback(c)
+            c = choice.handle_single_key_action(key)
+            eventqueue.activate_callback(c)
 
             if current_scene == 'Options':
                 if event.key == pygame.K_UP:
@@ -178,10 +178,10 @@ while not done:
                 pass
 
     # Continuous key actions
-    if not menu and current_scene == 'World' and not console.dialogue.active and not console.choice.active:
+    if not menu and current_scene == 'World' and not dialogue.active and not choice.active:
         player.handle_continuous_key_action(pressed_keys)
 
-    console.execute_events()
+    eventqueue.execute_events(scenes)
 
     # Drawing the frame
     if current_scene == 'World':
@@ -200,11 +200,14 @@ while not done:
                     foe = pkm.Trainer('Damion')
                     foe.party.append(pkm.Pokemon(EncounterData[0]))
                     foe.party[0].setlevel(EncounterData[1])
-                    activeBattle = BattleScene(pixel_screen, console, player.trainerdata, foe)
+                    activeBattle = BattleScene(pixel_screen, player.trainerdata, foe)
+                    scenes['battle'] = activeBattle
                     current_scene = 'Battle'
 
+        c = npcmanager.update(player.pos//16)
+        eventqueue.activate_callback(c)
+
         drawPlayer = True
-        npcmanager.update(player.pos//16)
         for npc in npcmanager.npcs:
             if npc.pos[1] + drawy > map_surface.get_height()/2 and drawPlayer:
                 player.draw((map_surface.get_width()//2-16, map_surface.get_height()//2-16), map_surface)
@@ -219,37 +222,18 @@ while not done:
         pixel_screen.blit(menuselect, (pixel_screen_rect.width+menupos, menuitem*14))
 
     elif current_scene == 'Battle':
-        activeBattle.update()
+        c = activeBattle.update()
+        eventqueue.activate_callback(c)
         activeBattle.draw()
         if not activeBattle.active:
             current_scene = 'World'
 
-    # Code is nu compleet shit, maar ik weet al hoe ik normaal ga maken -> i am idiot i must implement library
-    elif current_scene == 'Options':
-        screen.fill((255,255,255))
-
-        if selected == len(rows):
-            labelback = font.render("back", False, (255,0,0))
-        else:
-            labelback = font.render("back", False, (0,0,0))
-
-        rows = {1: ['empty', 'test']}
-
-        for row in rows:
-            for label in rows[row]:
-                if options[label]:
-                    screen.blit(font.render(label, False, (255,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
-                else:
-                    screen.blit(font.render(label, False, (0,0,0)), ((rows[row].index(label)+1)*screen_rect.width/(len(rows[row])+1), row*screen_rect.height/(1+len(rows.keys()))))
-
-        screen.blit(labelback, (0, screen_rect.height-50))
-
     if menuframes:  # animating the menu in and out animation
-        print(menupos)
         menupos -= menudisp*-menuframes
         menuframes -= 1
 
-    console.draw()
+    dialogue.draw()
+    choice.draw()
 
     warp = player.checkWarps(currentMap.warps)
     if warp:

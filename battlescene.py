@@ -32,14 +32,13 @@ class Background:
 
 
 class BattleScene:
-    def __init__(self, screen, console, player, foe):
+    def __init__(self, screen, player, foe):
         global hp_bar_textures, base_textures
         hp_bar_textures = get_texture("hpbars")
         base_textures   = get_texture("battlebases")
         self.base_selection = 2
         self.active = True
         self.player, self.foe = player, foe
-        self.console = console
         self.screen_surf = screen
         self.screen_rect = screen.get_rect()
 
@@ -72,7 +71,7 @@ class BattleScene:
                 self.friend_pos -= 6
             else:
                 self.state = 'select'
-                self.console.add_generator(self.battle_actions())
+                return self.battle_actions()
     
     def battle_actions(self):
         while True:
@@ -168,6 +167,9 @@ class BattleScene:
 
         self.screen_surf.blit(status_bar_surf_friend, status_bar_rect_friend)
         self.screen_surf.blit(status_bar_surf_foe, status_bar_rect_foe)
+
+    def handle_event(self, e):
+        e.attacking.dealdamage(e.defending, e.move)
 
 
 class StatusBar:

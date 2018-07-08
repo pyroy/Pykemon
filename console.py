@@ -1,16 +1,6 @@
-import pickle, pygame
-import asyncio
+import pygame
 from keybinding import single_key_action
 from visual_core import get_texture, render_text
-from events import SayEvent, ChooseEvent, DamageEvent, StatusEvent
-import typing
-
-# Test event for debugging.
-dummyEvent = SayEvent(
-    ["Hello there!\nIt's so very nice to meet you!\nWelcome to the world of POKéMON!\n0123456789"],
-    None
-)
-
 
 def take_words_until(s, n):
     return " ".join(s.split()[:n])
@@ -33,6 +23,7 @@ def fit_string_with_width(text, width):
             break
     split_at_newlines[0] = rest_text
     return s_surf, '\n'.join(split_at_newlines)
+
 
 class Dialogue:
     def __init__(self, pixel_screen):
@@ -92,6 +83,14 @@ class Dialogue:
     def close(self):
         self.active = False
         return self.callback
+    
+    def handle_single_key_action(self, key):
+        if self.active and single_key_action(key, 'Dialogue', 'continue'):
+            return self.next()
+    
+    def handle_event(self, e):
+        self.open(e.text, e.callback)
+
 
 class Choice:
     def __init__(self, pixel_screen):
@@ -167,113 +166,21 @@ class Choice:
                 self.var_dict[self.var_key] = self.options[self.selection]
         return self.callback
 
-class Console:
-    def __init__(self, data, pixel_screen):
-        self.state = 0
-        self.queue = [dummyEvent]
-        self.datapath = data
-        self.data = pickle.load(open(data, 'rb'))
-        self.dialogue = Dialogue(pixel_screen)
-        self.choice = Choice(pixel_screen)
-
-    def dialogue_continue(self):
-        if self.rest_text:
-            self.current_dialogue_text = self.rest_text
-            self.rest_text = ""
-        else:
-            try:
-                self.current_dialogue_text = next(self.dialogue_text)
-            except StopIteration:
-                if self.text_callback:
-                    self.text_callback()
-                self.dialogue_active = False
-    
-    def activate_callback(self, callback, data=None):
-        if callable(callback):
-            callback = callback(self.choice.options[self.choice.selection])
-        if isinstance(callback, typing.Generator):
-            try:
-                func = next(callback)
-                self.add_events(func(callback))
-            except StopIteration:
-                pass
-
-    def execute_events(self):
-        for e in self.queue:
-            if type(e) is SayEvent:
-                self.dialogue.open(e.text, e.callback)
-            elif type(e) is ChooseEvent:
-                # Open the selection text box with the options from data.
-                self.choice.open(e.options, e.var_dict, e.var_key, e.callback, e.back_possible)
-            elif type(e) is DamageEvent:
-                e.attacking.dealdamage(e.defending, e.move)
-                self.activate_callback(e.callback)
-            elif type(e) is StatusEvent:
-                e.defending.status = e.status
-                self.activate_callback(e.callback)
-            elif e.event == 'SET':
-                self.data[e.data[0]] = e.data[1]
-                pickle.dump(self.data, open(self.datapath, 'wb'))
-            elif e.event == 'IF':
-                if self.data[e.data[0]]:
-                    self.add_events[self.interpret(e.data[1][0])]
-                else:
-                    self.add_events[self.interpret(e.data[1][1])]
-            else:
-                raise ValueError(f'Event {e} is not recognized!')
-        self.queue.clear()
-    
-    def draw(self):
-        self.dialogue.draw()
-        self.choice.draw()
-
-    def add_events(self, *events):
-        for event in events:
-            self.state += 1
-            event.id = self.state
-            self.queue.append(event)
-
-    def add_generator(self, generator):
-        func = next(generator)
-        self.add_events(func(generator))
-
-    def say(self, *text, callback=None):
-        return self.add_events(SayEvent(text, callback))
-
-    def choose(self, options, var_dict=None, var_key=None, callback=None):
-        return self.add_events(ChooseEvent(options, var_dict=var_dict, var_key=var_key, callback=callback))
-
-    def execute_script(self, script_path):
-        with open(script_path) as file:
-            lines = file.readlines()
-        for line in lines:
-            self.add_events(self.interpret(line))
-
-    def interpret(self, data):
-        commands = data.split(';')
-        toReturn = []
-        for command in commands:
-            commandType = command.split(':')[0]
-            commandData = eval(command.split(':')[1])
-            toReturn.append(commandType, commandData)
-
     def handle_single_key_action(self, key):
-        if self.choice.active:
-            if single_key_action(key, 'Menu', 'up') or single_key_action(key, 'Menu', 'down'):
-                self.choice.selection = (self.choice.selection + 2) % 4
-            elif single_key_action(key, 'Menu', 'right') or single_key_action(key, 'Menu', 'left'):
-                if self.choice.selection % 2 == 0:
-                    self.choice.selection += 1
-                else:
-                    self.choice.selection -= 1
-            elif single_key_action(key, 'Menu', 'select'):
-                callback = self.choice.close()
-                self.activate_callback(callback, data=self.choice.options[self.choice.selection])
-            elif self.choice.back_possible and single_key_action(key, 'Menu', 'back'):
-                callback = self.choice.close('back')
-                self.activate_callback(callback, data='back')
-        elif self.dialogue.active:
-            if single_key_action(key, 'Dialogue', 'continue'):
-                callback = self.dialogue.next()
-                self.activate_callback(callback)
+        if not self.active:
+            return
 
+        if single_key_action(key, 'Menu', 'up') or single_key_action(key, 'Menu', 'down'):
+            self.selection = (self.selection + 2) % 4
+        elif single_key_action(key, 'Menu', 'right') or single_key_action(key, 'Menu', 'left'):
+            if self.selection % 2 == 0:
+                self.selection += 1
+            else:
+                self.selection -= 1
+        elif single_key_action(key, 'Menu', 'select'):
+            return self.close()
+        elif self.back_possible and single_key_action(key, 'Menu', 'back'):
+            return self.close('back')
+    
+    def handle_event(self, e):
+        self.open(e.options, e.var_dict, e.var_key, e.callback, e.back_possible)

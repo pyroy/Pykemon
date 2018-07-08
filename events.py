@@ -31,14 +31,6 @@ def say(*text):
 def choose(options, var_dict, var_key, back_possible=False):
     return lambda generator: ChooseEvent(options, callback=generator, var_dict=var_dict, var_key=var_key, back_possible=back_possible)
 
-def menu(**options):
-    def callback(selection):
-        yield from options[selection]()
-    return lambda _: ChooseEvent(
-        list(options.keys()),
-        callback=callback
-    )
-
 def damage(attacking, defending, category, type, power, accuracy):
     "Deals damage while taking into account the parameters most commonly used in the Pokémon games"
     movedata = {
