@@ -33,7 +33,8 @@ def create_default_config():
             'right': 'right',
             'down': 'down',
             'left': 'left',
-            'select': 'return'
+            'select': 'return',
+            'back': 'backspace'
         },
         'Dialogue': {
             'continue': 'return'
@@ -55,6 +56,7 @@ string_to_key = {
     'lalt': pygame.K_LALT,
     'ralt': pygame.K_RALT,
     'return': pygame.K_RETURN,
+    'backspace': pygame.K_BACKSPACE,
     'a': pygame.K_a,
     'b': pygame.K_b,
     'c': pygame.K_c,

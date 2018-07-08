@@ -2,7 +2,7 @@ import pickle, pygame
 import asyncio
 from keybinding import single_key_action
 from visual_core import get_texture, render_text
-from events import SayEvent, ChooseEvent, DamageEvent
+from events import SayEvent, ChooseEvent, DamageEvent, StatusEvent
 import typing
 
 # Test event for debugging.
@@ -149,18 +149,22 @@ class Choice:
 
         self.pixel_screen.blit(self.selector_texture, self.selector_positions[self.selection])
 
-    def open(self, options, var_dict=None, var_key=None, callback=None):
+    def open(self, options, var_dict=None, var_key=None, callback=None, back_possible=False):
         self.active = True
         self.options = options
         self.callback = callback
         self.var_dict = var_dict
         self.var_key = var_key
         self.selection = 0
+        self.back_possible = back_possible
 
-    def close(self):
+    def close(self, value=None):
         self.active = False
         if self.var_dict != None and self.var_key != None:
-            self.var_dict[self.var_key] = self.options[self.selection]
+            if value:
+                self.var_dict[self.var_key] = value
+            else:
+                self.var_dict[self.var_key] = self.options[self.selection]
         return self.callback
 
 class Console:
@@ -190,7 +194,7 @@ class Console:
         if isinstance(callback, typing.Generator):
             try:
                 func = next(callback)
-                self.add_event(func(callback))
+                self.add_events(func(callback))
             except StopIteration:
                 pass
 
@@ -200,18 +204,21 @@ class Console:
                 self.dialogue.open(e.text, e.callback)
             elif type(e) is ChooseEvent:
                 # Open the selection text box with the options from data.
-                self.choice.open(e.options, e.var_dict, e.var_key, e.callback)
+                self.choice.open(e.options, e.var_dict, e.var_key, e.callback, e.back_possible)
             elif type(e) is DamageEvent:
                 e.attacking.dealdamage(e.defending, e.move)
+                self.activate_callback(e.callback)
+            elif type(e) is StatusEvent:
+                e.defending.status = e.status
                 self.activate_callback(e.callback)
             elif e.event == 'SET':
                 self.data[e.data[0]] = e.data[1]
                 pickle.dump(self.data, open(self.datapath, 'wb'))
             elif e.event == 'IF':
                 if self.data[e.data[0]]:
-                    self.add_event[self.interpret(e.data[1][0])]
+                    self.add_events[self.interpret(e.data[1][0])]
                 else:
-                    self.add_event[self.interpret(e.data[1][1])]
+                    self.add_events[self.interpret(e.data[1][1])]
             else:
                 raise ValueError(f'Event {e} is not recognized!')
         self.queue.clear()
@@ -220,26 +227,27 @@ class Console:
         self.dialogue.draw()
         self.choice.draw()
 
-    def add_event(self, event):
-        self.state += 1
-        event.id = self.state
-        self.queue.append(event)
+    def add_events(self, *events):
+        for event in events:
+            self.state += 1
+            event.id = self.state
+            self.queue.append(event)
 
     def add_generator(self, generator):
         func = next(generator)
-        self.add_event(func(generator))
+        self.add_events(func(generator))
 
     def say(self, *text, callback=None):
-        return self.add_event(SayEvent(text, callback))
+        return self.add_events(SayEvent(text, callback))
 
     def choose(self, options, var_dict=None, var_key=None, callback=None):
-        return self.add_event(ChooseEvent(options, var_dict=var_dict, var_key=var_key, callback=callback))
+        return self.add_events(ChooseEvent(options, var_dict=var_dict, var_key=var_key, callback=callback))
 
     def execute_script(self, script_path):
         with open(script_path) as file:
             lines = file.readlines()
         for line in lines:
-            self.add_event(self.interpret(line))
+            self.add_events(self.interpret(line))
 
     def interpret(self, data):
         commands = data.split(';')
@@ -261,6 +269,9 @@ class Console:
             elif single_key_action(key, 'Menu', 'select'):
                 callback = self.choice.close()
                 self.activate_callback(callback, data=self.choice.options[self.choice.selection])
+            elif self.choice.back_possible and single_key_action(key, 'Menu', 'back'):
+                callback = self.choice.close('back')
+                self.activate_callback(callback, data='back')
         elif self.dialogue.active:
             if single_key_action(key, 'Dialogue', 'continue'):
                 callback = self.dialogue.next()

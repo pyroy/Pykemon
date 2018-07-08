@@ -140,6 +140,7 @@ class Pokemon:
         self.goalXP = xpfunc(1)
         self.moveset = Moveset(self)
         self.moveset.addmove('Tackle')
+        self.moveset.addmove('Ember')
         #self.moveset.addmove('Stand Guard')
         #self.moveset.addmove('Stat Sacrifice')
         #self.moveset.addmove('Struggle')

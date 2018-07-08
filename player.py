@@ -56,7 +56,7 @@ class Player(MovingObject):
         self.currentMap = currentMap
         self.npcmanager = npcmanager
         self.trainerdata = pkm.Trainer('Player')
-        self.trainerdata.party.append(pkm.Pokemon('Starmie'))
+        self.trainerdata.party.append(pkm.Pokemon('Charmander'))
         self.trainerdata.party[0].setlevel(4)
         self.moving = False
         self.direction = 'south'

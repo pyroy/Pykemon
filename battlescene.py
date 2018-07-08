@@ -23,7 +23,6 @@ def getSprite(name, state):
 class Background:
     def __init__(self, time='Day', place='Forest'):
         self.source = get_texture("20102")
-        self.times = None
         self.time = time
 
     def get(self):
@@ -61,7 +60,7 @@ class BattleScene:
         self.state = 'intro'
         self.intro_frame = 0
         self.foe_pos = -50
-        self.friend_pos = self.screen_rect.width
+        self.friend_pos = self.screen_rect.width + 20
         self.bg = Background()
         self.friendSize = pygame.Rect(0, 0, 80, 80)
 
@@ -104,25 +103,33 @@ class BattleScene:
         else:
             yield events.say(f'{self.inFieldFriend.custom_name} fainted!')
         self.active = False
-
-
     
     def player_action_menu(self):
         v = {}
-        yield events.choose(
-            ['FIGHT', 'BAG', 'POKéMON', 'RUN'],
-            v, 'main'
-        )
-        if v['main'] == 'FIGHT':
-            yield events.choose(
-                self.inFieldFriend.moveset.get_movenames(),
-                v, 'attack'
-            )
-            self.friend_attack = v['attack']
-        elif v['main'] == 'RUN':
-            yield events.say('Got away safely!')
-            self.close()
-    
+        yield events.say(f'What will {self.inFieldFriend.custom_name} do?')
+        menu_path = []
+        while True:
+            if not menu_path:
+                yield events.choose(
+                    ['FIGHT', 'BAG', 'POKéMON', 'RUN'],
+                    v, 'main'
+                )
+                menu_path.append(v['main'])
+            elif menu_path[-1] == 'FIGHT':
+                yield events.choose(
+                        self.inFieldFriend.moveset.get_movenames(),
+                        v, 'attack', back_possible=True
+                    )
+                if v['attack'] == 'back':
+                    menu_path.pop(-1)
+                else:
+                    self.friend_attack = v['attack']
+                    break
+            elif menu_path[-1] == 'RUN':
+                yield events.say('Got away safely!')
+                self.close()
+                return
+
     def friend_action(self):
         yield events.say(f'{self.inFieldFriend.custom_name} used {self.friend_attack}!')
         yield from self.inFieldFriend.moveset[self.friend_attack][0].func(self.inFieldFriend, self.inFieldFoe)
@@ -170,13 +177,6 @@ class StatusBar:
 
     def new_pokemon(self, pokemon):
         self.pokemon = pokemon
-        self.name   = pokemon.custom_name
-        self.level  = pokemon.level
-        self.status = pokemon.status
-        self.max_hp = pokemon.stats['HP']
-        self.cur_hp = pokemon.currentStats['HP']
-        self.max_xp = pokemon.goalXP
-        self.cur_xp = pokemon.XP
         self.gender = None
 
     def get_surface(self):
@@ -204,15 +204,27 @@ class StatusBar:
             hp_texture_rect = pygame.Rect(0, 71, 48, 7)
         hp_texture.blit(self.textures, (0, 0), hp_texture_rect)
 
+        nametag = render_text(self.pokemon.custom_name)
+        level_tag = render_number(self.pokemon.level)
+
+        if self.pokemon.status:
+            status_texture_x = {
+                'burned': 0,
+                'frozen': 20,
+                'poisened': 40,
+                'paralyzed': 60,
+                'asleep': 80,
+            }[self.pokemon.status]
+            status_texture = pygame.Surface((20, 7), pygame.SRCALPHA)
+            status_texture.blit(self.textures, (0, 0), pygame.Rect(status_texture_x, 102, 20, 7))
+
         if self.side == 'friend':
             background = pygame.Surface((120, 41), pygame.SRCALPHA)
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 30))
 
-            nametag = render_text(self.pokemon.custom_name)
+            
             background.blit(nametag, (13, 3))
-
-            level_tag = render_number(self.pokemon.level)
             background.blit(level_tag, (94, 8))
 
             current_hp_tag = render_number(self.pokemon.currentStats['HP'])
@@ -230,18 +242,20 @@ class StatusBar:
             xp_texture.blit(self.textures, (0, 0), pygame.Rect(0, 92, xp_prop*90, 3))
             background.blit(xp_texture, (29, 38))
 
+            if self.pokemon.status:
+                background.blit(status_texture, (23, 19))
+
         elif self.side == 'foe':
             background = pygame.Surface((120, 30), pygame.SRCALPHA)
             background_rect = background.get_rect()
             background.blit(self.textures, (0, 0), background_rect.move(bg_texture_x, 0))
 
-            nametag = render_text(self.pokemon.custom_name)
             background.blit(nametag, (2, 3))
-
-            level_tag = render_number(self.pokemon.level)
             background.blit(level_tag, (82, 8))
-
             background.blit(hp_texture, (50, 19))
+
+            if self.pokemon.status:
+                background.blit(status_texture, (13, 19))
         else:
             raise ValueError(f"self.side '{self.side}' was not 'friend' or 'foe'.")
         return background

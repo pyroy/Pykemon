@@ -32,8 +32,13 @@ class DATABASE:
 DB = DATABASE()
 
 @DB.define_move('Tackle', 'Physical', 'Normal', 35, 40, 100)
-def tackle(friend, foe):
-    yield events.damage(friend, foe, 'Physical', 'Normal', 40, 100,)
+def tackle(attacking, defending):
+    yield events.damage(attacking, defending, 'Physical', 'Normal', 40, 100,)
+
+@DB.define_move('Ember', 'Special', 'Fire', 25, 40, 100)
+def ember(attacking, defending):
+    yield events.damage(attacking, defending, 'Special', 'Fire', 40, 100)
+    yield events.status(attacking, defending, 'burned')
 
 # def fire_blast(friend,foe):
 #     EventQueue.addEvent('dmg',friend,foe,'Fire blast',*friend.dealdamage(foe,45,['special','fire']))
@@ -51,11 +56,6 @@ def tackle(friend, foe):
 #     EventQueue.addEvent('dmg',friend,foe,'Struggle',*friend.dealdamage(foe,50,['physical','normal']))
 #     EventQueue.addEvent('raise',friend,*friend.raisestat('DEF',1/1.5))
 # DB.definemove('Struggle',struggle)
-
-# def ignite(friend,foe):
-#     foe.status = 'Burn'
-#     EventQueue.addEvent('stat','burn',foe)
-# DB.definemove('Ignite',ignite)
 
 # def stat_sacrifice(friend,foe):
 #     a, b = ['ATK','DEF','SPATK','SPDEF','SPD'][random.randint(0,4)], ['ATK','DEF','SPATK','SPDEF','SPD'][random.randint(0,4)]

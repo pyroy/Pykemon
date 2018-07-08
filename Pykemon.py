@@ -85,7 +85,7 @@ if not quickstart:
     time.sleep(2)
 
 current_scene = 'World'
-activeBattle = None  # Actual BattleScene object
+activeBattle = None  # BattleScene object
 
 # Options menu vars
 font = pygame.font.SysFont('arial', 30)
@@ -152,7 +152,7 @@ while not done:
                                 generator = npc.interact(player.pos)
                                 func = next(generator)
                                 print(func(generator).text)
-                                console.add_event(func(generator))
+                                console.add_events(func(generator))
                             break
 
             console.handle_single_key_action(key)
